@@ -46,8 +46,26 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>3.4.5</version>
 		</dependency>
-	</dependencies>
 
+		<!-- Spring Boot JDBC starter (pulls in spring-jdbc, Spring TX, etc.) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+
+		<!-- PostgreSQL driver, loaded at runtime -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
