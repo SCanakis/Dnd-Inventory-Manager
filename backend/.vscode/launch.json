@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-DndappApplication<dndapp>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.scanakispersonalprojects.dndapp.DndappApplication",
+            "projectName": "dndapp",
+            "args": "",
+            "env": {
+                "DB_URL":"jdbc:postgresql://localhost:5432/dndapp",
+                "DB_USERNAME":"scanakis"
+            }
+        }
+    ]
+}

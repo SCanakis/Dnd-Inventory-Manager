@@ -1,5 +1,6 @@
 package com.scanakispersonalprojects.dndapp.controller;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class BasicCharInfoController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<CharacterBasicInfoView> getMethodName(@PathVariable String uuid) {
+    public ResponseEntity<CharacterBasicInfoView> getMethodName(@PathVariable UUID uuid) {
         LOG.info("GET /character/" + uuid);
         try {
             CharacterBasicInfoView charInfoView = basicCharDao.getCharInfo(uuid);
