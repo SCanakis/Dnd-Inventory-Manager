@@ -1,5 +1,6 @@
 package com.scanakispersonalprojects.dndapp.model;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -11,5 +12,6 @@ public record CharacterBasicInfoView(
     UUID backgroundUUID,
     String race,
     UUID raceUUID,
-    Map<AbilityScore, Integer> abilityScores    
+    Map<AbilityScore, Integer> abilityScores,
+    List<DndClass> classes
 ) {}
