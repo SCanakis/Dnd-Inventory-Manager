@@ -21,9 +21,25 @@ public class BasicCharInfoController {
     private static final Logger LOG = Logger.getLogger(BasicCharInfoController.class.getName());
     private BasicCharInfoPersistance basicCharDao;
 
+    /**
+     * Constructs the controller with the persistence gateway injected.
+     *
+     * @param basicCharDao DAO that knows how to fetch {@link CharacterBasicInfoView}
+     *                     from the data source
+     */
+
     public BasicCharInfoController(BasicCharInfoPersistance basicCharDao) {
         this.basicCharDao = basicCharDao;
     }
+
+   /**
+     * Retrieves the immutable snapshot used by the UI’s character banner.
+     *
+     * @param uuid unique identifier of the character
+     * @return 200 with the body when found;
+     *         404 when the character does not exist;
+     *         500 on any unexpected server error
+     */
 
     @GetMapping("/{uuid}")
     public ResponseEntity<CharacterBasicInfoView> getMethodName(@PathVariable UUID uuid) {
@@ -37,6 +53,7 @@ public class BasicCharInfoController {
             } 
 
         } catch (Exception e) {
+            LOG.severe(e::getMessage);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

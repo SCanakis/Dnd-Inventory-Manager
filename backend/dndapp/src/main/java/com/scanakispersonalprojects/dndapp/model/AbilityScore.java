@@ -1,5 +1,17 @@
 package com.scanakispersonalprojects.dndapp.model;
 
+
+/**
+ * 
+ * Enumeration of the Ability Scores (AS) in DND 5e currently. 
+ * 
+ * @param shorthand     The shorthand String values associated with each AS is the name of 
+ *                      it's column in the @code characters_info table.
+ * 
+ */
+
+
+
 public enum AbilityScore {
     STRENGTH ("strength"),
     DEXTERITY ("dexterity"),
