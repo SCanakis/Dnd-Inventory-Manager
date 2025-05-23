@@ -17,7 +17,9 @@ import org.springframework.stereotype.Repository;
 
 import com.scanakispersonalprojects.dndapp.model.AbilityScore;
 import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.model.DeathSavingThrowsHelper;
 import com.scanakispersonalprojects.dndapp.model.DndClass;
+import com.scanakispersonalprojects.dndapp.model.HPHandler;
 
 @Repository
 public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
@@ -40,6 +42,13 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
 
     final String subClassTable="subclass";
     final String subClassCol="subclass_uuid";
+
+    final String hpHandlerTable="hp_handler";
+    final String hpHandlerCol="char_info_uuid";
+
+    final String deathSavingThrowTable="death_saving_throws";
+    final String deathSavingThrowCol="char_info_uuid";
+    
   
 
     private Connection getConnection() throws SQLException {
@@ -71,9 +80,19 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
                     map.put(as, prs.getInt(as.getString()));
                 }
 
-                List<DndClass> classes = getClasses(uuid, connection);
-
-                CharacterBasicInfoView result = new CharacterBasicInfoView(uuid, prs.getString("name"), prs.getBoolean("inspiration"), background, bgUuid, race, raceUuid, map, classes);
+            
+                CharacterBasicInfoView result = new CharacterBasicInfoView(
+                    uuid,
+                    prs.getString("name"),
+                    prs.getBoolean("inspiration"),
+                    background,
+                    bgUuid,
+                    race,
+                    raceUuid,
+                    map,
+                    getClasses(uuid, connection), 
+                    getHpHandler(uuid, connection),
+                    gDeathSavingThrowsHelper(uuid, connection));
                 prs.close();
 
                 return result;
@@ -84,7 +103,7 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
             }
         }
 
-    public ResultSet getResultsSetWithUUID(String tableString, UUID uuid, String columnName, Connection connection) throws SQLException{
+    private ResultSet getResultsSetWithUUID(String tableString, UUID uuid, String columnName, Connection connection) throws SQLException{
         final String query = "SELECT * FROM "+ tableString + " WHERE " + columnName + "=?";
 
         PreparedStatement ps = connection.prepareStatement(query);
@@ -99,7 +118,7 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
             return rs;
     }
 
-    public String getNameWithUUID(String tableString, UUID uuid, String columnName, Connection connection) throws SQLException{
+    private String getNameWithUUID(String tableString, UUID uuid, String columnName, Connection connection) throws SQLException{
         final String query = "SELECT * FROM "+ tableString + " WHERE " + columnName + "=?";
 
         PreparedStatement ps = connection.prepareStatement(query);
@@ -116,24 +135,40 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
             return name;
     }
 
-    public List<DndClass> getClasses(UUID charUuid, Connection connection) throws SQLException {
+    private List<DndClass> getClasses(UUID charUuid, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(ClassesQuery);
         ps.setObject(1, charUuid);
         ResultSet rs = ps.executeQuery();
         List<DndClass> classes = new ArrayList<>();
 
-        if(rs.next()) {
+        while(rs.next()) {
             UUID classUuid = (UUID)rs.getObject("class_uuid");
             UUID subClassUuid = (UUID)rs.getObject("subclass_uuid");
             short level = (short)rs.getInt("level");
 
             String className = getNameWithUUID(classTable, classUuid, classCol, connection);
-            String subClassName = getNameWithUUID(subClassTable, classUuid, subClassCol, connection);
+            String subClassName = getNameWithUUID(subClassTable, subClassUuid, subClassCol, connection);
 
             classes.add(new DndClass(charUuid, className, subClassUuid, subClassName, level));
         }   
         ps.close();
         return classes;
+    }
+
+    private HPHandler getHpHandler(UUID charUuid, Connection connection) throws SQLException  {
+        ResultSet rs = getResultsSetWithUUID(hpHandlerTable, charUuid, hpHandlerCol, connection);
+        
+        HPHandler hpHandler = new HPHandler(rs.getInt("current_hp"), rs.getInt("max_hp"), rs.getInt("temp_hp"));
+        rs.close();
+        return hpHandler;
+    }
+
+    private DeathSavingThrowsHelper gDeathSavingThrowsHelper(UUID charUuid, Connection connection) throws SQLException  {
+        ResultSet rs = getResultsSetWithUUID(deathSavingThrowTable, charUuid, deathSavingThrowCol, connection);
+        
+        DeathSavingThrowsHelper deathSavingThrowsHelper = new DeathSavingThrowsHelper((short) rs.getInt("success"), (short)rs.getInt("failure"));
+        rs.close();
+        return deathSavingThrowsHelper;
     }
 
 
