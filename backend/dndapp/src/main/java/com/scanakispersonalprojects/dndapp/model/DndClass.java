@@ -7,7 +7,9 @@ public record DndClass(
     String className,
     UUID subclassUuid,
     String subClassName,
-    short level
+    short level,
+    short currentHitDice,
+    short hitDiceValue
 ) {
  
 }

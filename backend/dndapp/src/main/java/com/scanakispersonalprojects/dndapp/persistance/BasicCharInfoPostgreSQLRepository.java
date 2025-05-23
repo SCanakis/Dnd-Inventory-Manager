@@ -13,6 +13,7 @@ import java.util.UUID;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import com.scanakispersonalprojects.dndapp.model.AbilityScore;
@@ -22,7 +23,7 @@ import com.scanakispersonalprojects.dndapp.model.DndClass;
 import com.scanakispersonalprojects.dndapp.model.HPHandler;
 
 @Repository
-public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
+public class BasicCharInfoPostgreSQLRepository implements BasicCharInfoPersistance{
     
     @Autowired
     private DataSource dataSource;
@@ -52,7 +53,7 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
   
 
     private Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+        return DataSourceUtils.getConnection(dataSource);
     }
 
     @Override
@@ -62,9 +63,10 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
             
             String race;
             String background;
-
-            try (Connection connection = getConnection()){
+            Connection connection= null;
+            try {
                 
+                connection = getConnection();
                 ResultSet prs = getResultsSetWithUUID(charInfoTable, uuid, charInfoCol, connection);
 
                 UUID bgUuid = prs.getObject("background_uuid", UUID.class);
@@ -93,13 +95,14 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
                     getClasses(uuid, connection), 
                     getHpHandler(uuid, connection),
                     gDeathSavingThrowsHelper(uuid, connection));
-                prs.close();
 
                 return result;
 
          
             } catch (Exception e) {
                 return null;
+            } finally {
+                DataSourceUtils.releaseConnection(connection, dataSource);
             }
         }
 
@@ -112,7 +115,6 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
 
             ResultSet rs = ps.executeQuery();
             if(!rs.next()) {
-                ps.close();
                 return null;
             }
             return rs;
@@ -127,11 +129,9 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
 
             ResultSet rs = ps.executeQuery();
             if(!rs.next()) {
-                ps.close();
                 return null;
             }
             String name = rs.getString("name");
-            rs.close();
             return name;
     }
 
@@ -145,13 +145,15 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
             UUID classUuid = (UUID)rs.getObject("class_uuid");
             UUID subClassUuid = (UUID)rs.getObject("subclass_uuid");
             short level = (short)rs.getInt("level");
+            short hitDice = (short)rs.getInt("hit_dice_remaining");
+            ResultSet crs = getResultsSetWithUUID(classTable, classUuid, classCol, connection);
+            String className = crs.getString("name");
+            short hitDiceValue = (short)crs.getInt("hit_dice_value");
 
-            String className = getNameWithUUID(classTable, classUuid, classCol, connection);
             String subClassName = getNameWithUUID(subClassTable, subClassUuid, subClassCol, connection);
 
-            classes.add(new DndClass(charUuid, className, subClassUuid, subClassName, level));
+            classes.add(new DndClass(charUuid, className, subClassUuid, subClassName, level, hitDice, hitDiceValue));
         }   
-        ps.close();
         return classes;
     }
 
@@ -159,7 +161,6 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
         ResultSet rs = getResultsSetWithUUID(hpHandlerTable, charUuid, hpHandlerCol, connection);
         
         HPHandler hpHandler = new HPHandler(rs.getInt("current_hp"), rs.getInt("max_hp"), rs.getInt("temp_hp"));
-        rs.close();
         return hpHandler;
     }
 
@@ -167,7 +168,6 @@ public class BasicCharInfoPostgreSQLService implements BasicCharInfoPersistance{
         ResultSet rs = getResultsSetWithUUID(deathSavingThrowTable, charUuid, deathSavingThrowCol, connection);
         
         DeathSavingThrowsHelper deathSavingThrowsHelper = new DeathSavingThrowsHelper((short) rs.getInt("success"), (short)rs.getInt("failure"));
-        rs.close();
         return deathSavingThrowsHelper;
     }
 
