@@ -52,6 +52,7 @@ public class BasicCharInfoPostgreSQLRepository implements BasicCharInfoPersistan
     final String deathSavingThrowCol="char_info_uuid";
     
     final String updateHealthQuery="UPDATE hp_handler SET current_hp=?, temp_hp=? WHERE char_info_uuid=?";
+    final String updateNameQuery="UPDATE characters_info SET name=? WHERE char_info_uuid=?";
   
 
     private Connection getConnection() throws SQLException {
@@ -186,8 +187,23 @@ public class BasicCharInfoPostgreSQLRepository implements BasicCharInfoPersistan
             return getCharInfo(uuid); 
         } catch (Exception e) {
             return null;
+        }   
+    }
+
+    @Override
+    public CharacterBasicInfoView updateName(UUID uuid, String name) {
+        try {
+            Connection connection = getConnection();
+            PreparedStatement ps = connection.prepareStatement(updateNameQuery);
+            ps.setString(1, name);
+            ps.setObject(2, uuid);
+
+            ps.executeUpdate();
+            return getCharInfo(uuid);
+        } catch (Exception e) {
+            return null;
         }
-        
+
     }
 
 

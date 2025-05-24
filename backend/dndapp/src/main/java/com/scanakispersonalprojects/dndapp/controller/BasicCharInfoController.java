@@ -13,6 +13,7 @@ import com.scanakispersonalprojects.dndapp.persistance.BasicCharInfoPersistance;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -73,6 +74,24 @@ public class BasicCharInfoController {
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+
+        } catch (Exception e) {
+            LOG.severe(e::getMessage);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("name/{uuid}")
+    public ResponseEntity<CharacterBasicInfoView> updateName(@PathVariable UUID uuid, @RequestParam String name) {
+        LOG.info("PUT /character/name/"+uuid);
+        try {
+        CharacterBasicInfoView charInfoView= basicCharDao.updateName(uuid, name);
+
+        if(charInfoView != null) {
+            return new ResponseEntity<>(charInfoView, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         } catch (Exception e) {
             LOG.severe(e::getMessage);

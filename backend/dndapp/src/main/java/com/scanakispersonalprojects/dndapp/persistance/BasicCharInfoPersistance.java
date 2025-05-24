@@ -14,4 +14,7 @@ public interface BasicCharInfoPersistance {
 
     public CharacterBasicInfoView updateHealth(UUID uuid, HealthUpdate healthUpdate);
 
+    public CharacterBasicInfoView updateName(UUID uuid, String name);
+
+
 }
