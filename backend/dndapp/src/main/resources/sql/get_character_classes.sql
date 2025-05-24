@@ -10,5 +10,5 @@ SELECT
   c.hit_dice_value    
 FROM character_class cc
 JOIN class c ON cc.class_uuid = c.class_uuid
-LEFT JOIN subclass sc ON cc.class_uuid = sc.class_source
-WHERE cc.char_info_uuid = '30000000-0000-0000-0000-000000000001';
+LEFT JOIN subclass sc ON cc.subclass_uuid = sc.subclass_uuid
+WHERE cc.char_info_uuid = :uuid;

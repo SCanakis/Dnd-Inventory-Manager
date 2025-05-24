@@ -27,7 +27,7 @@ import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
 class BasicCharInfoRepositoryIntegrationTest {
 
     @Autowired
-    private BasicCharInfoPostgreSQLRepository repository;
+    private CharacterDao dao;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -107,7 +107,7 @@ class BasicCharInfoRepositoryIntegrationTest {
     @Test
     public void testGetCharInfo_Success() {
         // Act
-        CharacterBasicInfoView result = repository.getCharInfo(testCharUuid);
+        CharacterBasicInfoView result = dao.getCharInfo(testCharUuid);
 
         // Assert
         assertNotNull(result);
@@ -146,7 +146,7 @@ class BasicCharInfoRepositoryIntegrationTest {
     @Test
     public void testGetCharInfo_CharacterNotFound() {
         // Act
-        CharacterBasicInfoView result = repository.getCharInfo(UUID.randomUUID());
+        CharacterBasicInfoView result = dao.getCharInfo(UUID.randomUUID());
 
         // Assert
         assertEquals(null,result);

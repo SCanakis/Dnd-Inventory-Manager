@@ -89,7 +89,9 @@ public class CharacterDao {
 
 
     public CharacterBasicInfoView getCharInfo(UUID uuid) {
-        Map<String, Object> base = jdbc.queryForMap(
+        Map<String, Object> base;
+        try {
+            base = jdbc.queryForMap(
             sql.get("get_char_info"),
             Map.of("uuid", uuid)
         );
@@ -145,6 +147,10 @@ public class CharacterDao {
             hpHandler,
             dst
         );
+        } catch (Exception e) {
+            return null;
+        }
+        
     }
 
 
