@@ -15,7 +15,7 @@ package com.scanakispersonalprojects.dndapp.model;
 public enum AbilityScore {
     STRENGTH ("strength"),
     DEXTERITY ("dexterity"),
-    CONSTITUION ("constitution"),
+    CONSTITUTION ("constitution"),
     INTELLIGENCE ("intelligence"),
     WISDOM("wisdom"), 
     CHARISMA ("charisma");

@@ -7,13 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
+import com.scanakispersonalprojects.dndapp.model.CharViewPatch;
 import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
-import com.scanakispersonalprojects.dndapp.model.HealthUpdate;
 import com.scanakispersonalprojects.dndapp.persistance.BasicCharInfoPersistance;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -47,7 +46,7 @@ public class BasicCharInfoController {
      */
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<CharacterBasicInfoView> getMethodName(@PathVariable UUID uuid) {
+    public ResponseEntity<CharacterBasicInfoView> getCharacterBasicView(@PathVariable UUID uuid) {
         LOG.info("GET /character/" + uuid);
         try {
             CharacterBasicInfoView charInfoView = basicCharDao.getCharInfo(uuid);
@@ -63,41 +62,23 @@ public class BasicCharInfoController {
         }
     }
 
-    @PutMapping("health/{uuid}")
-    public ResponseEntity<CharacterBasicInfoView> updateHealth(@PathVariable UUID uuid, @RequestBody HealthUpdate healthUpdate) {
-        LOG.info("PUT /character/health/"+uuid);
-        try {
-            CharacterBasicInfoView charInfoView = basicCharDao.updateHealth(uuid, healthUpdate);
+// What I actually want to update: health, name, hitDice, Inspiration, AbilityScore, and DeathSaving throw
 
-            if(charInfoView != null) {
-                return new ResponseEntity<>(charInfoView, HttpStatus.OK);
+   @PutMapping("/{uuid}")
+   public ResponseEntity<CharacterBasicInfoView> updateCharacterBasicView(@PathVariable UUID uuid , @RequestBody CharViewPatch updatedView) {
+            LOG.info("PUT /character/" + uuid);
+        try {
+            CharacterBasicInfoView charInfoView = basicCharDao.updateCharInfo(uuid, updatedView);
+            if (charInfoView != null) {
+                return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+            } 
 
         } catch (Exception e) {
             LOG.severe(e::getMessage);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @PutMapping("name/{uuid}")
-    public ResponseEntity<CharacterBasicInfoView> updateName(@PathVariable UUID uuid, @RequestParam String name) {
-        LOG.info("PUT /character/name/"+uuid);
-        try {
-        CharacterBasicInfoView charInfoView= basicCharDao.updateName(uuid, name);
-
-        if(charInfoView != null) {
-            return new ResponseEntity<>(charInfoView, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        } catch (Exception e) {
-            LOG.severe(e::getMessage);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    
+   }
 
 }
