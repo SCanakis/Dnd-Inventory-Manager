@@ -8,10 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.model.HealthUpdate;
 import com.scanakispersonalprojects.dndapp.persistance.BasicCharInfoPersistance;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @Controller
@@ -51,6 +55,24 @@ public class BasicCharInfoController {
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } 
+
+        } catch (Exception e) {
+            LOG.severe(e::getMessage);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("health/{uuid}")
+    public ResponseEntity<CharacterBasicInfoView> updateHealth(@PathVariable UUID uuid, @RequestBody HealthUpdate healthUpdate) {
+        LOG.info("PUT /character/health/"+uuid);
+        try {
+            CharacterBasicInfoView charInfoView = basicCharDao.updateHealth(uuid, healthUpdate);
+
+            if(charInfoView != null) {
+                return new ResponseEntity<>(charInfoView, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
 
         } catch (Exception e) {
             LOG.severe(e::getMessage);

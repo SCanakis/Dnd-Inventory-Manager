@@ -21,6 +21,7 @@ import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
 import com.scanakispersonalprojects.dndapp.model.DeathSavingThrowsHelper;
 import com.scanakispersonalprojects.dndapp.model.DndClass;
 import com.scanakispersonalprojects.dndapp.model.HPHandler;
+import com.scanakispersonalprojects.dndapp.model.HealthUpdate;
 
 @Repository
 public class BasicCharInfoPostgreSQLRepository implements BasicCharInfoPersistance{
@@ -50,6 +51,7 @@ public class BasicCharInfoPostgreSQLRepository implements BasicCharInfoPersistan
     final String deathSavingThrowTable="death_saving_throws";
     final String deathSavingThrowCol="char_info_uuid";
     
+    final String updateHealthQuery="UPDATE hp_handler SET current_hp=?, temp_hp=? WHERE char_info_uuid=?";
   
 
     private Connection getConnection() throws SQLException {
@@ -94,7 +96,7 @@ public class BasicCharInfoPostgreSQLRepository implements BasicCharInfoPersistan
                     map,
                     getClasses(uuid, connection), 
                     getHpHandler(uuid, connection),
-                    gDeathSavingThrowsHelper(uuid, connection));
+                    getDeathSavingThrowsHelper(uuid, connection));
 
                 return result;
 
@@ -164,11 +166,28 @@ public class BasicCharInfoPostgreSQLRepository implements BasicCharInfoPersistan
         return hpHandler;
     }
 
-    private DeathSavingThrowsHelper gDeathSavingThrowsHelper(UUID charUuid, Connection connection) throws SQLException  {
+    private DeathSavingThrowsHelper getDeathSavingThrowsHelper(UUID charUuid, Connection connection) throws SQLException  {
         ResultSet rs = getResultsSetWithUUID(deathSavingThrowTable, charUuid, deathSavingThrowCol, connection);
         
         DeathSavingThrowsHelper deathSavingThrowsHelper = new DeathSavingThrowsHelper((short) rs.getInt("success"), (short)rs.getInt("failure"));
         return deathSavingThrowsHelper;
+    }
+
+    @Override
+    public CharacterBasicInfoView updateHealth(UUID uuid, HealthUpdate newHealth){
+        try {
+           Connection connection = getConnection();
+            PreparedStatement ps = connection.prepareStatement(updateHealthQuery);
+            ps.setObject(1, newHealth.newHealth());
+            ps.setObject(2, newHealth.tempHealth());
+            ps.setObject(3, uuid);
+            ps.executeUpdate();
+
+            return getCharInfo(uuid); 
+        } catch (Exception e) {
+            return null;
+        }
+        
     }
 
 
