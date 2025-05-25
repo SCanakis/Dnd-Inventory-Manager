@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 
 import com.scanakispersonalprojects.dndapp.model.CharViewPatch;
 import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
-import com.scanakispersonalprojects.dndapp.persistance.CharacterService;
+import com.scanakispersonalprojects.dndapp.service.CharacterService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,13 +37,13 @@ public class BasicCharInfoController {
         this.service = service;
     }
 
-   /**
+    /**
      * Retrieves the immutable snapshot used by the UI’s character banner.
      *
      * @param uuid unique identifier of the character
-     * @return 200 with the body when found;
-     *         404 when the character does not exist;
-     *         500 on any unexpected server error
+     * @return      200 with an instance of a {@link CharacterBasicInfoView} retrived
+     *              404 when the character does not exist
+     *              500 on any unexpected server error
      */
 
     @GetMapping("/{uuid}")
@@ -63,13 +63,23 @@ public class BasicCharInfoController {
         }
     }
 
-// What I actually want to update: health, name, hitDice, Inspiration, AbilityScore, and DeathSaving throw
+    /**
+     * 
+     * Update some of the values that will frequently be changed in the BasicCharInfo
+     * 
+     * @param uuid          unique idneitifer of the character
+     * @param patch         The filed that are to be updated
+     * @return              200 with an instance of the updated {@link CharacterBasicInfoView}
+     *                      404 when the character does not exist
+     *                      500 on any unexpected server error
+     */
+
 
    @PutMapping("/{uuid}")
-   public ResponseEntity<CharacterBasicInfoView> updateCharacterBasicView(@PathVariable UUID uuid , @RequestBody CharViewPatch updatedView) {
+   public ResponseEntity<CharacterBasicInfoView> updateCharacterBasicView(@PathVariable UUID uuid , @RequestBody CharViewPatch patch) {
             LOG.info("PUT /character/" + uuid);
         try {
-            CharacterBasicInfoView charInfoView = service.updateCharInfo(uuid, updatedView);
+            CharacterBasicInfoView charInfoView = service.updateCharInfo(uuid, patch);
             if (charInfoView != null) {
                 return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
             } else {

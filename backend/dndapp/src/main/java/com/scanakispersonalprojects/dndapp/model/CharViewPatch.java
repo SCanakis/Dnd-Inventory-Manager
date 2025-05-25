@@ -7,6 +7,14 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
+/**
+ * Represents a partial update (patch) to a character's viewable fields.
+ * 
+ * Any fields left at its defautl indicator (null for objects, -1 for ints)
+ * will be ignored by the serive layer when applying updates.
+ * 
+ */
+
 public class CharViewPatch {
     private String name = null;
     private int currentHP = -1;
@@ -17,8 +25,21 @@ public class CharViewPatch {
     private int success = -1;
     private int failure = -1;
 
-
     public CharViewPatch() {}
+
+    /**
+     * Constructs a patch from the given values, overriding only the non-null 
+     * (and non-default) parameters
+     * 
+     * @param name          the new name, or null to leave unchanged
+     * @param currentHP     the new current HP or null -> -1 to leave unchanged
+     * @param tempHP        the new temp HP or null -> -1 to leave unchanged
+     * @param hitDice       map of class UUID -> hit-dice count, or null to leave unchanged
+     * @param inspiration   the new inspiration flag, or null to leae unchanged
+     * @param abilityScore  map of {@link AbilityScore} -> new score, or null to leav unchanged
+     * @param success       new death-save success count, or null -> -1 to leave unchanged
+     * @param failure       new death-save failure count, or null -> -1 to leav unchanged
+     */
 
     public CharViewPatch(
         @JsonProperty("name") String name,

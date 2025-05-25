@@ -16,16 +16,46 @@ import com.scanakispersonalprojects.dndapp.model.DeathSavingThrowsHelper;
 import com.scanakispersonalprojects.dndapp.model.DndClass;
 import com.scanakispersonalprojects.dndapp.model.HPHandler;
 
+
+
+/**
+ * 
+ * Data access boejct for CRUD operation on D&D character basic information.
+ * 
+ * 
+ * Uses {@link NamedParameterJdbcTemplate} to execute SQL statements
+ * loaded via {@link SqlFileLoader}. Provides methods to update individual
+ * character attributes and to retrieve a full {@link CharacterBasicInfoView}
+ * 
+ */
+
 @Repository
 public class CharacterDao {
     
     private final NamedParameterJdbcTemplate jdbc;
     private final SqlFileLoader sql;
     
+
+    /**
+     * Constrcuts a new {@link CharacterDao} with the given JDBC template and SQL loader.
+     * 
+     * @param jdbc  the {@link NamedParameterJdbcTemplate} for executing parameterized queries
+     * @param sql   the {@link SqlFileLoader} for loading SQL scripts by name.
+     */
+
     public CharacterDao(NamedParameterJdbcTemplate jdbc, SqlFileLoader sql) {
         this.jdbc = jdbc;
         this.sql = sql;
     }
+
+
+    /**
+     * Updates the current hit points for a character
+     * 
+     * @param charUuid      the UUID of the character to update
+     * @param currentHP     the new current hit points value
+     * @return the number of rows affected
+     */
 
     public int updateCurrentHealth(UUID charUuid, int currentHP) {
         String sqlText = sql.get("update_current_health");
@@ -36,6 +66,14 @@ public class CharacterDao {
         return jdbc.update(sqlText, params);
     }
 
+
+    /**
+     * Updates the temporary hit points for a character.
+     * 
+     * @param charUuid      the UUID of the character to update
+     * @param tempHP        the new temp hit points value
+     * @return the number of rows affected
+     */
     public int updateTempHealth(UUID charUuid, int tempHP) {
         String sqlText = sql.get("update_temp_health");
         var params = new MapSqlParameterSource()
@@ -44,6 +82,16 @@ public class CharacterDao {
         
         return jdbc.update(sqlText, params);
     }
+
+    /**
+     * Updates the number of remaining hit dice for a class a 
+     * character is associated with.
+     * 
+     * @param charUuid      the UUID of the character to update
+     * @param classUuid     the UUId of the class whose hit dice is being update.
+     * @param hitDice       the new remaining hit dice
+     * @return the number of rows affected
+     */
 
     public int updateHitDice(UUID charUuid, UUID classUuid, int hitDice) {
         String sqlText = sql.get("update_hit_dice");
@@ -54,6 +102,14 @@ public class CharacterDao {
         return jdbc.update(sqlText, params);
     }
 
+    /**
+     * Updates the name of a character.
+     * 
+     * @param charUuid      the UUID of the character to update
+     * @param name          the new name of the character
+     * @return the number of rows affected
+     */
+
     public int updateName(UUID charUuid, String name) {
         String sqlText = sql.get("update_name");
         var params = new MapSqlParameterSource()
@@ -62,6 +118,14 @@ public class CharacterDao {
         return jdbc.update(sqlText, params);
     }
 
+    /**
+     * Update the number of succesful death saving throws of a character.
+     * 
+     * @param charUuid      the UUID of the character to update
+     * @param success       the new count of successful death saves
+     * @return the number of rows affected
+     */
+
     public int updateSuccessST(UUID charUuid, int success) {
         String sqlText = sql.get("update_success_st");
         var params = new MapSqlParameterSource()
@@ -69,6 +133,15 @@ public class CharacterDao {
             .addValue("uuid", charUuid);
         return jdbc.update(sqlText, params);
     }
+
+    /**
+     * Update the number of failed death saving throws of a character.
+     * 
+     * @param charUuid      the UUID of the character to update
+     * @param failure       the new count of failed death saves
+     * @return the number of rows affected
+     */
+
     public int updateFailureST(UUID charUuid, int failure) {
         String sqlText = sql.get("update_failure_st");
         var params = new MapSqlParameterSource()
@@ -76,6 +149,19 @@ public class CharacterDao {
             .addValue("uuid", charUuid);
         return jdbc.update(sqlText, params);
     }
+
+    /**
+     * Updates an ability score attribute for a character.
+     * 
+     * Determiens the database column from the provided {@link AbilityScore}
+     * and perfomes a direct SQL update.
+     * 
+     * @param charUuid      the UUID of the character to update
+     * @param value         the new ability score value
+     * @param as            the {@link AbilityScore} enum indicating which score to update
+     * @return the number of rows affected
+     */
+
     public int updateAbilityScore(UUID charUuid, int value, AbilityScore as) {
         String column = as.getString();
         String sql = "UPDATE characters_info "
@@ -87,6 +173,16 @@ public class CharacterDao {
         return jdbc.update(sql, params);
     }
 
+    /**
+     * Retrives the basic info view for a character, including
+     * ability scores, classes, HP handler, and death saving throws.
+     * 
+     * Returns null if the query fails or no record is found
+     * 
+     * @param uuid      the UUID of teh charcter to fetch
+     * @return a {@link CharcterBasicInfoView} with aggregated data,
+     *          or null if retrival fails.
+     */        
 
     public CharacterBasicInfoView getCharInfo(UUID uuid) {
         Map<String, Object> base;

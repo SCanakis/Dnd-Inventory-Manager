@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.scanakispersonalprojects.dndapp.model.AbilityScore;
 import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
 
 @SpringBootTest
@@ -151,4 +152,92 @@ class BasicCharInfoRepositoryIntegrationTest {
         // Assert
         assertEquals(null,result);
     }
+
+    @Test
+    public void testUpdateCurrentHealth() {
+        // Arrange
+        int updatedHp = 40;
+        
+        // Act
+        dao.updateCurrentHealth(testCharUuid,updatedHp);
+        
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).hpHandler().currentHp(), updatedHp);
+
+    }
+
+    @Test
+    public void testUpdateTempHealth() {
+        // Arrange
+        int tempHp = 40;
+
+        // Act
+        dao.updateTempHealth(testCharUuid,tempHp);
+        
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).hpHandler().tempHp(), tempHp);
+    }
+
+
+    @Test
+    public void testUpdateHitDice() {
+        // Arrange
+        int newHitDice = 5;
+
+        // Act
+        dao.updateHitDice(testCharUuid,testClassUuid, newHitDice);
+        
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).classes().get(0).currentHitDice(), newHitDice);
+    }
+
+    @Test
+    public void updateName() {
+        // Arange
+        String updatedName = "Updated Test Character";
+
+        // Act
+        dao.updateName(testCharUuid, updatedName);
+        
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).name(), updatedName);
+    }
+
+    @Test
+    public void updatedSuccessfulST() {
+        // Arange
+        int updatedSuccesses = 3;
+        
+        // Act
+        dao.updateSuccessST(testCharUuid, updatedSuccesses);
+        
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).deathSavingThrowsHelper().success(), updatedSuccesses);
+    }
+
+    @Test
+    public void updatedFailureST() {
+        // Arange
+        int updatedFailure = 0;
+        
+        // Act
+        dao.updateFailureST(testCharUuid, updatedFailure);
+        
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).deathSavingThrowsHelper().failure(), updatedFailure);
+    }
+
+    @Test
+    public void updateAbilityScore() {
+        // Arange
+        int asValue = 29;
+        
+        // Act
+        dao.updateAbilityScore(testCharUuid, asValue, AbilityScore.CHARISMA);
+        
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).abilityScores().get(AbilityScore.CHARISMA) , asValue);
+    }
+
+
 }

@@ -12,9 +12,29 @@ import org.springframework.util.StreamUtils;
 
 import jakarta.annotation.PostConstruct;
 
+
+
+/**
+ * This Component is responsible for loading all SQL files from teh classpath under 
+ * sql and making thier contents availabe by filename key.
+ * 
+ * On application startup, scans the files matching "classpath:sql/*.sql" and caches
+ * each file's contents in memory. Consumers can then retrieve the SQL text by
+ * calling get(String) with the filenmae. 
+ */
+
+
 @Component
 public class SqlFileLoader {
     
+    /**
+     * Scans the classpath for sql/*.sql resouces and load each
+     * file's contents into the internal cache.
+     * 
+     * This method is invoked automatically after construciton because of
+     * {@link PostContruct} annotation.
+     * 
+     */
     private final Map<String, String> sql = new HashMap<>();
 
     @PostConstruct
@@ -31,6 +51,12 @@ public class SqlFileLoader {
         }
     }
 
+    /**
+     * Retrieves the SQL text associated with the given key.
+     * 
+     * @param key
+     * @return
+     */
     public String get(String key) {
         return sql.get(key);
     }
