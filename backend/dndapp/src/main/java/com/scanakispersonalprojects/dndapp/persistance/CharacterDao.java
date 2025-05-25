@@ -174,6 +174,23 @@ public class CharacterDao {
     }
 
     /**
+     * Updates the inspiration indicator for a character.
+     * 
+     * 
+     * @param charUuid      the UUID of the character to update
+     * @param inspiration   the new inspiration value
+     * @return the number of rows affected
+     */
+    public int updateInspiration(UUID charUuid, boolean inspiration) {
+        String sqlText = sql.get("update_inspiration");
+        var params = new MapSqlParameterSource()
+            .addValue("inspiration", inspiration)
+            .addValue("uuid", charUuid);
+
+        return jdbc.update(sqlText, params);
+    }
+
+    /**
      * Retrives the basic info view for a character, including
      * ability scores, classes, HP handler, and death saving throws.
      * 

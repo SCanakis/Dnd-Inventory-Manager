@@ -1,8 +1,11 @@
 package com.scanakispersonalprojects.dndapp.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scanakispersonalprojects.dndapp.model.AbilityScore;
+import com.scanakispersonalprojects.dndapp.model.CharViewPatch;
+
 import org.springframework.test.web.servlet.MockMvc;
 
 
@@ -30,6 +41,8 @@ public class BasicCharInfoControllerTest {
     @Autowired 
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -116,6 +129,54 @@ public class BasicCharInfoControllerTest {
     public void getBasicCharInfo_whenExistingId_returns200() throws Exception {
         mockMvc.perform(get("/character/{id}", testCharUuid))
                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    public void updateBasicCharInfo_Id_returns200() throws Exception {
+        
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+
+        Map<UUID, Integer> hitDice = new HashMap<>();
+        hitDice.put(testClassUuid, 2);
+
+        Map<AbilityScore, Integer> as = new HashMap<>();
+        as.put(AbilityScore.STRENGTH, 29);
+
+        CharViewPatch patch = new CharViewPatch("Updated Test Character", 0, 50, hitDice, false, as, 3, 0);
+
+        String json = objectMapper.writeValueAsString(patch);
+        
+        mockMvc.perform(
+            put("/character/{id}", testCharUuid)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+        )
+        .andExpect(status().isOk());
+    }
+
+
+    @Test
+    public void updateBasicCharInfo_Id_returns404() throws Exception {
+        
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+
+        Map<UUID, Integer> hitDice = new HashMap<>();
+        hitDice.put(testClassUuid, 2);
+
+        Map<AbilityScore, Integer> as = new HashMap<>();
+        as.put(AbilityScore.STRENGTH, 29);
+
+        CharViewPatch patch = new CharViewPatch("Updated Test Character", 0, 50, hitDice, false, as, 3, 0);
+
+        String json = objectMapper.writeValueAsString(patch);
+        
+        mockMvc.perform(
+            put("/character/{id}", UUID.randomUUID())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+        )
+        .andExpect(status().isNotFound());
     }
 
 }

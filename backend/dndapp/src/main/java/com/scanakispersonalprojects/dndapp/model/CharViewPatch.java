@@ -15,6 +15,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 
  */
 
+
+ 
 public class CharViewPatch {
     private String name = null;
     private int currentHP = -1;

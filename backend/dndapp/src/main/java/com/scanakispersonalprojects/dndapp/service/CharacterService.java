@@ -46,6 +46,7 @@ public class CharacterService {
      * - Hit dice remaining
      * - Characer name
      * - Death Saving throw successes and failures
+     * - inspiration
      * - Ability Scores
      * 
      * After applying all the updates, the method returns the latest {@link CharacterBasicInfoView}
@@ -77,6 +78,9 @@ public class CharacterService {
         if(patch.failure() > -1) {
             dao.updateFailureST(uuid, patch.failure());
         }
+        if(patch.inspiration() != null) {
+            dao.updateInspiration(uuid, patch.inspiration());
+        }
         for(var e : patch.abilityScore().entrySet()) {
             dao.updateAbilityScore(uuid, e.getValue(), e.getKey());
         }
@@ -94,7 +98,11 @@ public class CharacterService {
 
     @Transactional(readOnly = true)
     public CharacterBasicInfoView getCharInfo(UUID uuid) {
-        return dao.getCharInfo(uuid);
+        try {
+            return dao.getCharInfo(uuid);
+        } catch (Exception e) {
+            return null;
+        }
     }
     
 }
