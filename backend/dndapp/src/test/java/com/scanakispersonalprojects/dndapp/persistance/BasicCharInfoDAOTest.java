@@ -28,7 +28,7 @@ import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
 class BasicCharInfoRepositoryIntegrationTest {
 
     @Autowired
-    private CharacterDao dao;
+    private CharacterInfoDao dao;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

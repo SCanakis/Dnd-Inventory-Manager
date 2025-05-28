@@ -5,12 +5,15 @@ import java.util.logging.Logger;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
 import com.scanakispersonalprojects.dndapp.model.CharViewPatch;
 import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
 import com.scanakispersonalprojects.dndapp.service.CharacterService;
+import com.scanakispersonalprojects.dndapp.service.CustomUserDetailsService;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,12 +22,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 
+
 @Controller
 @RequestMapping("character")
 public class BasicCharInfoController {
     
     private static final Logger LOG = Logger.getLogger(BasicCharInfoController.class.getName());
-    private CharacterService service;
+    private CharacterService charService;
+    private CustomUserDetailsService userService;
 
     /**
      * Constructs the controller with the persistence gateway injected.
@@ -33,8 +38,9 @@ public class BasicCharInfoController {
      *                     from the data source
      */
 
-    public BasicCharInfoController(CharacterService service) {
-        this.service = service;
+    public BasicCharInfoController(CharacterService charService, CustomUserDetailsService userService) {
+        this.charService = charService;
+        this.userService = userService;
     }
 
     /**
@@ -50,7 +56,7 @@ public class BasicCharInfoController {
     public ResponseEntity<CharacterBasicInfoView> getCharacterBasicView(@PathVariable UUID uuid) {
         LOG.info("GET /character/" + uuid);
         try {
-            CharacterBasicInfoView charInfoView = service.getCharInfo(uuid);
+            CharacterBasicInfoView charInfoView = charService.getCharInfo(uuid);
             if (charInfoView != null) {
                 return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
             } else {
@@ -79,7 +85,7 @@ public class BasicCharInfoController {
    public ResponseEntity<CharacterBasicInfoView> updateCharacterBasicView(@PathVariable UUID uuid , @RequestBody CharViewPatch patch) {
             LOG.info("PUT /character/" + uuid);
         try {
-            CharacterBasicInfoView charInfoView = service.updateCharInfo(uuid, patch);
+            CharacterBasicInfoView charInfoView = charService.updateCharInfo(uuid, patch);
             if (charInfoView != null) {
                 return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
             } else {
@@ -91,5 +97,13 @@ public class BasicCharInfoController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
    }
+
+    @DeleteMapping("/{uuid}")
+    public boolean deleteCharacter(Authentication authentication ,@PathVariable UUID uuid) {
+        UUID userUuid = userService.getUsersUuid(authentication.getName());
+
+        return charService.deleteCharacter(userUuid, uuid);
+    }
+
 
 }

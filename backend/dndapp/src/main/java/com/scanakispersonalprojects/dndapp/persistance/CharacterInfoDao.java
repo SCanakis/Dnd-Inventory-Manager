@@ -30,20 +30,20 @@ import com.scanakispersonalprojects.dndapp.model.HPHandler;
  */
 
 @Repository
-public class CharacterDao {
+public class CharacterInfoDao {
     
     private final NamedParameterJdbcTemplate jdbc;
     private final SqlFileLoader sql;
     
 
     /**
-     * Constrcuts a new {@link CharacterDao} with the given JDBC template and SQL loader.
+     * Constrcuts a new {@link CharacterInfoDao} with the given JDBC template and SQL loader.
      * 
      * @param jdbc  the {@link NamedParameterJdbcTemplate} for executing parameterized queries
      * @param sql   the {@link SqlFileLoader} for loading SQL scripts by name.
      */
 
-    public CharacterDao(NamedParameterJdbcTemplate jdbc, SqlFileLoader sql) {
+    public CharacterInfoDao(NamedParameterJdbcTemplate jdbc, SqlFileLoader sql) {
         this.jdbc = jdbc;
         this.sql = sql;
     }
@@ -187,6 +187,19 @@ public class CharacterDao {
             .addValue("inspiration", inspiration)
             .addValue("uuid", charUuid);
 
+        return jdbc.update(sqlText, params);
+    }
+
+    /**
+     * Deletes a character in the character_info
+     * @param charUuid      the UUID of the charcter to delete
+     * @return the number of rows affected
+     */
+
+    public int deleteCharacter(UUID charUuid) {
+        String sqlText = sql.get("delete_character");
+        var params = new MapSqlParameterSource()
+            .addValue("char_info_uuid", charUuid);
         return jdbc.update(sqlText, params);
     }
 
