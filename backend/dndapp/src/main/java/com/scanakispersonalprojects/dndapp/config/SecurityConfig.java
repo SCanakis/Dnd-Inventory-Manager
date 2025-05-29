@@ -10,21 +10,34 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-// import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+
+/**
+ * 
+ * Basic Spring-Security setup for the application
+ * 
+ * - CSRF protection is disabled
+ * - Static assets are publicly accesible.
+ * - Everythhing else requires authentication
+ * - Supports both from login and HTTP basic.
+ * - Uses Spring's "delegating" password ecnoder
+ * 
+ */
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
 
-    // @Bean
-    // JdbcUserDetailsManager users(DataSource dataSource) {
-        
-    //     JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-    //     return jdbcUserDetailsManager;
-    // }
 
+    /**
+     * Defines main security features
+     * 
+     * @param http http the fluent security filter chain.
+     * @return the fully-built {@link SecruityFilterChain}
+     * 
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 
@@ -45,6 +58,9 @@ public class SecurityConfig {
         return http.build();
     }
 
+
+    // Password Ecnoder bean
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();

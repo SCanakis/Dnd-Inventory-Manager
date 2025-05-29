@@ -49,7 +49,7 @@ public class CustomUserPrincipal implements UserDetails{
     /**
      * Returns the username used to authentcate the user
      * 
-     * @return the username sotred in the warpped {@link User}
+     * @return the username stored in the warpped {@link User}
      */
 
     @Override
@@ -58,27 +58,50 @@ public class CustomUserPrincipal implements UserDetails{
     }
     
     /**
-     * Returns the username used to authentcate the user
+     * Returns the password used to authentcate the user
      * 
-     * @return the username sotred in the warpped {@link User}
+     * @return the password stored in the warpped {@link User}
      */
     @Override
     public String getPassword() {
         return user.getPasswordHash();
     }
 
+    /**
+     * Returns the authorities graanted to the user.
+     * by default, every user recieve a single authoroity {@code ROLE_USER}.
+     * 
+     * @return an immutable singleton containing {@code ROLE_USER}
+     */
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
     
+    /**
+     * Provides direct access to the wrapped {@link User} entity.
+     *
+     * @return the underlying domain entity
+     */
     public User getUser() {
         return user;
     }
+
+    /**
+     * Returns a list of lightweight views of the user’s D&D characters.
+     *
+     * @return unmodifiable list of {@link CharacterBasicInfoView}
+     */
     public List<CharacterBasicInfoView> getCharacters() {
         return characters;
     }
     
+    /**
+     * Convenience shortcut for retrieving the user’s UUID.
+     *
+     * @return the unique identifier of the wrapped {@link User}
+     */
     public UUID getUserUuid() {
         return user.getUuid();
     }

@@ -116,20 +116,23 @@ public class CharacterService {
      * @param userUuid  the UUID of the character to be deleted
      * @param charUuid  the UUID of user who that character belongs to 
      * 
-     * @return returns true if the character is deleted
-     * if not throws a IllegalStateException and it reverts
+     * @return returns result if the character is deleted or not found
+     * if one the character is able to be found in one table
+     * and not the other then an IllegalStateException occcurs
+     * and changes get reverted.
      */
 
     @Transactional
     public boolean deleteCharacter(UUID userUuid, UUID charUuid) {
-        boolean result = userDao.deleteCharacter(userUuid, charUuid);
-        if(!result) {
-            throw new IllegalStateException("character " + charUuid + " was not deleted.");
+        int userRows = userDao.deleteCharacter(userUuid, charUuid);
+        int charRows = charDao.deleteCharacter(charUuid);
+        if(userRows <= 0 && charRows <= 0) {
+            return false;
         }
-        int rows = charDao.deleteCharacter(charUuid);
-        if(rows <= 0) {
-            throw new IllegalStateException("character " + charUuid + " was not deleted.");
+        if(userRows <= 0 || charRows <= 0 ) {
+            throw new IllegalStateException("Inconsistent deletion of " + charUuid + " and it's realtion with " + userUuid );
         }
+
         return true;
     }
     
