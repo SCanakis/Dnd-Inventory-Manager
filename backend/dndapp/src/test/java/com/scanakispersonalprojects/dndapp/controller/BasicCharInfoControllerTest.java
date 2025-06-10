@@ -1,5 +1,6 @@
 package com.scanakispersonalprojects.dndapp.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -56,6 +57,7 @@ public class BasicCharInfoControllerTest {
     private UUID testClassUuid;
     private UUID testSubclassUuid;
 
+
     
     @BeforeEach
     void setUp() {
@@ -68,10 +70,6 @@ public class BasicCharInfoControllerTest {
 
         setupTestData();
     }
-
-    // private static final String TEST_USERNAME = "testuser";
-    // private static final String TEST_PASSWORD_HASH = "{noop}password"; 
-    // private UUID testUserUuid;
 
     private void setupTestData() {
         
@@ -232,5 +230,25 @@ public class BasicCharInfoControllerTest {
         )
         .andExpect(status().isUnauthorized());
     }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void deleteCharacter_returns401() throws Exception {
+
+        mockMvc.perform(
+            delete("/character/{uuid}", UUID.randomUUID()))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void deleteCharacter_returns200() throws Exception {
+
+        mockMvc.perform(
+            delete("/character/{uuid}", testCharUuid))
+            .andExpect(status().isOk());
+    }
+
+
 
 }

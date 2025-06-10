@@ -78,7 +78,6 @@ public class BasicCharInfoController {
      * @param patch         The filed that are to be updated
      * @return              200 with an instance of the updated {@link CharacterBasicInfoView}
      *                      401 if user not authorized
-     *                      404 when the character does not exist
      *                      500 on any unexpected server error
      */
 
