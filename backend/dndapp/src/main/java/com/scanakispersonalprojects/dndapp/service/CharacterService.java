@@ -109,7 +109,6 @@ public class CharacterService {
         }
     }
 
-
     /**
      * Deletes the character from the the Table
      * 

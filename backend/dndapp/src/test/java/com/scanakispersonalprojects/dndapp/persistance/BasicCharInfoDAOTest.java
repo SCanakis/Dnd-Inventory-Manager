@@ -16,16 +16,18 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.scanakispersonalprojects.dndapp.model.AbilityScore;
 import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
 
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class BasicCharInfoRepositoryIntegrationTest {
+@Testcontainers
+class BasicCharInfoRepositoryIntegrationTest  {
 
     @Autowired
     private CharacterInfoDao dao;
@@ -51,35 +53,43 @@ class BasicCharInfoRepositoryIntegrationTest {
     }
 
     private void setupTestData() {
-        // Insert test race
-        jdbcTemplate.update(
-            "INSERT INTO race (race_uuid, name) VALUES (?, ?)",
-            testRaceUuid, "Human"
-        );
+        jdbcTemplate.update("""
+        INSERT INTO race (race_uuid, name, stat_increase_str, stat_increase_dex, stat_increase_con,
+                          stat_increase_int, stat_increase_wis, stat_increase_cha)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        testRaceUuid, "Human", 1, 1, 1, 0, 0, 0
+    );
 
         // Insert test background
-        jdbcTemplate.update(
-            "INSERT INTO background (background_uuid, name) VALUES (?, ?)",
-            testBackgroundUuid, "Acolyte"
+        jdbcTemplate.update("""
+            INSERT INTO background (background_uuid, name, description, starting_gold)
+            VALUES (?, ?, ?, ?)
+            """,
+            testBackgroundUuid, "Acolyte", "Served in a temple", 15
         );
 
         // Insert test class
-        jdbcTemplate.update(
-            "INSERT INTO class (class_uuid, name, hit_dice_value) VALUES (?, ?, ?)",
-            testClassUuid, "Fighter", 10
+        jdbcTemplate.update("""
+            INSERT INTO class (class_uuid, name, hit_dice_value, description)
+            VALUES (?, ?, ?, ?)
+            """,
+            testClassUuid, "Fighter", 10, "A master of martial combat"
         );
 
         // Insert test subclass
-        jdbcTemplate.update(
-            "INSERT INTO subclass (subclass_uuid, name) VALUES (?, ?)",
-            testSubclassUuid, "Champion"
+        jdbcTemplate.update("""
+            INSERT INTO subclass (subclass_uuid, name, class_source)
+            VALUES (?, ?, ?)
+            """,
+            testSubclassUuid, "Champion", testClassUuid
         );
 
         // Insert test character info
         jdbcTemplate.update("""
             INSERT INTO characters_info 
-            (char_info_uuid, name, inspiration, background_uuid, race_uuid, 
-             strength, dexterity, constitution, intelligence, wisdom, charisma) 
+            (char_info_uuid, name, inspiration, background_uuid, race_uuid,
+            strength, dexterity, constitution, intelligence, wisdom, charisma)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             testCharUuid, "Test Character", true, testBackgroundUuid, testRaceUuid,
@@ -87,21 +97,52 @@ class BasicCharInfoRepositoryIntegrationTest {
         );
 
         // Insert character class
-        jdbcTemplate.update(
-            "INSERT INTO character_class (char_info_uuid, class_uuid, subclass_uuid, level, hit_dice_remaining) VALUES (?, ?, ?, ?, ?)",
+        jdbcTemplate.update("""
+            INSERT INTO character_class (char_info_uuid, class_uuid, subclass_uuid, level, hit_dice_remaining)
+            VALUES (?, ?, ?, ?, ?)
+            """,
             testCharUuid, testClassUuid, testSubclassUuid, 5, 4
         );
 
         // Insert HP handler
-        jdbcTemplate.update(
-            "INSERT INTO hp_handler (char_info_uuid, current_hp, max_hp, temp_hp) VALUES (?, ?, ?, ?)",
+        jdbcTemplate.update("""
+            INSERT INTO hp_handler (char_info_uuid, current_hp, max_hp, temp_hp)
+            VALUES (?, ?, ?, ?)
+            """,
             testCharUuid, 45, 50, 5
         );
 
         // Insert death saving throws
-        jdbcTemplate.update(
-            "INSERT INTO death_saving_throws (char_info_uuid, success, failure) VALUES (?, ?, ?)",
+        jdbcTemplate.update("""
+            INSERT INTO death_saving_throws (char_info_uuid, success, failure)
+            VALUES (?, ?, ?)
+            """,
             testCharUuid, 2, 1
+        );
+
+        // Insert test user
+        UUID testUserUuid = UUID.randomUUID();
+        jdbcTemplate.update("""
+            INSERT INTO users (user_uuid, username, password, enabled)
+            VALUES (?, ?, ?, ?)
+            """,
+            testUserUuid, "testuser", "{noop}password123", true
+        );
+
+        // Grant ROLE_USER authority
+        jdbcTemplate.update("""
+            INSERT INTO authorities (username, authority)
+            VALUES (?, ?)
+            """,
+            "testuser", "ROLE_USER"
+        );
+
+        // Link user to character
+        jdbcTemplate.update("""
+            INSERT INTO users_characters (user_uuid, character_uuid)
+            VALUES (?, ?)
+            """,
+            testUserUuid, testCharUuid
         );
     }
 

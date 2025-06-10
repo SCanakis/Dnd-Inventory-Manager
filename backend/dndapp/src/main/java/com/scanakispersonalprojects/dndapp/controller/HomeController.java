@@ -26,8 +26,8 @@ public class HomeController {
     @GetMapping("/home")
     @ResponseBody
     public List<CharacterBasicInfoView> home(Authentication authentication) {
-        CustomUserPrincipal cus = (CustomUserPrincipal) detailsService.loadUserByUsername(authentication.getName());
-        return cus.getCharacters();
+        CustomUserPrincipal user = (CustomUserPrincipal) detailsService.loadUserByUsername(authentication.getName());
+        return user.getCharacters();
     }
 
     @GetMapping("/admin")
