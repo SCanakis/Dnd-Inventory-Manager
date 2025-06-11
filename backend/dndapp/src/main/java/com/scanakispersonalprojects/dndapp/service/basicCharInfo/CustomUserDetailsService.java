@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.service;
+package com.scanakispersonalprojects.dndapp.service.basicCharInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +11,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
-import com.scanakispersonalprojects.dndapp.model.CustomUserPrincipal;
-import com.scanakispersonalprojects.dndapp.model.User;
-import com.scanakispersonalprojects.dndapp.persistance.UserDaoPSQL;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CustomUserPrincipal;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.User;
+import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserDaoPSQL;
 
 /**
  * Tells Spring Security how to look up a user in the database.

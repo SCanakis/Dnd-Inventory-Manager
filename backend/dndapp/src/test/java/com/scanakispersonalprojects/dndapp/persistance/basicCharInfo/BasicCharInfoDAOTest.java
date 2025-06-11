@@ -1,52 +1,36 @@
-package com.scanakispersonalprojects.dndapp.controller;
+package com.scanakispersonalprojects.dndapp.persistance.basicCharInfo;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import org.springframework.security.test.context.support.WithMockUser;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.scanakispersonalprojects.dndapp.model.AbilityScore;
-import com.scanakispersonalprojects.dndapp.model.CharViewPatch;
-
-import org.springframework.test.web.servlet.MockMvc;
-
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Testcontainers
-public class BasicCharInfoControllerTest {
-    
-    
-    @Autowired 
-    private MockMvc mockMvc;
+class BasicCharInfoRepositoryIntegrationTest  {
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private CharacterInfoDaoPSQL dao;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -57,8 +41,6 @@ public class BasicCharInfoControllerTest {
     private UUID testClassUuid;
     private UUID testSubclassUuid;
 
-
-    
     @BeforeEach
     void setUp() {
         testCharUuid = UUID.randomUUID();
@@ -66,13 +48,11 @@ public class BasicCharInfoControllerTest {
         testBackgroundUuid = UUID.randomUUID();
         testClassUuid = UUID.randomUUID();
         testSubclassUuid = UUID.randomUUID();
-        // testUserUuid = UUID.randomUUID();
 
         setupTestData();
     }
 
     private void setupTestData() {
-        
         jdbcTemplate.update("""
         INSERT INTO race (race_uuid, name, stat_increase_str, stat_increase_dex, stat_increase_con,
                           stat_increase_int, stat_increase_wis, stat_increase_cha)
@@ -166,89 +146,139 @@ public class BasicCharInfoControllerTest {
         );
     }
 
+    @Test
+    public void testGetCharInfo_Success() {
+        // Act
+        CharacterBasicInfoView result = dao.getCharInfo(testCharUuid);
 
+        // Assert
+        assertNotNull(result);
+        assertEquals(result.charInfoUUID(), testCharUuid);
+        assertEquals(result.name(), "Test Character");
+        assertEquals(result.race(), "Human");
+        assertEquals(result.background(), "Acolyte");
+        assertEquals(result.inspiration(), true);
+        assertEquals(result.raceUUID(), testRaceUuid);
+        assertEquals(result.backgroundUUID(), testBackgroundUuid);
 
-   @Test
-    public void getBasicCharInfo_whenUnknownId_returns401() throws Exception {
-        mockMvc.perform(get("/character/{id}", UUID.randomUUID()))
-               .andExpect(status().isUnauthorized());
+        // Verify ability scores
+        assertEquals(result.abilityScores().get(AbilityScore.STRENGTH), 15);
+        assertEquals(result.abilityScores().get(AbilityScore.DEXTERITY), 14);
+
+        // Verify classes
+        assertEquals(result.classes().isEmpty(), false);
+        assertEquals(result.classes().size(), 1);
+        assertEquals(result.classes().get(0).className(), "Fighter");
+        assertEquals(result.classes().get(0).level(), 5);
+        assertEquals(result.classes().get(0).currentHitDice(), 4);
+        assertEquals(result.classes().get(0).hitDiceValue(), 10);
+
+        // Verify HP handler
+        assertNotNull(result.hpHandler());
+        assertEquals(result.hpHandler().currentHp(), 45);
+        assertEquals(result.hpHandler().maxHp(), 50);
+        assertEquals(result.hpHandler().tempHp(), 5);
+
+        // Verify death saving throws
+        assertNotNull(result.deathSavingThrowsHelper());
+        assertEquals(result.deathSavingThrowsHelper().success(), 2);
+        assertEquals(result.deathSavingThrowsHelper().failure(), 1);
     }
 
     @Test
-    @WithMockUser(username = "testuser", roles = {"USER"})
-    public void getBasicCharInfo_whenExistingId_returns200() throws Exception {
-        mockMvc.perform(get("/character/{id}", testCharUuid))
-               .andExpect(status().isOk());
+    public void testGetCharInfo_CharacterNotFound() {
+        // Act
+        CharacterBasicInfoView result = dao.getCharInfo(UUID.randomUUID());
+
+        // Assert
+        assertEquals(null,result);
     }
 
-
     @Test
-    @WithMockUser(username = "testuser", roles = {"USER"})
-    public void updateBasicCharInfo_Id_returns200() throws Exception {
+    public void testUpdateCurrentHealth() {
+        // Arrange
+        int updatedHp = 40;
         
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-
-        Map<UUID, Integer> hitDice = new HashMap<>();
-        hitDice.put(testClassUuid, 2);
-
-        Map<AbilityScore, Integer> as = new HashMap<>();
-        as.put(AbilityScore.STRENGTH, 29);
-
-        CharViewPatch patch = new CharViewPatch("Updated Test Character", 0, 50, hitDice, false, as, 3, 0);
-
-        String json = objectMapper.writeValueAsString(patch);
+        // Act
+        dao.updateCurrentHealth(testCharUuid,updatedHp);
         
-        mockMvc.perform(
-            put("/character/{uuid}", testCharUuid)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json)
-        )
-        .andExpect(status().isOk());
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).hpHandler().currentHp(), updatedHp);
+
+    }
+
+    @Test
+    public void testUpdateTempHealth() {
+        // Arrange
+        int tempHp = 40;
+
+        // Act
+        dao.updateTempHealth(testCharUuid,tempHp);
+        
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).hpHandler().tempHp(), tempHp);
     }
 
 
     @Test
-    @WithMockUser(username = "testuser", roles = {"USER"})
-    public void updateBasicCharInfo_Id_returns401() throws Exception {
+    public void testUpdateHitDice() {
+        // Arrange
+        int newHitDice = 5;
+
+        // Act
+        dao.updateHitDice(testCharUuid,testClassUuid, newHitDice);
         
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-
-        Map<UUID, Integer> hitDice = new HashMap<>();
-        hitDice.put(testClassUuid, 2);
-
-        Map<AbilityScore, Integer> as = new HashMap<>();
-        as.put(AbilityScore.STRENGTH, 29);
-
-        CharViewPatch patch = new CharViewPatch("Updated Test Character", 0, 50, hitDice, false, as, 3, 0);
-
-        String json = objectMapper.writeValueAsString(patch);
-        
-        mockMvc.perform(
-            put("/character/{uuid}", UUID.randomUUID())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json)
-        )
-        .andExpect(status().isUnauthorized());
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).classes().get(0).currentHitDice(), newHitDice);
     }
 
     @Test
-    @WithMockUser(username = "testuser", roles = {"USER"})
-    public void deleteCharacter_returns401() throws Exception {
+    public void updateName() {
+        // Arange
+        String updatedName = "Updated Test Character";
 
-        mockMvc.perform(
-            delete("/character/{uuid}", UUID.randomUUID()))
-            .andExpect(status().isUnauthorized());
+        // Act
+        dao.updateName(testCharUuid, updatedName);
+        
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).name(), updatedName);
     }
 
     @Test
-    @WithMockUser(username = "testuser", roles = {"USER"})
-    public void deleteCharacter_returns200() throws Exception {
-
-        mockMvc.perform(
-            delete("/character/{uuid}", testCharUuid))
-            .andExpect(status().isOk());
+    public void updatedSuccessfulST() {
+        // Arange
+        int updatedSuccesses = 3;
+        
+        // Act
+        dao.updateSuccessST(testCharUuid, updatedSuccesses);
+        
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).deathSavingThrowsHelper().success(), updatedSuccesses);
     }
 
+    @Test
+    public void updatedFailureST() {
+        // Arange
+        int updatedFailure = 0;
+        
+        // Act
+        dao.updateFailureST(testCharUuid, updatedFailure);
+        
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).deathSavingThrowsHelper().failure(), updatedFailure);
+    }
+
+    @Test
+    public void updateAbilityScore() {
+        // Arange
+        int asValue = 29;
+        
+        // Act
+        dao.updateAbilityScore(testCharUuid, asValue, AbilityScore.CHARISMA);
+        
+        // Assert
+        assertEquals(dao.getCharInfo(testCharUuid).abilityScores().get(AbilityScore.CHARISMA) , asValue);
+    }
 
 
 }

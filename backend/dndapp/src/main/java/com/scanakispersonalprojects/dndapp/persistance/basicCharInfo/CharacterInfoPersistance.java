@@ -1,9 +1,9 @@
-package com.scanakispersonalprojects.dndapp.persistance;
+package com.scanakispersonalprojects.dndapp.persistance.basicCharInfo;
 
 import java.util.UUID;
 
-import com.scanakispersonalprojects.dndapp.model.AbilityScore;
-import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
 
 public interface CharacterInfoPersistance {
 

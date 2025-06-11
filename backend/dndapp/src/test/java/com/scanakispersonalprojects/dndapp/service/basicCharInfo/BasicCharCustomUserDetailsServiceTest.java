@@ -1,25 +1,34 @@
-package com.scanakispersonalprojects.dndapp.persistance;
+package com.scanakispersonalprojects.dndapp.service.basicCharInfo;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.scanakispersonalprojects.dndapp.model.AbilityScore;
-import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CustomUserPrincipal;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DeathSavingThrowsHelper;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DndClass;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.HPHandler;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -27,13 +36,14 @@ import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Testcontainers
-class BasicCharInfoRepositoryIntegrationTest  {
-
+public class BasicCharCustomUserDetailsServiceTest {
+    
     @Autowired
-    private CharacterInfoDaoPSQL dao;
+    private CustomUserDetailsService userService;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
 
     private UUID testCharUuid;
     private UUID testRaceUuid;
@@ -146,139 +156,104 @@ class BasicCharInfoRepositoryIntegrationTest  {
         );
     }
 
-    @Test
-    public void testGetCharInfo_Success() {
-        // Act
-        CharacterBasicInfoView result = dao.getCharInfo(testCharUuid);
 
-        // Assert
+    @Test  
+    
+    public void loadUserByUsername_returnUserPrincipal() {
+        
+        CustomUserPrincipal actual = (CustomUserPrincipal)userService.loadUserByUsername("testuser");
+            
+        // Assertions
+        assertNotNull(actual);
+        assertEquals("testuser", actual.getUsername());
+        assertEquals("{noop}password123", actual.getPassword());
+        
+        // Verify characters are loaded
+        assertNotNull(actual.getCharacters());
+        assertEquals(1, actual.getCharacters().size());
+        
+        CharacterBasicInfoView actualChar = actual.getCharacters().get(0);
+        
+        // Test basic character info
+        assertEquals(testCharUuid, actualChar.charInfoUUID());
+        assertEquals("Test Character", actualChar.name());
+        assertTrue(actualChar.inspiration());
+        assertEquals("Acolyte", actualChar.background());
+        assertEquals(testBackgroundUuid, actualChar.backgroundUUID());
+        assertEquals("Human", actualChar.race());
+        assertEquals(testRaceUuid, actualChar.raceUUID());
+        
+        Map<AbilityScore, Integer> abilityScores = actualChar.abilityScores();
+        assertEquals(Integer.valueOf(15), abilityScores.get(AbilityScore.STRENGTH));
+        assertEquals(Integer.valueOf(14), abilityScores.get(AbilityScore.DEXTERITY));
+        assertEquals(Integer.valueOf(13), abilityScores.get(AbilityScore.CONSTITUTION));
+        assertEquals(Integer.valueOf(12), abilityScores.get(AbilityScore.INTELLIGENCE));
+        assertEquals(Integer.valueOf(10), abilityScores.get(AbilityScore.WISDOM));
+        assertEquals(Integer.valueOf(8), abilityScores.get(AbilityScore.CHARISMA));
+        
+        List<DndClass> classes = actualChar.classes();
+        assertNotNull(classes);
+        assertEquals(1, classes.size());
+        
+        DndClass dndClass = classes.get(0);
+        assertEquals("Fighter", dndClass.className()); 
+        assertEquals(5, dndClass.level()); 
+
+        HPHandler hpHandler = actualChar.hpHandler();
+        assertNotNull(hpHandler);
+        assertEquals(45, hpHandler.currentHp()); 
+
+        assertEquals(50, hpHandler.maxHp()); 
+
+        assertEquals(5, hpHandler.tempHp());
+
+        DeathSavingThrowsHelper deathSaves = actualChar.deathSavingThrowsHelper();
+        assertNotNull(deathSaves);
+        assertEquals(2, deathSaves.success());
+        assertEquals(1, deathSaves.failure()); 
+    }
+
+    @Test
+    public void loadUserByUsername_userNotFound() {
+        assertThrows(UsernameNotFoundException.class, () -> {
+            userService.loadUserByUsername("IDONTEXISTS");
+        });
+    }
+
+    @Test
+    public void getUsersUuid_userNotFound() {
+        
+        Authentication mockAuth = mock(Authentication.class);
+        assertThrows(UsernameNotFoundException.class, () -> {
+            userService.getUsersUuid(mockAuth);
+        });
+    }
+
+    @Test
+    public void loadUserByUsername_userWithNoCharacters_returnsEmptyList() {
+        UUID userWithNoCharsUuid = UUID.randomUUID();
+        jdbcTemplate.update("""
+            INSERT INTO users (user_uuid, username, password, enabled)
+            VALUES (?, ?, ?, ?)
+            """,
+            userWithNoCharsUuid, "emptyuser", "{noop}password", true
+        );
+
+        jdbcTemplate.update("""
+            INSERT INTO authorities (username, authority)
+            VALUES (?, ?)
+            """,
+            "emptyuser", "ROLE_USER"
+        );
+
+        CustomUserPrincipal result = (CustomUserPrincipal) userService.loadUserByUsername("emptyuser");
+        
         assertNotNull(result);
-        assertEquals(result.charInfoUUID(), testCharUuid);
-        assertEquals(result.name(), "Test Character");
-        assertEquals(result.race(), "Human");
-        assertEquals(result.background(), "Acolyte");
-        assertEquals(result.inspiration(), true);
-        assertEquals(result.raceUUID(), testRaceUuid);
-        assertEquals(result.backgroundUUID(), testBackgroundUuid);
-
-        // Verify ability scores
-        assertEquals(result.abilityScores().get(AbilityScore.STRENGTH), 15);
-        assertEquals(result.abilityScores().get(AbilityScore.DEXTERITY), 14);
-
-        // Verify classes
-        assertEquals(result.classes().isEmpty(), false);
-        assertEquals(result.classes().size(), 1);
-        assertEquals(result.classes().get(0).className(), "Fighter");
-        assertEquals(result.classes().get(0).level(), 5);
-        assertEquals(result.classes().get(0).currentHitDice(), 4);
-        assertEquals(result.classes().get(0).hitDiceValue(), 10);
-
-        // Verify HP handler
-        assertNotNull(result.hpHandler());
-        assertEquals(result.hpHandler().currentHp(), 45);
-        assertEquals(result.hpHandler().maxHp(), 50);
-        assertEquals(result.hpHandler().tempHp(), 5);
-
-        // Verify death saving throws
-        assertNotNull(result.deathSavingThrowsHelper());
-        assertEquals(result.deathSavingThrowsHelper().success(), 2);
-        assertEquals(result.deathSavingThrowsHelper().failure(), 1);
+        assertEquals("emptyuser", result.getUsername());
+        assertTrue(result.getCharacters().isEmpty());
     }
 
-    @Test
-    public void testGetCharInfo_CharacterNotFound() {
-        // Act
-        CharacterBasicInfoView result = dao.getCharInfo(UUID.randomUUID());
-
-        // Assert
-        assertEquals(null,result);
-    }
-
-    @Test
-    public void testUpdateCurrentHealth() {
-        // Arrange
-        int updatedHp = 40;
-        
-        // Act
-        dao.updateCurrentHealth(testCharUuid,updatedHp);
-        
-        // Assert
-        assertEquals(dao.getCharInfo(testCharUuid).hpHandler().currentHp(), updatedHp);
-
-    }
-
-    @Test
-    public void testUpdateTempHealth() {
-        // Arrange
-        int tempHp = 40;
-
-        // Act
-        dao.updateTempHealth(testCharUuid,tempHp);
-        
-        // Assert
-        assertEquals(dao.getCharInfo(testCharUuid).hpHandler().tempHp(), tempHp);
-    }
-
-
-    @Test
-    public void testUpdateHitDice() {
-        // Arrange
-        int newHitDice = 5;
-
-        // Act
-        dao.updateHitDice(testCharUuid,testClassUuid, newHitDice);
-        
-        // Assert
-        assertEquals(dao.getCharInfo(testCharUuid).classes().get(0).currentHitDice(), newHitDice);
-    }
-
-    @Test
-    public void updateName() {
-        // Arange
-        String updatedName = "Updated Test Character";
-
-        // Act
-        dao.updateName(testCharUuid, updatedName);
-        
-        // Assert
-        assertEquals(dao.getCharInfo(testCharUuid).name(), updatedName);
-    }
-
-    @Test
-    public void updatedSuccessfulST() {
-        // Arange
-        int updatedSuccesses = 3;
-        
-        // Act
-        dao.updateSuccessST(testCharUuid, updatedSuccesses);
-        
-        // Assert
-        assertEquals(dao.getCharInfo(testCharUuid).deathSavingThrowsHelper().success(), updatedSuccesses);
-    }
-
-    @Test
-    public void updatedFailureST() {
-        // Arange
-        int updatedFailure = 0;
-        
-        // Act
-        dao.updateFailureST(testCharUuid, updatedFailure);
-        
-        // Assert
-        assertEquals(dao.getCharInfo(testCharUuid).deathSavingThrowsHelper().failure(), updatedFailure);
-    }
-
-    @Test
-    public void updateAbilityScore() {
-        // Arange
-        int asValue = 29;
-        
-        // Act
-        dao.updateAbilityScore(testCharUuid, asValue, AbilityScore.CHARISMA);
-        
-        // Assert
-        assertEquals(dao.getCharInfo(testCharUuid).abilityScores().get(AbilityScore.CHARISMA) , asValue);
-    }
-
+    
 
 }
+

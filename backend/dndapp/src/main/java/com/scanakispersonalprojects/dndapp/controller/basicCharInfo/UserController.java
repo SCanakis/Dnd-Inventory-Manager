@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.controller;
+package com.scanakispersonalprojects.dndapp.controller.basicCharInfo;
 
 
 import java.util.List;
@@ -11,9 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
-import com.scanakispersonalprojects.dndapp.model.CustomUserPrincipal;
-import com.scanakispersonalprojects.dndapp.service.CustomUserDetailsService;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CustomUserPrincipal;
+import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 
 
 

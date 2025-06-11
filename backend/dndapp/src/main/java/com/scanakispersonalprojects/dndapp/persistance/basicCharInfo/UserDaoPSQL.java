@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.persistance;
+package com.scanakispersonalprojects.dndapp.persistance.basicCharInfo;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.scanakispersonalprojects.dndapp.model.User;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.User;
 
 /**
  * Spring Data JPA repository for the {@link User} entity. 

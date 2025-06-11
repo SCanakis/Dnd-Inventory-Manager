@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.controller;
+package com.scanakispersonalprojects.dndapp.controller.basicCharInfo;
 
 import java.util.List;
 import java.util.UUID;
@@ -9,10 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
-import com.scanakispersonalprojects.dndapp.model.CharViewPatch;
-import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
-import com.scanakispersonalprojects.dndapp.service.CharacterService;
-import com.scanakispersonalprojects.dndapp.service.CustomUserDetailsService;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharViewPatch;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CharacterService;
+import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,12 +1,12 @@
-package com.scanakispersonalprojects.dndapp.service;
+package com.scanakispersonalprojects.dndapp.controller.basicCharInfo;
 
-import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.springframework.security.test.context.support.WithMockUser;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -14,36 +14,42 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.scanakispersonalprojects.dndapp.model.AbilityScore;
-import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
-import com.scanakispersonalprojects.dndapp.model.CustomUserPrincipal;
-import com.scanakispersonalprojects.dndapp.model.DeathSavingThrowsHelper;
-import com.scanakispersonalprojects.dndapp.model.DndClass;
-import com.scanakispersonalprojects.dndapp.model.HPHandler;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharViewPatch;
+
+import org.springframework.test.web.servlet.MockMvc;
+
 
 @SpringBootTest
+@AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Testcontainers
-public class BasicCharCustomUserDetailsServiceTest {
+public class BasicCharInfoControllerTest {
     
+    
+    @Autowired 
+    private MockMvc mockMvc;
+
     @Autowired
-    private CustomUserDetailsService userService;
+    private ObjectMapper objectMapper;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
 
     private UUID testCharUuid;
     private UUID testRaceUuid;
@@ -51,6 +57,8 @@ public class BasicCharCustomUserDetailsServiceTest {
     private UUID testClassUuid;
     private UUID testSubclassUuid;
 
+
+    
     @BeforeEach
     void setUp() {
         testCharUuid = UUID.randomUUID();
@@ -58,11 +66,13 @@ public class BasicCharCustomUserDetailsServiceTest {
         testBackgroundUuid = UUID.randomUUID();
         testClassUuid = UUID.randomUUID();
         testSubclassUuid = UUID.randomUUID();
+        // testUserUuid = UUID.randomUUID();
 
         setupTestData();
     }
 
     private void setupTestData() {
+        
         jdbcTemplate.update("""
         INSERT INTO race (race_uuid, name, stat_increase_str, stat_increase_dex, stat_increase_con,
                           stat_increase_int, stat_increase_wis, stat_increase_cha)
@@ -157,103 +167,88 @@ public class BasicCharCustomUserDetailsServiceTest {
     }
 
 
-    @Test  
-    
-    public void loadUserByUsername_returnUserPrincipal() {
-        
-        CustomUserPrincipal actual = (CustomUserPrincipal)userService.loadUserByUsername("testuser");
-            
-        // Assertions
-        assertNotNull(actual);
-        assertEquals("testuser", actual.getUsername());
-        assertEquals("{noop}password123", actual.getPassword());
-        
-        // Verify characters are loaded
-        assertNotNull(actual.getCharacters());
-        assertEquals(1, actual.getCharacters().size());
-        
-        CharacterBasicInfoView actualChar = actual.getCharacters().get(0);
-        
-        // Test basic character info
-        assertEquals(testCharUuid, actualChar.charInfoUUID());
-        assertEquals("Test Character", actualChar.name());
-        assertTrue(actualChar.inspiration());
-        assertEquals("Acolyte", actualChar.background());
-        assertEquals(testBackgroundUuid, actualChar.backgroundUUID());
-        assertEquals("Human", actualChar.race());
-        assertEquals(testRaceUuid, actualChar.raceUUID());
-        
-        Map<AbilityScore, Integer> abilityScores = actualChar.abilityScores();
-        assertEquals(Integer.valueOf(15), abilityScores.get(AbilityScore.STRENGTH));
-        assertEquals(Integer.valueOf(14), abilityScores.get(AbilityScore.DEXTERITY));
-        assertEquals(Integer.valueOf(13), abilityScores.get(AbilityScore.CONSTITUTION));
-        assertEquals(Integer.valueOf(12), abilityScores.get(AbilityScore.INTELLIGENCE));
-        assertEquals(Integer.valueOf(10), abilityScores.get(AbilityScore.WISDOM));
-        assertEquals(Integer.valueOf(8), abilityScores.get(AbilityScore.CHARISMA));
-        
-        List<DndClass> classes = actualChar.classes();
-        assertNotNull(classes);
-        assertEquals(1, classes.size());
-        
-        DndClass dndClass = classes.get(0);
-        assertEquals("Fighter", dndClass.className()); 
-        assertEquals(5, dndClass.level()); 
 
-        HPHandler hpHandler = actualChar.hpHandler();
-        assertNotNull(hpHandler);
-        assertEquals(45, hpHandler.currentHp()); 
-
-        assertEquals(50, hpHandler.maxHp()); 
-
-        assertEquals(5, hpHandler.tempHp());
-
-        DeathSavingThrowsHelper deathSaves = actualChar.deathSavingThrowsHelper();
-        assertNotNull(deathSaves);
-        assertEquals(2, deathSaves.success());
-        assertEquals(1, deathSaves.failure()); 
+   @Test
+    public void getBasicCharInfo_whenUnknownId_returns401() throws Exception {
+        mockMvc.perform(get("/character/{id}", UUID.randomUUID()))
+               .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void loadUserByUsername_userNotFound() {
-        assertThrows(UsernameNotFoundException.class, () -> {
-            userService.loadUserByUsername("IDONTEXISTS");
-        });
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void getBasicCharInfo_whenExistingId_returns200() throws Exception {
+        mockMvc.perform(get("/character/{id}", testCharUuid))
+               .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void updateBasicCharInfo_Id_returns200() throws Exception {
+        
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+
+        Map<UUID, Integer> hitDice = new HashMap<>();
+        hitDice.put(testClassUuid, 2);
+
+        Map<AbilityScore, Integer> as = new HashMap<>();
+        as.put(AbilityScore.STRENGTH, 29);
+
+        CharViewPatch patch = new CharViewPatch("Updated Test Character", 0, 50, hitDice, false, as, 3, 0);
+
+        String json = objectMapper.writeValueAsString(patch);
+        
+        mockMvc.perform(
+            put("/character/{uuid}", testCharUuid)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+        )
+        .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void updateBasicCharInfo_Id_returns401() throws Exception {
+        
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+
+        Map<UUID, Integer> hitDice = new HashMap<>();
+        hitDice.put(testClassUuid, 2);
+
+        Map<AbilityScore, Integer> as = new HashMap<>();
+        as.put(AbilityScore.STRENGTH, 29);
+
+        CharViewPatch patch = new CharViewPatch("Updated Test Character", 0, 50, hitDice, false, as, 3, 0);
+
+        String json = objectMapper.writeValueAsString(patch);
+        
+        mockMvc.perform(
+            put("/character/{uuid}", UUID.randomUUID())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+        )
+        .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void getUsersUuid_userNotFound() {
-        
-        Authentication mockAuth = mock(Authentication.class);
-        assertThrows(UsernameNotFoundException.class, () -> {
-            userService.getUsersUuid(mockAuth);
-        });
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void deleteCharacter_returns401() throws Exception {
+
+        mockMvc.perform(
+            delete("/character/{uuid}", UUID.randomUUID()))
+            .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void loadUserByUsername_userWithNoCharacters_returnsEmptyList() {
-        UUID userWithNoCharsUuid = UUID.randomUUID();
-        jdbcTemplate.update("""
-            INSERT INTO users (user_uuid, username, password, enabled)
-            VALUES (?, ?, ?, ?)
-            """,
-            userWithNoCharsUuid, "emptyuser", "{noop}password", true
-        );
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void deleteCharacter_returns200() throws Exception {
 
-        jdbcTemplate.update("""
-            INSERT INTO authorities (username, authority)
-            VALUES (?, ?)
-            """,
-            "emptyuser", "ROLE_USER"
-        );
-
-        CustomUserPrincipal result = (CustomUserPrincipal) userService.loadUserByUsername("emptyuser");
-        
-        assertNotNull(result);
-        assertEquals("emptyuser", result.getUsername());
-        assertTrue(result.getCharacters().isEmpty());
+        mockMvc.perform(
+            delete("/character/{uuid}", testCharUuid))
+            .andExpect(status().isOk());
     }
 
-    
+
 
 }
-

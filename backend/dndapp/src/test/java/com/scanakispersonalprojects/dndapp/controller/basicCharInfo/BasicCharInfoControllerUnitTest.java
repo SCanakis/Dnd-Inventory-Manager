@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.controller;
+package com.scanakispersonalprojects.dndapp.controller.basicCharInfo;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -27,10 +27,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.scanakispersonalprojects.dndapp.model.AbilityScore;
-import com.scanakispersonalprojects.dndapp.model.CharViewPatch;
-import com.scanakispersonalprojects.dndapp.service.CharacterService;
-import com.scanakispersonalprojects.dndapp.service.CustomUserDetailsService;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharViewPatch;
+import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CharacterService;
+import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 
 @WebMvcTest(value = BasicCharInfoController.class, 
            excludeAutoConfiguration = {SecurityAutoConfiguration.class})

@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.persistance;
+package com.scanakispersonalprojects.dndapp.persistance.basicCharInfo;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -10,11 +10,11 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.scanakispersonalprojects.dndapp.config.SqlFileLoader;
-import com.scanakispersonalprojects.dndapp.model.AbilityScore;
-import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
-import com.scanakispersonalprojects.dndapp.model.DeathSavingThrowsHelper;
-import com.scanakispersonalprojects.dndapp.model.DndClass;
-import com.scanakispersonalprojects.dndapp.model.HPHandler;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DeathSavingThrowsHelper;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DndClass;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.HPHandler;
 
 
 

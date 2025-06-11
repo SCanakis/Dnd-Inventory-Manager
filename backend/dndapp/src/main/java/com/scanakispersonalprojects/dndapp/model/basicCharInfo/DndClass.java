@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.model;
+package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
 
 import java.util.UUID;
 

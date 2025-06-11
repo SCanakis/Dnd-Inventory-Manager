@@ -1,15 +1,15 @@
-package com.scanakispersonalprojects.dndapp.service;
+package com.scanakispersonalprojects.dndapp.service.basicCharInfo;
 
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.scanakispersonalprojects.dndapp.model.CharViewPatch;
-import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
-import com.scanakispersonalprojects.dndapp.persistance.CharacterInfoDaoPSQL;
-import com.scanakispersonalprojects.dndapp.persistance.CharacterInfoPersistance;
-import com.scanakispersonalprojects.dndapp.persistance.UserDaoPSQL;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharViewPatch;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.CharacterInfoDaoPSQL;
+import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.CharacterInfoPersistance;
+import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserDaoPSQL;
 
 
 /**
