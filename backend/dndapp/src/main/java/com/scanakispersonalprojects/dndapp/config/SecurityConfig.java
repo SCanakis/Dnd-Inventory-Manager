@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .formLogin(login -> login
-                .defaultSuccessUrl("/home", true)
+                .defaultSuccessUrl("/characters/", true)
                 .permitAll()
             )
             .httpBasic(Customizer.withDefaults());

@@ -7,15 +7,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.scanakispersonalprojects.dndapp.model.CharViewPatch;
 import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
-import com.scanakispersonalprojects.dndapp.persistance.CharacterInfoDao;
-import com.scanakispersonalprojects.dndapp.persistance.UserDao;
+import com.scanakispersonalprojects.dndapp.persistance.CharacterInfoDaoPSQL;
+import com.scanakispersonalprojects.dndapp.persistance.CharacterInfoPersistance;
+import com.scanakispersonalprojects.dndapp.persistance.UserDaoPSQL;
 
 
 /**
  * Servvice layer for managing D&D character basic information.
  * 
  * Provides method to retrieve and apply partial updates (patches) to a character's data.
- * Delagates persistance operation to the underlying {@link CharacterInfoDao}
+ * Delagates persistance operation to the underlying {@link CharacterInfoDaoPSQL}
  * All operations are executed within a transactional context.
  */
 
@@ -26,17 +27,17 @@ public class CharacterService {
     /**
      * Data-access object for character persistance operations.
      */
-    private final CharacterInfoDao charDao;
+    private final CharacterInfoPersistance charDao;
 
-    private final UserDao userDao;
+    private final UserDaoPSQL userDao;
 
 
     /**
      * Constructs a new {@link CharacterSerives} with a given DAO
      * 
-     * @param charDao the {@link CharacterInfoDao} used for the charcter data access.
+     * @param charDao the {@link CharacterInfoDaoPSQL} used for the charcter data access.
      */
-    public CharacterService(CharacterInfoDao charDao, UserDao userDao) {
+    public CharacterService(CharacterInfoDaoPSQL charDao, UserDaoPSQL userDao) {
         this.charDao = charDao;
         this.userDao = userDao;
     }

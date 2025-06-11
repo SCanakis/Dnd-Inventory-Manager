@@ -15,15 +15,15 @@ import com.scanakispersonalprojects.dndapp.service.CustomUserDetailsService;
 
 
 @Controller
-public class HomeController {
+public class UserController {
 
     private CustomUserDetailsService detailsService;
 
-    public HomeController(CustomUserDetailsService detailsService) {
+    public UserController(CustomUserDetailsService detailsService) {
         this.detailsService = detailsService;
     }
 
-    @GetMapping("/home")
+    @GetMapping("/characters/")
     @ResponseBody
     public List<CharacterBasicInfoView> home(Authentication authentication) {
         CustomUserPrincipal user = (CustomUserPrincipal) detailsService.loadUserByUsername(authentication.getName());

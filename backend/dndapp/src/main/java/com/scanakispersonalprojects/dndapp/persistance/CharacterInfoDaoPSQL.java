@@ -30,20 +30,20 @@ import com.scanakispersonalprojects.dndapp.model.HPHandler;
  */
 
 @Repository
-public class CharacterInfoDao {
+public class CharacterInfoDaoPSQL implements CharacterInfoPersistance{
     
     private final NamedParameterJdbcTemplate jdbc;
     private final SqlFileLoader sql;
     
 
     /**
-     * Constrcuts a new {@link CharacterInfoDao} with the given JDBC template and SQL loader.
+     * Constrcuts a new {@link CharacterInfoDaoPSQL} with the given JDBC template and SQL loader.
      * 
      * @param jdbc  the {@link NamedParameterJdbcTemplate} for executing parameterized queries
      * @param sql   the {@link SqlFileLoader} for loading SQL scripts by name.
      */
-
-    public CharacterInfoDao(NamedParameterJdbcTemplate jdbc, SqlFileLoader sql) {
+    
+    public CharacterInfoDaoPSQL(NamedParameterJdbcTemplate jdbc, SqlFileLoader sql) {
         this.jdbc = jdbc;
         this.sql = sql;
     }

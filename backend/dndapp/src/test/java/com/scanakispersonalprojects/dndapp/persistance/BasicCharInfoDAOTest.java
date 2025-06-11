@@ -30,7 +30,7 @@ import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
 class BasicCharInfoRepositoryIntegrationTest  {
 
     @Autowired
-    private CharacterInfoDao dao;
+    private CharacterInfoDaoPSQL dao;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

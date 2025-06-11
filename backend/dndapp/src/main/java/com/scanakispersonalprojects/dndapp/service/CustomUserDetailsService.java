@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.scanakispersonalprojects.dndapp.model.CharacterBasicInfoView;
 import com.scanakispersonalprojects.dndapp.model.CustomUserPrincipal;
 import com.scanakispersonalprojects.dndapp.model.User;
-import com.scanakispersonalprojects.dndapp.persistance.UserDao;
+import com.scanakispersonalprojects.dndapp.persistance.UserDaoPSQL;
 
 /**
  * Tells Spring Security how to look up a user in the database.
@@ -33,7 +33,7 @@ import com.scanakispersonalprojects.dndapp.persistance.UserDao;
 public class CustomUserDetailsService implements UserDetailsService{
 
     @Autowired 
-    private UserDao userDao;
+    private UserDaoPSQL userDao;
 
     @Autowired
     private CharacterService characterService;

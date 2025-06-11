@@ -20,7 +20,7 @@ import com.scanakispersonalprojects.dndapp.model.User;
  * The extra method blow cover the few queries that are unique to the app.
  */
 @Repository
-public interface UserDao extends JpaRepository<User, UUID>{
+public interface UserDaoPSQL extends JpaRepository<User, UUID>{
 
     
     Optional<User> findByUsername(String username);
