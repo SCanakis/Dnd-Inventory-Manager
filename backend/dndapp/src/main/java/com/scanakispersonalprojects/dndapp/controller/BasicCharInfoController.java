@@ -32,12 +32,18 @@ public class BasicCharInfoController {
     private CharacterService charService;
     private CustomUserDetailsService userService;
 
+   
     /**
-     * Constructs the controller with the persistence gateway injected.
-     *
-     * @param basicCharDao DAO that knows how to fetch {@link CharacterBasicInfoView}
-     *                     from the data source
+     * Contructor instantiates the {@link CustomUserDetailsService} and 
+     * {@link CharacterService} with are required for authentication and
+     * character modification
+     * 
+     * @param charService       {@link CharacterSerice} used for character retrival, update, and delition
+     * 
+     * @param userService       {@link CustomUserDetailsService} used for
+     * authentication
      */
+
 
     public BasicCharInfoController(CharacterService charService, CustomUserDetailsService userService) {
         this.charService = charService;
