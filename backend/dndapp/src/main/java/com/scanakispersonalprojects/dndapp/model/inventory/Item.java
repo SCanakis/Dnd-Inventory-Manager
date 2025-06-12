@@ -15,10 +15,7 @@ public class Item {
     private int weight;
     private int value;
     private boolean attackable;
-    private boolean inAttackTab;
     
-  
-
 
     private EquippableComponent equippableComponent;
     private ArmorComponent armorComponent;
@@ -26,14 +23,13 @@ public class Item {
     private SkillAlteredComponent skillAlteredComponent;
 
 
-    public Item(UUID itemUuid, String name, String description,int weight, int value, boolean attackable, boolean inAttackTab) {
+    public Item(UUID itemUuid, String name, String description,int weight, int value, boolean attackable) {
         this.itemUuid = itemUuid;
         this.name = name;
         this.description = description;
         this.value = value;
         this.weight = weight;
         this.attackable = attackable;
-        this.inAttackTab = inAttackTab;
     }
 
 
@@ -134,14 +130,4 @@ public class Item {
         this.attackable = attackable;
     }
 
-  
-    public boolean isInAttackTab() {
-        return inAttackTab;
-    }
-
-
-    public void setInAttackTab(boolean inAttackTab) {
-        this.inAttackTab = inAttackTab;
-    }
-    
 }

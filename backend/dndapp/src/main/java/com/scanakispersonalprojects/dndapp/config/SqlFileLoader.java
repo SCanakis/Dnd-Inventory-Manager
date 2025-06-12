@@ -40,7 +40,7 @@ public class SqlFileLoader {
     @PostConstruct
     public void loadSqlFiles() throws IOException {
         var resolver = new PathMatchingResourcePatternResolver();
-        Resource[] resources = resolver.getResources("classpath:sql/*.sql");
+        Resource[] resources = resolver.getResources("classpath:sql/*/*.sql");
 
         for(Resource r : resources) {
 
