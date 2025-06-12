@@ -1,0 +1,1 @@
+SELECT item_uuid, item_name, item_weight, item_value, item_rarity FROM item_catalog;

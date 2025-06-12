@@ -1,34 +1,34 @@
 package com.scanakispersonalprojects.dndapp.model.inventory.components;
 
 import java.util.Map;
-import java.util.UUID;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.RollType;
+import com.scanakispersonalprojects.dndapp.model.inventory.Skill;
 
 public class SkillAlteredComponent {
-    private Map<UUID, RollType > skillAlteredRollType; 
-    private Map<UUID, Integer> skillAlteredBonus;
+    private Map<Skill, RollType > skillAlteredRollType; 
+    private Map<Skill, Integer> skillAlteredBonus;
     
-    public SkillAlteredComponent(Map<UUID, RollType> skillAlteredRollType, Map<UUID, Integer> skillAlteredBonus) {
+    public SkillAlteredComponent(Map<Skill, RollType> skillAlteredRollType, Map<Skill, Integer> skillAlteredBonus) {
         this.skillAlteredRollType = skillAlteredRollType;
         this.skillAlteredBonus = skillAlteredBonus;
     }
 
     public SkillAlteredComponent() {}
 
-    public Map<UUID, RollType> getSkillAlteredRollType() {
+    public Map<Skill, RollType> getSkillAlteredRollType() {
         return skillAlteredRollType;
     }
 
-    public void setSkillAlteredRollType(Map<UUID, RollType> skillAlteredRollType) {
+    public void setSkillAlteredRollType(Map<Skill, RollType> skillAlteredRollType) {
         this.skillAlteredRollType = skillAlteredRollType;
     }
 
-    public Map<UUID, Integer> getSkillAlteredBonus() {
+    public Map<Skill, Integer> getSkillAlteredBonus() {
         return skillAlteredBonus;
     }
 
-    public void setSkillAlteredBonus(Map<UUID, Integer> skillAlteredBonus) {
+    public void setSkillAlteredBonus(Map<Skill, Integer> skillAlteredBonus) {
         this.skillAlteredBonus = skillAlteredBonus;
     }
     
