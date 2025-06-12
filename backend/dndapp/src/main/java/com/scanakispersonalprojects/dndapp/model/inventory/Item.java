@@ -2,43 +2,38 @@ package com.scanakispersonalprojects.dndapp.model.inventory;
 
 import java.util.UUID;
 
-import com.scanakispersonalprojects.dndapp.model.inventory.components.AbilityRequirmentComponent;
+import com.scanakispersonalprojects.dndapp.model.inventory.components.RequirmentComponent;
 import com.scanakispersonalprojects.dndapp.model.inventory.components.ArmorComponent;
 import com.scanakispersonalprojects.dndapp.model.inventory.components.EquippableComponent;
 import com.scanakispersonalprojects.dndapp.model.inventory.components.SkillAlteredComponent;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name="TBD")
 public class Item {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID itemUuid;
     
     private String name;
     private String description;
-    private short value;
+    private int weight;
+    private int value;
     private boolean attackable;
+    private boolean inAttackTab;
     
-    
+  
+
+
     private EquippableComponent equippableComponent;
     private ArmorComponent armorComponent;
-    private AbilityRequirmentComponent abilityRequirmentComponent;
+    private RequirmentComponent requirmentComponent;
     private SkillAlteredComponent skillAlteredComponent;
 
 
-    public Item(UUID itemUuid, String name, String description, short value, boolean attackable) {
+    public Item(UUID itemUuid, String name, String description,int weight, int value, boolean attackable, boolean inAttackTab) {
         this.itemUuid = itemUuid;
         this.name = name;
         this.description = description;
         this.value = value;
+        this.weight = weight;
         this.attackable = attackable;
+        this.inAttackTab = inAttackTab;
     }
 
 
@@ -72,12 +67,20 @@ public class Item {
     }
 
 
-    public short getValue() {
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public int getValue() {
         return value;
     }
 
 
-    public void setValue(short value) {
+    public void setValue(int value) {
         this.value = value;
     }
 
@@ -102,13 +105,13 @@ public class Item {
     }
 
 
-    public AbilityRequirmentComponent getAbilityRequirmentComponent() {
-        return abilityRequirmentComponent;
+    public RequirmentComponent getRequirmentComponent() {
+        return requirmentComponent;
     }
 
 
-    public void setAbilityRequirmentComponent(AbilityRequirmentComponent abilityRequirmentComponent) {
-        this.abilityRequirmentComponent = abilityRequirmentComponent;
+    public void setRequirmentComponent(RequirmentComponent requirmentComponent) {
+        this.requirmentComponent = requirmentComponent;
     }
 
 
@@ -131,6 +134,14 @@ public class Item {
         this.attackable = attackable;
     }
 
+  
+    public boolean isInAttackTab() {
+        return inAttackTab;
+    }
 
+
+    public void setInAttackTab(boolean inAttackTab) {
+        this.inAttackTab = inAttackTab;
+    }
     
 }
