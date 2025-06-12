@@ -2,9 +2,12 @@ package com.scanakispersonalprojects.dndapp.model.inventory.components;
 
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.RollType;
 import com.scanakispersonalprojects.dndapp.model.inventory.Skill;
 
+@Repository
 public class SkillAlteredComponent {
     private Map<Skill, RollType > skillAlteredRollType; 
     private Map<Skill, Integer> skillAlteredBonus;

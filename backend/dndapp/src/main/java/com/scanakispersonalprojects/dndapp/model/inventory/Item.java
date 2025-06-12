@@ -14,7 +14,9 @@ public class Item {
     private String description;
     private int weight;
     private int value;
+    private Rarity rarity;
     private boolean attackable;
+    
     
 
     private EquippableComponent equippableComponent;
@@ -23,12 +25,13 @@ public class Item {
     private SkillAlteredComponent skillAlteredComponent;
 
 
-    public Item(UUID itemUuid, String name, String description,int weight, int value, boolean attackable) {
+    public Item(UUID itemUuid, String name, String description,int weight, int value, Rarity rarity, boolean attackable) {
         this.itemUuid = itemUuid;
         this.name = name;
         this.description = description;
         this.value = value;
         this.weight = weight;
+        this.rarity = rarity;
         this.attackable = attackable;
     }
 
@@ -128,6 +131,16 @@ public class Item {
 
     public void setAttackable(boolean attackable) {
         this.attackable = attackable;
+    }
+
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+
+    public void setRarity(Rarity rarity) {
+        this.rarity = rarity;
     }
 
 }

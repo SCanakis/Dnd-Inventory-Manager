@@ -20,6 +20,7 @@ import com.scanakispersonalprojects.dndapp.model.basicCharInfo.RollType;
 import com.scanakispersonalprojects.dndapp.model.inventory.EquipableType;
 import com.scanakispersonalprojects.dndapp.model.inventory.Item;
 import com.scanakispersonalprojects.dndapp.model.inventory.ItemPreview;
+import com.scanakispersonalprojects.dndapp.model.inventory.Rarity;
 import com.scanakispersonalprojects.dndapp.model.inventory.Skill;
 import com.scanakispersonalprojects.dndapp.model.inventory.components.ArmorComponent;
 import com.scanakispersonalprojects.dndapp.model.inventory.components.EquippableComponent;
@@ -61,6 +62,7 @@ public class ItemCatalogPSqlRepo implements ItemCatalogRepo {
             (String) base.get("item_description"), 
             (int) base.get("item_weight"),
             (int) base.get("item_value"),
+            Rarity.valueOf(base.get("rarity").toString().toUpperCase()),
             (boolean) base.get("attackable"));
 
             if(base.get("ac_bonus") != null || base.get("add_as_to_ac") != null) {

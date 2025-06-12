@@ -1,1 +1,1 @@
-SELECT * FROM item_uuid, item_name, item_weight, item_value, item_rarity WHERE SIMILARITY(name = :name) > 0.4;
+SELECT item_uuid, item_name, item_weight, item_value, item_rarity FROM item_catalog WHERE SIMILARITY(name = :name) > 0.4;
