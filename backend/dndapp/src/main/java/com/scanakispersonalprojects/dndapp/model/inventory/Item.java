@@ -24,6 +24,7 @@ public class Item {
     private String name;
     private String description;
     private short value;
+    private boolean attackable;
     
     
     private EquippableComponent equippableComponent;
@@ -32,11 +33,12 @@ public class Item {
     private SkillAlteredComponent skillAlteredComponent;
 
 
-    public Item(UUID itemUuid, String name, String description, short value) {
+    public Item(UUID itemUuid, String name, String description, short value, boolean attackable) {
         this.itemUuid = itemUuid;
         this.name = name;
         this.description = description;
         this.value = value;
+        this.attackable = attackable;
     }
 
 
@@ -119,10 +121,15 @@ public class Item {
         this.skillAlteredComponent = skillAlteredComponent;
     }
 
-    
 
-    
-    
+    public boolean isAttackable() {
+        return attackable;
+    }
+
+
+    public void setAttackable(boolean attackable) {
+        this.attackable = attackable;
+    }
 
 
     
