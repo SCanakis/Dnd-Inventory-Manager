@@ -1,6 +1,8 @@
 package com.scanakispersonalprojects.dndapp.model.inventory;
 
-public enum EquipableType {
+import com.fasterxml.jackson.annotation.JsonValue;
+
+public enum EquippableType {
     ARMOR("armor"),
     CLOAK("cloak"),
     BRACERS("bracers"),
@@ -17,14 +19,15 @@ public enum EquipableType {
     SPELLFOCUS("spellfocus"),
     CUSTOM("custom");
     
-    private final String lowercase;
+    private final String jsonValue;
 
-    private EquipableType(String lowercase) {
-        this.lowercase = lowercase;
+    private EquippableType(String jsonValue) {
+        this.jsonValue = jsonValue;
     }
-
-    public String getLowercase() {
-        return lowercase;
+    
+    @JsonValue
+    public String getjsonValue() {
+        return jsonValue;
     }
 }
 

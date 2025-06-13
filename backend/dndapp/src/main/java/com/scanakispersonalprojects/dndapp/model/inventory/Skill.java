@@ -1,5 +1,7 @@
 package com.scanakispersonalprojects.dndapp.model.inventory;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Skill {
     
     ACROBATICS("acrobatics"),
@@ -21,14 +23,15 @@ public enum Skill {
     STEALTH("stealth"),
     SURVIVAL("survival"); 
 
-    private final String dataBaseString; 
+    private final String jsonValue; 
 
-    private Skill(String dataBaseString) {
-        this.dataBaseString = dataBaseString;
+    private Skill(String jsonValue) {
+        this.jsonValue = jsonValue;
     }
 
-    public String getDataBaseString() {
-        return dataBaseString;
+    @JsonValue
+    public String getJsonValue() {
+        return jsonValue;
     }
 
 

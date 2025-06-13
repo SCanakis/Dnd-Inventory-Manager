@@ -1,19 +1,22 @@
 package com.scanakispersonalprojects.dndapp.model.inventory;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Rarity {
-    COMMON ("Common"),
-    UNCOMMON ("Uncommon"),
-    RARE ("Rare"),
-    VERY_RARE ("Very Rare"),
-    LEGENDARY ("Legendary");
+    COMMON ("common"),
+    UNCOMMON ("uncommon"),
+    RARE ("rare"),
+    VERY_RARE ("very_rare"),
+    LEGENDARY ("legendary");
 
-    private final String theString; 
+    private final String jsonValue; 
 
-    private Rarity(String theString) {
-        this.theString = theString;
+    private Rarity(String jsonValue) {
+        this.jsonValue = jsonValue;
     }
 
-    public String getTheString() {
-        return theString;
+    @JsonValue
+    public String getjsonValue() {
+        return jsonValue;
     }
 }

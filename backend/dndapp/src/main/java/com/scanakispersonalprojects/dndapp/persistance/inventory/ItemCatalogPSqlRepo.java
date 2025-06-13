@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scanakispersonalprojects.dndapp.config.SqlFileLoader;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.RollType;
-import com.scanakispersonalprojects.dndapp.model.inventory.EquipableType;
+import com.scanakispersonalprojects.dndapp.model.inventory.EquippableType;
 import com.scanakispersonalprojects.dndapp.model.inventory.Item;
 import com.scanakispersonalprojects.dndapp.model.inventory.ItemPreview;
 import com.scanakispersonalprojects.dndapp.model.inventory.Rarity;
@@ -109,7 +109,7 @@ public class ItemCatalogPSqlRepo implements ItemCatalogRepo {
 
             if(base.get("equippable") != null || base.get("attunable") != null || base.get("item_equippable_type") != null) {
 
-                List<EquipableType> equipableTypes = null;
+                List<EquippableType> equipableTypes = null;
                 if(base.get("item_equippable_type") != null) {
 
                     Array sqlArray = (Array)base.get("item_equippable_type");
@@ -117,7 +117,7 @@ public class ItemCatalogPSqlRepo implements ItemCatalogRepo {
 
                     try {
                         equipableTypes = Arrays.stream(typeObjects)
-                        .map(typeObject -> EquipableType.valueOf(typeObject.toString().toUpperCase()))
+                        .map(typeObject -> EquippableType.valueOf(typeObject.toString().toUpperCase()))
                             .collect(Collectors.toList());
                     } catch (IllegalArgumentException e) {
                         e.printStackTrace();

@@ -163,7 +163,7 @@ public class CharacterInfoDaoPSQL implements CharacterInfoPersistance{
      */
 
     public int updateAbilityScore(UUID charUuid, int value, AbilityScore as) {
-        String column = as.getString();
+        String column = as.getJsonValue();
         String sql = "UPDATE characters_info "
                + "SET " + column + " = :value "
                + "WHERE char_info_uuid = :uuid";
@@ -224,7 +224,7 @@ public class CharacterInfoDaoPSQL implements CharacterInfoPersistance{
 
         Map<AbilityScore, Integer> abilityScores = new EnumMap<>(AbilityScore.class);
         for(AbilityScore as : AbilityScore.values()) {
-            abilityScores.put(as, (Integer) base.get(as.getString()));
+            abilityScores.put(as, (Integer) base.get(as.getJsonValue()));
         }
 
         List<DndClass> classes = jdbc.query(

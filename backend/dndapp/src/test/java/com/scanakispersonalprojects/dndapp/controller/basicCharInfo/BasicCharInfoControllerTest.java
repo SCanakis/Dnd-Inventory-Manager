@@ -66,7 +66,6 @@ public class BasicCharInfoControllerTest {
         testBackgroundUuid = UUID.randomUUID();
         testClassUuid = UUID.randomUUID();
         testSubclassUuid = UUID.randomUUID();
-        // testUserUuid = UUID.randomUUID();
 
         setupTestData();
     }

@@ -1,11 +1,12 @@
 package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * 
  * Enumeration of the Ability Scores (AS) in DND 5e currently. 
  * 
- * @param shorthand     The shorthand String values associated with each AS is the name of 
+ * @param jsonValue     The jsonValue String values associated with each AS is the name of 
  *                      it's column in the @code characters_info table.
  * 
  */
@@ -20,13 +21,14 @@ public enum AbilityScore {
     WISDOM("wisdom"), 
     CHARISMA ("charisma");
 
-    public final String shorthand;
+    public final String jsonValue;
 
-    private AbilityScore(String shorthand) {
-        this.shorthand = shorthand;
+    private AbilityScore(String jsonValue) {
+        this.jsonValue = jsonValue;
     }
 
-    public String getString(){
-        return shorthand;
+    @JsonValue
+    public String getJsonValue(){
+        return jsonValue;
     }
 }

@@ -2,15 +2,15 @@ package com.scanakispersonalprojects.dndapp.model.inventory.components;
 
 import java.util.List;
 
-import com.scanakispersonalprojects.dndapp.model.inventory.EquipableType;
+import com.scanakispersonalprojects.dndapp.model.inventory.EquippableType;
 
 public class EquippableComponent {
     
     private boolean equippable = false;
     private boolean attunable = false;
-    private List<EquipableType> equipableType;
+    private List<EquippableType> equipableType;
     
-    public EquippableComponent(boolean equippable, boolean attunable, List<EquipableType> equipableType) {
+    public EquippableComponent(boolean equippable, boolean attunable, List<EquippableType> equipableType) {
         this.equippable = equippable;
         this.attunable = attunable;
         this.equipableType = equipableType;
@@ -34,11 +34,11 @@ public class EquippableComponent {
         this.attunable = attunable;
     }
 
-    public List<EquipableType> getEquipableType() {
+    public List<EquippableType> getEquipableType() {
         return equipableType;
     }
 
-    public void setEquipableType(List<EquipableType> equipableType) {
+    public void setEquipableType(List<EquippableType> equipableType) {
         this.equipableType = equipableType;
     }
 
