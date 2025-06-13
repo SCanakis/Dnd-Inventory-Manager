@@ -7,8 +7,8 @@ public enum EquipableType {
     HEAD("head"),
     BELT("belt"),
     HANDS("hands"),
-    RING_L("ring_l"),        // or ("ringl")
-    RING_R("ring_r"),        // or ("ringr") 
+    RING_L("ringl"),     
+    RING_R("ringr"),       
     FEET("feet"),
     MAINHAND("mainhand"),
     OFFHAND("offhand"),

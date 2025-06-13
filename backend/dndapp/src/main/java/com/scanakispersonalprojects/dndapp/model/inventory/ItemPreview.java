@@ -8,10 +8,10 @@ public class ItemPreview {
     private UUID itemUuid;
     private String name;
     private int weight;
-    private String value;
+    private int value;
     private Rarity rarity;
     
-    public ItemPreview(UUID itemUuid, String name, int weight, String value, Rarity rarity) {
+    public ItemPreview(UUID itemUuid, String name, int weight, int value, Rarity rarity) {
         this.itemUuid = itemUuid;
         this.name = name;
         this.weight = weight;
@@ -43,11 +43,11 @@ public class ItemPreview {
         this.weight = weight;
     }
 
-    public String getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(int value) {
         this.value = value;
     }
 

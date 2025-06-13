@@ -2,8 +2,9 @@ package com.scanakispersonalprojects.dndapp.model.inventory;
 
 import java.util.UUID;
 
-import com.scanakispersonalprojects.dndapp.model.inventory.components.RequirmentComponent;
+import com.scanakispersonalprojects.dndapp.model.inventory.components.SkillRequirmentComponent;
 import com.scanakispersonalprojects.dndapp.model.inventory.components.ArmorComponent;
+import com.scanakispersonalprojects.dndapp.model.inventory.components.ClassRequirmentComponent;
 import com.scanakispersonalprojects.dndapp.model.inventory.components.EquippableComponent;
 import com.scanakispersonalprojects.dndapp.model.inventory.components.SkillAlteredComponent;
 
@@ -21,9 +22,9 @@ public class Item {
 
     private EquippableComponent equippableComponent;
     private ArmorComponent armorComponent;
-    private RequirmentComponent requirmentComponent;
+    private SkillRequirmentComponent requirmentComponent;
     private SkillAlteredComponent skillAlteredComponent;
-
+    private ClassRequirmentComponent classRequirmentComponent;
 
     public Item(UUID itemUuid, String name, String description,int weight, int value, Rarity rarity, boolean attackable) {
         this.itemUuid = itemUuid;
@@ -33,6 +34,16 @@ public class Item {
         this.weight = weight;
         this.rarity = rarity;
         this.attackable = attackable;
+    }
+
+
+    public ClassRequirmentComponent getClassRequirmentComponent() {
+        return classRequirmentComponent;
+    }
+
+
+    public void setClassRequirmentComponent(ClassRequirmentComponent classRequirmentComponent) {
+        this.classRequirmentComponent = classRequirmentComponent;
     }
 
 
@@ -104,12 +115,12 @@ public class Item {
     }
 
 
-    public RequirmentComponent getRequirmentComponent() {
+    public SkillRequirmentComponent getRequirmentComponent() {
         return requirmentComponent;
     }
 
 
-    public void setRequirmentComponent(RequirmentComponent requirmentComponent) {
+    public void setRequirmentComponent(SkillRequirmentComponent requirmentComponent) {
         this.requirmentComponent = requirmentComponent;
     }
 

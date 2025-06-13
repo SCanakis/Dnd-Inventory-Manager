@@ -19,7 +19,7 @@ import com.scanakispersonalprojects.dndapp.service.inventory.ItemCatalogService;
 
 
 @Controller
-@RequestMapping("/itemCatalog/")
+@RequestMapping("itemCatalog")
 public class CatalogController {
     
     private final static Logger LOG = Logger.getLogger(CatalogController.class.getName());
@@ -32,7 +32,7 @@ public class CatalogController {
     }
 
 
-    @GetMapping("{UUID}/")
+    @GetMapping("/id={uuid}")
     public ResponseEntity<Item> getItem(@PathVariable UUID uuid) {
         LOG.info("GET /itemCatalog/{UUID}" + uuid);
         try {
@@ -61,8 +61,9 @@ public class CatalogController {
         }
     }
 
-    @GetMapping("{searchTerm}/")
-    public ResponseEntity<List<ItemPreview>> getMethodName(@PathVariable String searchTerm) {
+    @GetMapping("/searchTerm={searchTerm}")
+    public ResponseEntity<List<ItemPreview>> searchByName(@PathVariable String searchTerm) {
+        LOG.info("GET /itemCatalog/serachTerm=" + searchTerm);
         try {
             List<ItemPreview> items = service.searchByName(searchTerm);
             if(items == null) {

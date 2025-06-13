@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.scanakispersonalprojects.dndapp.model.inventory.Item;
 import com.scanakispersonalprojects.dndapp.model.inventory.ItemPreview;
 import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemCatalogRepo;
 
+@Service
 public class ItemCatalogService {
     
 
