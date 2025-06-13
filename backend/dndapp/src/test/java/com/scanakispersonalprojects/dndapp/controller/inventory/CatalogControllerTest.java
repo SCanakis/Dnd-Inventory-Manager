@@ -4,8 +4,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -86,7 +84,7 @@ public class CatalogControllerTest {
                 "A versatile martial weapon",
                 3,
                 15,
-                "common",
+                Rarity.COMMON.getjsonValue(),
                 true,
                 true,
                 true,
@@ -113,7 +111,6 @@ public class CatalogControllerTest {
                     testUserUuid, "testuser", "{noop}password123", true
                 );
 
-                // Grant ROLE_USER authority
                 jdbcTemplate.update("""
                     INSERT INTO authorities (username, authority)
                     VALUES (?, ?)
@@ -145,6 +142,27 @@ public class CatalogControllerTest {
     public void getItemUsingUUID_returns200() throws Exception {
         mockMvc.perform(get("/itemCatalog/id=" + testItemUuid))
             .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void getAllItemCatalog_returns200() throws Exception {
+        mockMvc.perform(get("/itemCatalog"))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void getItemUsingFuzzySearch_returns200() throws Exception {
+        mockMvc.perform(get("/itemCatalog/searchTerm=sword"))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void getItemUsingUUID_returns404() throws Exception {
+        mockMvc.perform(get("/itemCatalog/id=" + UUID.randomUUID()))
+            .andExpect(status().isNotFound());
     }
 
 
