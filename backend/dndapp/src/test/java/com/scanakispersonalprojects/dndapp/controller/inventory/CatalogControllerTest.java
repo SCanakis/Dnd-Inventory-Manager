@@ -84,21 +84,21 @@ public class CatalogControllerTest {
                 "A versatile martial weapon",
                 3,
                 15,
-                Rarity.COMMON.getjsonValue(),
+                Rarity.common,
                 true,
                 true,
                 true,
-                new String[]{EquippableType.ARMOR.getjsonValue(), EquippableType.CLOAK.getjsonValue()},
+                new String[]{EquippableType.armor.getJsonValue(), EquippableType.cloak.getJsonValue()},
                 objectMapper.writeValueAsString(new HashMap<AbilityScore, Integer>() {{
-                        put(AbilityScore.DEXTERITY, 15);
+                        put(AbilityScore.dexterity, 15);
                     }}
                 ),
                 objectMapper.writeValueAsString(new HashMap<Skill, RollType>() {{
-                        put(Skill.ACROBATICS, RollType.ADVANTAGE);
+                        put(Skill.acrobatics, RollType.advantage);
                     }}
                 ),
                 objectMapper.writeValueAsString(new HashMap<Skill, Integer>() {{
-                        put(Skill.ACROBATICS, 5);
+                        put(Skill.acrobatics, 5);
                     }}
                 ));
 

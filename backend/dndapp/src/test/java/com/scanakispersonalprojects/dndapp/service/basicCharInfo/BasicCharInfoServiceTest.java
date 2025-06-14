@@ -165,8 +165,8 @@ public class BasicCharInfoServiceTest {
         assertEquals(result.backgroundUUID(), testBackgroundUuid);
 
         // Verify ability scores
-        assertEquals((int) result.abilityScores().get(AbilityScore.STRENGTH), 15);
-        assertEquals((int) result.abilityScores().get(AbilityScore.DEXTERITY), 14);
+        assertEquals((int) result.abilityScores().get(AbilityScore.strength), 15);
+        assertEquals((int) result.abilityScores().get(AbilityScore.dexterity), 14);
 
         // Verify classes
         assertEquals(result.classes().isEmpty(), false);
@@ -195,7 +195,7 @@ public class BasicCharInfoServiceTest {
         hitDice.put(testClassUuid, 2);
 
         Map<AbilityScore, Integer> as = new HashMap<>();
-        as.put(AbilityScore.STRENGTH, 29);
+        as.put(AbilityScore.strength, 29);
 
         CharViewPatch patch = new CharViewPatch("Updated Test Character", 0, 50, hitDice, false, as, 3, 0);
 
@@ -219,9 +219,9 @@ public class BasicCharInfoServiceTest {
         assertEquals(result.backgroundUUID(), testBackgroundUuid);
 
         // Verify ability scores
-        assertEquals((int) result.abilityScores().get(AbilityScore.STRENGTH), 29);
-        assertEquals((int) result.abilityScores().get(AbilityScore.DEXTERITY), 14);
-        assertEquals((int)result.abilityScores().get(AbilityScore.STRENGTH), patch.abilityScore().get(AbilityScore.STRENGTH));
+        assertEquals((int) result.abilityScores().get(AbilityScore.strength), 29);
+        assertEquals((int) result.abilityScores().get(AbilityScore.dexterity), 14);
+        assertEquals((int)result.abilityScores().get(AbilityScore.strength), patch.abilityScore().get(AbilityScore.strength));
 
         // Verify classes
         assertEquals(result.classes().isEmpty(), false);
@@ -273,8 +273,8 @@ public class BasicCharInfoServiceTest {
         assertEquals(result.backgroundUUID(), testBackgroundUuid);
 
         // Verify ability scores
-        assertEquals((int) result.abilityScores().get(AbilityScore.STRENGTH), 15);
-        assertEquals((int) result.abilityScores().get(AbilityScore.DEXTERITY), 14);
+        assertEquals((int) result.abilityScores().get(AbilityScore.strength), 15);
+        assertEquals((int) result.abilityScores().get(AbilityScore.dexterity), 14);
 
         // Verify classes
         assertEquals(result.classes().isEmpty(), false);

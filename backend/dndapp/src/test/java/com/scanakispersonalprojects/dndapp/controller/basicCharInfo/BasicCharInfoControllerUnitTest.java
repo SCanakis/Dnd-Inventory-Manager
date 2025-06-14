@@ -94,7 +94,7 @@ public class BasicCharInfoControllerUnitTest {
         hitDice.put(testUuid, 2);
 
         Map<AbilityScore, Integer> as = new HashMap<>();
-        as.put(AbilityScore.STRENGTH, 29);
+        as.put(AbilityScore.strength, 29);
 
         CharViewPatch patch = new CharViewPatch("Updated Test Character", 0, 50, hitDice, false, as, 3, 0);
 
@@ -126,7 +126,7 @@ public class BasicCharInfoControllerUnitTest {
         hitDice.put(testUuid, 2);
 
         Map<AbilityScore, Integer> as = new HashMap<>();
-        as.put(AbilityScore.STRENGTH, 29);
+        as.put(AbilityScore.strength, 29);
 
         CharViewPatch patch = new CharViewPatch("Updated Test Character", 0, 50, hitDice, false, as, 3, 0);
 

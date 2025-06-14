@@ -184,12 +184,12 @@ public class BasicCharCustomUserDetailsServiceTest {
         assertEquals(testRaceUuid, actualChar.raceUUID());
         
         Map<AbilityScore, Integer> abilityScores = actualChar.abilityScores();
-        assertEquals(Integer.valueOf(15), abilityScores.get(AbilityScore.STRENGTH));
-        assertEquals(Integer.valueOf(14), abilityScores.get(AbilityScore.DEXTERITY));
-        assertEquals(Integer.valueOf(13), abilityScores.get(AbilityScore.CONSTITUTION));
-        assertEquals(Integer.valueOf(12), abilityScores.get(AbilityScore.INTELLIGENCE));
-        assertEquals(Integer.valueOf(10), abilityScores.get(AbilityScore.WISDOM));
-        assertEquals(Integer.valueOf(8), abilityScores.get(AbilityScore.CHARISMA));
+        assertEquals(Integer.valueOf(15), abilityScores.get(AbilityScore.strength));
+        assertEquals(Integer.valueOf(14), abilityScores.get(AbilityScore.dexterity));
+        assertEquals(Integer.valueOf(13), abilityScores.get(AbilityScore.constitution));
+        assertEquals(Integer.valueOf(12), abilityScores.get(AbilityScore.intelligence));
+        assertEquals(Integer.valueOf(10), abilityScores.get(AbilityScore.wisdom));
+        assertEquals(Integer.valueOf(8), abilityScores.get(AbilityScore.charisma));
         
         List<DndClass> classes = actualChar.classes();
         assertNotNull(classes);

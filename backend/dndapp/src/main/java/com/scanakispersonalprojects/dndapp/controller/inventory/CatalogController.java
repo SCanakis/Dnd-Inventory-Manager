@@ -1,6 +1,7 @@
 package com.scanakispersonalprojects.dndapp.controller.inventory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.scanakispersonalprojects.dndapp.model.inventory.Item;
-import com.scanakispersonalprojects.dndapp.model.inventory.ItemPreview;
+import com.scanakispersonalprojects.dndapp.model.inventory.ItemCatalog;
+import com.scanakispersonalprojects.dndapp.model.inventory.ItemProjection;
 import com.scanakispersonalprojects.dndapp.service.inventory.ItemCatalogService;
 
 
@@ -27,16 +28,17 @@ public class CatalogController {
     @Autowired
     private final ItemCatalogService service;
 
+
     public CatalogController(ItemCatalogService service) {
         this.service = service;
     }
 
 
     @GetMapping("/id={uuid}")
-    public ResponseEntity<Item> getItem(@PathVariable UUID uuid) {
-        LOG.info("GET /itemCatalog/{UUID}" + uuid);
+    public ResponseEntity<Optional<ItemCatalog>> getItem(@PathVariable UUID uuid) {
+        LOG.info("GET /itemCatalog/id=" + uuid);
         try {
-            Item item = service.getItemWithUUID(uuid);
+            Optional<ItemCatalog> item = service.getItemWithUUID(uuid);
             if(item == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -48,10 +50,10 @@ public class CatalogController {
 
 
     @GetMapping("")
-    public ResponseEntity<List<ItemPreview>> getAll() {
+    public ResponseEntity<List<ItemProjection>> getAll() {
         LOG.info("GET /itemCatalog/");
         try {
-            List<ItemPreview> items = service.getAll();
+            List<ItemProjection> items = service.getAll();
             if(items == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -62,10 +64,10 @@ public class CatalogController {
     }
 
     @GetMapping("/searchTerm={searchTerm}")
-    public ResponseEntity<List<ItemPreview>> searchByName(@PathVariable String searchTerm) {
+    public ResponseEntity<List<ItemProjection>> searchByName(@PathVariable String searchTerm) {
         LOG.info("GET /itemCatalog/serachTerm=" + searchTerm);
         try {
-            List<ItemPreview> items = service.searchByName(searchTerm);
+            List<ItemProjection> items = service.searchByName(searchTerm);
             if(items == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }

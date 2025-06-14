@@ -162,8 +162,8 @@ class BasicCharInfoRepositoryIntegrationTest  {
         assertEquals(result.backgroundUUID(), testBackgroundUuid);
 
         // Verify ability scores
-        assertEquals(result.abilityScores().get(AbilityScore.STRENGTH), 15);
-        assertEquals(result.abilityScores().get(AbilityScore.DEXTERITY), 14);
+        assertEquals(result.abilityScores().get(AbilityScore.strength), 15);
+        assertEquals(result.abilityScores().get(AbilityScore.dexterity), 14);
 
         // Verify classes
         assertEquals(result.classes().isEmpty(), false);
@@ -274,10 +274,10 @@ class BasicCharInfoRepositoryIntegrationTest  {
         int asValue = 29;
         
         // Act
-        dao.updateAbilityScore(testCharUuid, asValue, AbilityScore.CHARISMA);
+        dao.updateAbilityScore(testCharUuid, asValue, AbilityScore.charisma);
         
         // Assert
-        assertEquals(dao.getCharInfo(testCharUuid).abilityScores().get(AbilityScore.CHARISMA) , asValue);
+        assertEquals(dao.getCharInfo(testCharUuid).abilityScores().get(AbilityScore.charisma) , asValue);
     }
 
 
