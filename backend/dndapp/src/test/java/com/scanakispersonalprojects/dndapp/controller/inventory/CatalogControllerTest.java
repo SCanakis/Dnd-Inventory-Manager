@@ -1,9 +1,12 @@
 package com.scanakispersonalprojects.dndapp.controller.inventory;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,8 +28,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.RollType;
 import com.scanakispersonalprojects.dndapp.model.inventory.EquippableType;
+import com.scanakispersonalprojects.dndapp.model.inventory.ItemCatalog;
 import com.scanakispersonalprojects.dndapp.model.inventory.Rarity;
 import com.scanakispersonalprojects.dndapp.model.inventory.Skill;
+import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemCatalogJPARepo;
 
 import jakarta.transaction.Transactional;
 
@@ -43,10 +48,7 @@ public class CatalogControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private ItemCatalogJPARepo itemCatalogRepo;
 
     private UUID testItemUuid;
 
@@ -62,61 +64,40 @@ public class CatalogControllerTest {
     }
 
     private void setupTestData() throws DataAccessException, JsonProcessingException {
-        jdbcTemplate.update("""
-                INSERT INTO item_catalog (
-                    item_uuid,
-                    item_name, 
-                    item_description, 
-                    item_weight, 
-                    item_value, 
-                    item_rarity,
-                    attackable,
-                    equippable,
-                    attunable,
-                    item_equippable_type,
-                    ability_requirment,
-                    skill_altered_roll_type,
-                    skill_altered_bonus
-                ) VALUES (?,?,?,?,?,?::rarity,?,?,?,ARRAY[?]::equippable_type[],?::json,?::json,?::json)
-                """, 
-                testItemUuid,
-                "Longsword",
-                "A versatile martial weapon",
-                3,
-                15,
-                Rarity.common,
-                true,
-                true,
-                true,
-                new String[]{EquippableType.armor.getJsonValue(), EquippableType.cloak.getJsonValue()},
-                objectMapper.writeValueAsString(new HashMap<AbilityScore, Integer>() {{
-                        put(AbilityScore.dexterity, 15);
-                    }}
-                ),
-                objectMapper.writeValueAsString(new HashMap<Skill, RollType>() {{
-                        put(Skill.acrobatics, RollType.advantage);
-                    }}
-                ),
-                objectMapper.writeValueAsString(new HashMap<Skill, Integer>() {{
-                        put(Skill.acrobatics, 5);
-                    }}
-                ));
-
-
-                UUID testUserUuid = UUID.randomUUID();
-                jdbcTemplate.update("""
-                    INSERT INTO users (user_uuid, username, password, enabled)
-                    VALUES (?, ?, ?, ?)
-                    """,
-                    testUserUuid, "testuser", "{noop}password123", true
-                );
-
-                jdbcTemplate.update("""
-                    INSERT INTO authorities (username, authority)
-                    VALUES (?, ?)
-                    """,
-                    "testuser", "ROLE_USER"
-                );
+        ItemCatalog testItem = new ItemCatalog(
+            null,
+            "LongSword",
+            "it's a long sword",
+            5,
+            10,
+            Rarity.common,
+            true,
+            (short) 2,
+            new HashMap<AbilityScore, Boolean>() {{
+                put(AbilityScore.strength, true);
+            }},
+            true,
+            false,
+            new ArrayList<EquippableType>() {{
+                add(EquippableType.mainhand);
+                add(EquippableType.offhand);
+                add(EquippableType.twohand);
+            }},
+            new HashMap<AbilityScore, Integer>(){{
+                put(AbilityScore.strength, 15);
+                put(AbilityScore.dexterity, 12);
+            }},
+            new HashMap<Skill, RollType>() {{
+                put(Skill.acrobatics, RollType.advantage);
+                put(Skill.stealth, RollType.straight);
+            }},
+            new HashMap<Skill, Integer>(){{
+                put(Skill.acrobatics, 3);
+                put(Skill.sleight_of_hand, 5);
+            }}
+        );
+        testItem = itemCatalogRepo.save(testItem);
+        testItemUuid = testItem.getItemUuid();
     }
 
     // @Test

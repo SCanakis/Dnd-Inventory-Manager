@@ -66,11 +66,17 @@ public class ItemCatalog {
     @Column(name = "attunable", nullable = false)
     private boolean attunable = false;
 
-    @Column(name = "item_equippable_type", columnDefinition = "equippable_type[]")
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "item_equippable_type", columnDefinition = "varchar[]")
+    @Enumerated(EnumType.STRING)
     private List<EquippableType> itemEquippableTypes;
 
-
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "ability_requirment", columnDefinition = "json")
+    private Map<AbilityScore, Integer> abilityRequirement;
     
+    
+
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "skill_altered_roll_type")
     private Map<Skill, RollType> skillAlteredRollType;
@@ -81,10 +87,12 @@ public class ItemCatalog {
 
     public ItemCatalog() {}
 
-    public ItemCatalog(String itemName, String itemDescription, Integer itemWeight, Integer itemValue,
+    public ItemCatalog(UUID itemUuid, String itemName, String itemDescription, Integer itemWeight, Integer itemValue,
             Rarity itemRarity, boolean attackable, Short acBonus, Map<AbilityScore, Boolean> addToAc,
             boolean equippable, boolean attunable, List<EquippableType> itemEquippableTypes,
-            Map<Skill, RollType> skillAlteredRollType, Map<Skill, Integer> skillAlteredBonus) {
+            Map<AbilityScore, Integer> abilityRequirement, Map<Skill, RollType> skillAlteredRollType,
+            Map<Skill, Integer> skillAlteredBonus) {
+        this.itemUuid = itemUuid;
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemWeight = itemWeight;
@@ -96,10 +104,10 @@ public class ItemCatalog {
         this.equippable = equippable;
         this.attunable = attunable;
         this.itemEquippableTypes = itemEquippableTypes;
+        this.abilityRequirement = abilityRequirement;
         this.skillAlteredRollType = skillAlteredRollType;
         this.skillAlteredBonus = skillAlteredBonus;
     }
-
 
     public UUID getItemUuid() {
         return itemUuid;
@@ -211,6 +219,14 @@ public class ItemCatalog {
 
     public void setSkillAlteredBonus(Map<Skill, Integer> skillAlteredBonus) {
         this.skillAlteredBonus = skillAlteredBonus;
+    }
+
+    public Map<AbilityScore, Integer> getAbilityRequirement() {
+        return abilityRequirement;
+    }
+
+    public void setAbilityRequirement(Map<AbilityScore, Integer> abilityRequirement) {
+        this.abilityRequirement = abilityRequirement;
     }
 
     

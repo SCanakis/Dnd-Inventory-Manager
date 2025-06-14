@@ -35,14 +35,14 @@ public class CatalogController {
 
 
     @GetMapping("/id={uuid}")
-    public ResponseEntity<Optional<ItemCatalog>> getItem(@PathVariable UUID uuid) {
+    public ResponseEntity<ItemCatalog> getItem(@PathVariable UUID uuid) {
         LOG.info("GET /itemCatalog/id=" + uuid);
         try {
             Optional<ItemCatalog> item = service.getItemWithUUID(uuid);
-            if(item == null) {
+            if(item.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<>(item, HttpStatus.OK);
+            return new ResponseEntity<>(item.get(), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

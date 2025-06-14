@@ -26,4 +26,6 @@ public interface ItemCatalogJPARepo extends JpaRepository<ItemCatalog, UUID>{
                     "ORDER BY SIMILARITY(item_name, :searchTerm) DESC;", 
            nativeQuery = true)
     List<ItemProjection> findByNameSimilarity(@Param("searchTerm") String searchTerm);
+
+
 }

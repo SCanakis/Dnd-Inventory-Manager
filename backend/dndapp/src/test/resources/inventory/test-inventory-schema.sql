@@ -3,31 +3,31 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 
-CREATE TYPE equippable_type AS ENUM (
-    'armor',
-    'cloak',
-    'bracers',
-    'head',
-    'belt',
-    'hands',
-    'ringL',
-    'ringR',
-    'feet',
-    'mainhand',
-    'offhand',
-    'twohand',
-    'back',
-    'spellfocus',
-    'custom'
-);
+-- CREATE TYPE equippable_type AS ENUM (
+--     'armor',
+--     'cloak',
+--     'bracers',
+--     'head',
+--     'belt',
+--     'hands',
+--     'ringL',
+--     'ringR',
+--     'feet',
+--     'mainhand',
+--     'offhand',
+--     'twohand',
+--     'back',
+--     'spellfocus',
+--     'custom'
+-- );
 
-CREATE TYPE rarity AS ENUM (
-    'common',
-    'uncommon',
-    'rare',
-    'very_rare',
-    'legendary'
-);
+-- CREATE TYPE rarity AS ENUM (
+--     'common',
+--     'uncommon',
+--     'rare',
+--     'very_rare',
+--     'legendary'
+-- );
 
 CREATE TABLE item_catalog (
     item_uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -36,7 +36,7 @@ CREATE TABLE item_catalog (
    
     item_weight INT DEFAULT 0 CHECK(item_weight >= 0),
     item_value INT DEFAULT 0 CHECK(item_value >= 0),
-    item_rarity rarity NOT NULL DEFAULT 'common',
+    item_rarity VARCHAR(20) NOT NULL DEFAULT 'common',
 
     attackable BOOLEAN DEFAULT false,
     
@@ -45,7 +45,7 @@ CREATE TABLE item_catalog (
 
     equippable BOOLEAN,
     attunable BOOLEAN,
-    item_equippable_type equippable_type[],
+    item_equippable_type VARCHAR[],
 
     ability_requirment json,
 
