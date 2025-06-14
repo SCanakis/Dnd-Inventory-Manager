@@ -1,7 +1,6 @@
 package com.scanakispersonalprojects.dndapp.controller.inventory;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -38,11 +37,11 @@ public class CatalogController {
     public ResponseEntity<ItemCatalog> getItem(@PathVariable UUID uuid) {
         LOG.info("GET /itemCatalog/id=" + uuid);
         try {
-            Optional<ItemCatalog> item = service.getItemWithUUID(uuid);
-            if(item.isEmpty()) {
+            ItemCatalog item = service.getItemWithUUID(uuid);
+            if(item == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<>(item.get(), HttpStatus.OK);
+            return new ResponseEntity<>(item, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

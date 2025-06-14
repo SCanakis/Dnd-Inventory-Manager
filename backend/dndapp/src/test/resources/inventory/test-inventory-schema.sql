@@ -3,31 +3,6 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 
--- CREATE TYPE equippable_type AS ENUM (
---     'armor',
---     'cloak',
---     'bracers',
---     'head',
---     'belt',
---     'hands',
---     'ringL',
---     'ringR',
---     'feet',
---     'mainhand',
---     'offhand',
---     'twohand',
---     'back',
---     'spellfocus',
---     'custom'
--- );
-
--- CREATE TYPE rarity AS ENUM (
---     'common',
---     'uncommon',
---     'rare',
---     'very_rare',
---     'legendary'
--- );
 
 CREATE TABLE item_catalog (
     item_uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

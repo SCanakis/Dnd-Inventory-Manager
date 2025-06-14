@@ -13,7 +13,7 @@ import com.scanakispersonalprojects.dndapp.config.SqlFileLoader;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DeathSavingThrowsHelper;
-import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DndClass;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.PlayerClass;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.HPHandler;
 
 
@@ -227,10 +227,10 @@ public class CharacterInfoDaoPSQL implements CharacterInfoPersistance{
             abilityScores.put(as, (Integer) base.get(as.getJsonValue()));
         }
 
-        List<DndClass> classes = jdbc.query(
+        List<PlayerClass> classes = jdbc.query(
             sql.get("get_character_classes"),
             Map.of("uuid", uuid),
-            (rs, rowNum) -> new DndClass(
+            (rs, rowNum) -> new PlayerClass(
                 UUID.fromString(rs.getString("class_uuid")),
                 rs.getString("class_name"),
                 (UUID) rs.getObject("subclass_uuid", UUID.class),

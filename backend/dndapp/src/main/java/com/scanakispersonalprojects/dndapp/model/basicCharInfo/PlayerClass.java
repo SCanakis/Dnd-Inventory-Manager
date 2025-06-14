@@ -20,7 +20,7 @@ import java.util.UUID;
  */
 
 
-public record DndClass(
+public record PlayerClass(
     UUID classUuid,
     String className,
     UUID subClassUuid,

@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,9 @@ public class ItemCatalog {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "skill_altered_bonus")
     private Map<Skill, Integer> skillAlteredBonus;
+
+    @Transient
+    private List<ClassNameIdPair> classNameIdPair;
 
     public ItemCatalog() {}
 
@@ -227,6 +231,14 @@ public class ItemCatalog {
 
     public void setAbilityRequirement(Map<AbilityScore, Integer> abilityRequirement) {
         this.abilityRequirement = abilityRequirement;
+    }
+
+    public List<ClassNameIdPair> getClassNameIdPair() {
+        return classNameIdPair;
+    }
+
+    public void setClassNameIdPair(List<ClassNameIdPair> classNameIdPair) {
+        this.classNameIdPair = classNameIdPair;
     }
 
     

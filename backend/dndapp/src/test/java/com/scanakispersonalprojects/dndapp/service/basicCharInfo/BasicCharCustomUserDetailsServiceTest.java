@@ -27,7 +27,7 @@ import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CustomUserPrincipal;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DeathSavingThrowsHelper;
-import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DndClass;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.PlayerClass;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.HPHandler;
 
 @SpringBootTest
@@ -191,11 +191,11 @@ public class BasicCharCustomUserDetailsServiceTest {
         assertEquals(Integer.valueOf(10), abilityScores.get(AbilityScore.wisdom));
         assertEquals(Integer.valueOf(8), abilityScores.get(AbilityScore.charisma));
         
-        List<DndClass> classes = actualChar.classes();
+        List<PlayerClass> classes = actualChar.classes();
         assertNotNull(classes);
         assertEquals(1, classes.size());
         
-        DndClass dndClass = classes.get(0);
+        PlayerClass dndClass = classes.get(0);
         assertEquals("Fighter", dndClass.className()); 
         assertEquals(5, dndClass.level()); 
 
