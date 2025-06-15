@@ -1,1 +1,0 @@
-SELECT * FROM item_catalog WHERE item_uuid = :item_uuid;

@@ -96,23 +96,6 @@ public class CatalogControllerTest {
         testItemUuid = testItem.getItemUuid();
     }
 
-    // @Test
-    // public void debugDataInsertion() throws Exception {
-    //     // Check if the item was actually inserted
-    //     Integer count = jdbcTemplate.queryForObject(
-    //         "SELECT COUNT(*) FROM item_catalog WHERE item_uuid = ?", 
-    //         Integer.class, 
-    //         testItemUuid
-    //     );
-    //     System.out.println("Items found in database: " + count);
-        
-    //     // Check what's actually in the database
-    //     List<Map<String, Object>> items = jdbcTemplate.queryForList(
-    //         "SELECT * FROM item_catalog WHERE item_uuid = ?", 
-    //         testItemUuid
-    //     );
-    //     System.out.println("Database content: " + items);
-    // }
 
     @Test
     @WithMockUser(username = "testuser", roles = {"USER"})
