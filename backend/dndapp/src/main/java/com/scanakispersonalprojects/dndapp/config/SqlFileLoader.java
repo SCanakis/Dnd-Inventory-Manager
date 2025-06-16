@@ -43,11 +43,12 @@ public class SqlFileLoader {
         Resource[] resources = resolver.getResources("classpath:sql/*/*.sql");
 
         for(Resource r : resources) {
-
-            String filename = r.getFilename();
-            String key = filename.substring(0, filename.lastIndexOf("."));
-            String sqlText = StreamUtils.copyToString(r.getInputStream(), StandardCharsets.UTF_8);
-            sql.put(key, sqlText);
+            if(r != null && r.getFilename() != null) {
+                String filename = r.getFilename();
+                String key = filename.substring(0, filename.lastIndexOf("."));
+                String sqlText = StreamUtils.copyToString(r.getInputStream(), StandardCharsets.UTF_8);
+                sql.put(key, sqlText);
+            }
         }
     }
 

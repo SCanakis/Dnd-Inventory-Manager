@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,15 +31,18 @@ import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserDaoPSQL
 @Service
 public class CustomUserDetailsService implements UserDetailsService{
 
-    @Autowired 
     private UserDaoPSQL userDao;
 
-    @Autowired
     private CharacterService characterService;
 
     /**
      * Builds the {@link UserDetails} boject Srping Security needs.
      */
+
+    public CustomUserDetailsService(UserDaoPSQL userDaoPSQL, CharacterService characterService) {
+        this.characterService = characterService;
+        this.userDao = userDaoPSQL;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

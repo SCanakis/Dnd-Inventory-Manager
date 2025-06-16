@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scanakispersonalprojects.dndapp.model.inventory.ClassNameIdPair;
@@ -18,10 +17,8 @@ import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemClassEligib
 public class ItemCatalogService {
     
 
-    @Autowired
     private ItemCatalogJPARepo repo;
 
-    @Autowired
     private ItemClassEligibilityRepository classRepo;
 
     public ItemCatalogService(ItemCatalogJPARepo repo, ItemClassEligibilityRepository classRepo) {
