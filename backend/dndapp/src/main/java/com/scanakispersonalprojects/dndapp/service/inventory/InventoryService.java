@@ -21,4 +21,8 @@ public class InventoryService {
         return this.repo.getInventoryUsingUUID(charUuid);
     }
 
+    public List<CharacterHasItemProjection> getInventoryUsingFZF(UUID charUuid, String serachTerm) {
+        return this.repo.getInventoyUsingFZF(charUuid, serachTerm);
+    }
+
 }

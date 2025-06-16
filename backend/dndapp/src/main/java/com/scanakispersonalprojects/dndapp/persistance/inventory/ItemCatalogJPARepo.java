@@ -23,7 +23,7 @@ public interface ItemCatalogJPARepo extends JpaRepository<ItemCatalog, UUID>{
     
     @Query(value =  "SELECT item_uuid, item_name, item_weight, item_value, item_rarity " + 
                     "FROM item_catalog WHERE " +
-                    "SIMILARITY(item_name, :searchTerm) > 0.1 " +
+                    "SIMILARITY(item_name, :searchTerm) > 0.06 " +
                     "ORDER BY SIMILARITY(item_name, :searchTerm) DESC;", 
            nativeQuery = true)
     List<ItemProjection> findByNameSimilarity(@Param("searchTerm") String searchTerm);

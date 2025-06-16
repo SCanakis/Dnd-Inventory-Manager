@@ -17,21 +17,35 @@ public interface InventoryJPARepo extends JpaRepository<CharacterHasItemSlot, Ch
 
 
 
-    @Query("SELECT ic.itemUuid as itemUuid, " +
-           "ic.itemName as itemName, " +
-           "ic.itemWeight as itemWeight, " +
-           "ic.itemValue as itemValue, " +
-           "ic.itemRarity as itemRarity, " +
+    @Query(value = "SELECT ic.item_uuid as itemUuid, " +
+           "ic.item_name as itemName, " +
+           "ic.item_weight as itemWeight, " +
+           "ic.item_value as itemValue, " +
+           "ic.item_rarity as itemRarity, " +
            "chis.quantity as quantity, " +
            "chis.equipped as equipped, " +
            "chis.attuned as attuned, " +
-           "chis.inAttackTab as inAttackTab, " +
-           "chis.id.containerUuid as containerUuid " +
-           "FROM CharacterHasItemSlot chis " +
-           "JOIN ItemCatalog ic ON chis.id.itemUuid = ic.itemUuid " +
-           "WHERE chis.id.charUuid = :characterUuid")
+           "chis.in_attack_tab as inAttackTab, " +
+           "chis.container_uuid as containerUuid " +
+           "FROM character_has_item_slot chis " +
+           "JOIN item_catalog ic ON chis.item_uuid = ic.item_uuid " +
+           "WHERE chis.character_uuid = :characterUuid;", nativeQuery=true)
     List<CharacterHasItemProjection> getInventoryUsingUUID(@Param("characterUuid") UUID charUuid);
 
-
+    @Query(value = "SELECT ic.item_uuid as itemUuid, " +
+           "ic.item_name as itemName, " +
+           "ic.item_weight as itemWeight, " +
+           "ic.item_value as itemValue, " +
+           "ic.item_rarity as itemRarity, " +
+           "chis.quantity as quantity, " +
+           "chis.equipped as equipped, " +
+           "chis.attuned as attuned, " +
+           "chis.in_attack_tab as inAttackTab, " +
+           "chis.container_uuid as containerUuid " +
+           "FROM character_has_item_slot chis " +
+           "JOIN item_catalog ic ON chis.item_uuid = ic.item_uuid " +
+           "WHERE chis.character_uuid = :characterUuid AND SIMILARITY(ic.item_name, :searchTerm) > 0.06 " + 
+           "ORDER BY SIMILARITY(ic.item_name, :searchTerm) DESC", nativeQuery = true)
+    List<CharacterHasItemProjection> getInventoyUsingFZF(@Param("characterUuid") UUID charUuid, @Param("searchTerm") String searchTerm);
     
 }
