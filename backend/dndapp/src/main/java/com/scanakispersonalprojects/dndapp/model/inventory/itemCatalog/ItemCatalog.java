@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.model.inventory;
+package com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

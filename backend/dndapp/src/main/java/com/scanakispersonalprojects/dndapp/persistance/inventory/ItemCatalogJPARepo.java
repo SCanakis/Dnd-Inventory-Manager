@@ -8,8 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.scanakispersonalprojects.dndapp.model.inventory.ItemCatalog;
-import com.scanakispersonalprojects.dndapp.model.inventory.ItemProjection;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemProjection;
+
 import java.util.List;
 
 

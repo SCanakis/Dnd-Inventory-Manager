@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.scanakispersonalprojects.dndapp.model.inventory.ItemCatalog;
-import com.scanakispersonalprojects.dndapp.model.inventory.ItemProjection;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemProjection;
 import com.scanakispersonalprojects.dndapp.service.inventory.ItemCatalogService;
 
 

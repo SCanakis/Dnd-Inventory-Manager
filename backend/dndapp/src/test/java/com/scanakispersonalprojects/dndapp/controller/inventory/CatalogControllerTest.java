@@ -23,10 +23,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.RollType;
-import com.scanakispersonalprojects.dndapp.model.inventory.EquippableType;
-import com.scanakispersonalprojects.dndapp.model.inventory.ItemCatalog;
-import com.scanakispersonalprojects.dndapp.model.inventory.Rarity;
-import com.scanakispersonalprojects.dndapp.model.inventory.Skill;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.EquippableType;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.Rarity;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.Skill;
 import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemCatalogJPARepo;
 
 import jakarta.transaction.Transactional;

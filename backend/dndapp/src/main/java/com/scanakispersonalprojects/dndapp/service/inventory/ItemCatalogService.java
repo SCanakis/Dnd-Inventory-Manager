@@ -7,9 +7,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.scanakispersonalprojects.dndapp.model.inventory.ClassNameIdPair;
-import com.scanakispersonalprojects.dndapp.model.inventory.ItemCatalog;
-import com.scanakispersonalprojects.dndapp.model.inventory.ItemProjection;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ClassNameIdPair;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemProjection;
 import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemCatalogJPARepo;
 import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemClassEligibilityRepository;
 

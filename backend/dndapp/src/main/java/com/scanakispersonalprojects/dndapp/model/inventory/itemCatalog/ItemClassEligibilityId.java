@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.model.inventory;
+package com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog;
 
 import java.io.Serializable;
 import java.util.Objects;
