@@ -1,5 +1,7 @@
 package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
 
+import java.util.UUID;
+
 /**
  * 
  * A helper READ ONLY record for the CharacerBasicInfoView. This record 
@@ -13,8 +15,8 @@ package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
 
 
 public record HPHandler(
-    int currentHp,
     int maxHp,
-    int tempHp
+    int currentHp,
+    int temporaryHp
 ) {
 }

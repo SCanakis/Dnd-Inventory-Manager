@@ -16,7 +16,7 @@ public class DndClass {
     @Column(name = "name", length = 50, nullable = false, unique = true)
     private String name;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "hit_dice_value", nullable = false)
     private HitDiceValue hitDiceValue;
 

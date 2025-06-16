@@ -1,5 +1,6 @@
 package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
 
+import java.util.UUID;
 
 /**
  * 
@@ -11,6 +12,6 @@ package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
  */
 
 public record DeathSavingThrowsHelper(
-    short success,
-    short failure
+    int successes,
+    int failures
 ) {}

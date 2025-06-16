@@ -15,6 +15,8 @@ import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CustomUserPrincip
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.User;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserDaoPSQL;
 
+import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CharacterInfoService;
+
 /**
  * Tells Spring Security how to look up a user in the database.
  * 
@@ -33,13 +35,13 @@ public class CustomUserDetailsService implements UserDetailsService{
 
     private UserDaoPSQL userDao;
 
-    private CharacterService characterService;
+    private CharacterInfoService characterService;
 
     /**
      * Builds the {@link UserDetails} boject Srping Security needs.
      */
 
-    public CustomUserDetailsService(UserDaoPSQL userDaoPSQL, CharacterService characterService) {
+    public CustomUserDetailsService(UserDaoPSQL userDaoPSQL, CharacterInfoService characterService) {
         this.characterService = characterService;
         this.userDao = userDaoPSQL;
     }
@@ -53,7 +55,7 @@ public class CustomUserDetailsService implements UserDetailsService{
         
         List<CharacterBasicInfoView> characters = new ArrayList<>();
         for(UUID uuid : charUuids) {
-            characters.add(characterService.getCharInfo(uuid));
+            characters.add(characterService.getCharacterBasicInfoView(uuid));
         }
 
         return new CustomUserPrincipal(user, characters);

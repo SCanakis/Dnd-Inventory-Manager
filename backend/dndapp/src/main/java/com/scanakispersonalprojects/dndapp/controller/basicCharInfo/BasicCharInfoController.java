@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharViewPatch;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
-import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CharacterService;
+import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CharacterInfoService;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class BasicCharInfoController {
     
     private static final Logger LOG = Logger.getLogger(BasicCharInfoController.class.getName());
-    private CharacterService charService;
+    private CharacterInfoService characterInfoService;
     private CustomUserDetailsService userService;
     private final String GET_PATH = "GET /characters/";
     private final String PUT_PATH = "PUT /characters/";
@@ -40,15 +40,15 @@ public class BasicCharInfoController {
      * {@link CharacterService} with are required for authentication and
      * character modification
      * 
-     * @param charService       {@link CharacterSerice} used for character retrival, update, and delition
+     * @param charService       {} used for character retrival, update, and delition
      * 
      * @param userService       {@link CustomUserDetailsService} used for
      * authentication
      */
 
 
-    public BasicCharInfoController(CharacterService charService, CustomUserDetailsService userService) {
-        this.charService = charService;
+    public BasicCharInfoController(CharacterInfoService characterInfoService, CustomUserDetailsService userService) {
+        this.characterInfoService = characterInfoService;
         this.userService = userService;
     }
 
@@ -65,7 +65,7 @@ public class BasicCharInfoController {
     public ResponseEntity<CharacterBasicInfoView> getCharacterBasicView(@PathVariable UUID uuid) {
         LOG.info(GET_PATH + uuid);
         try {
-            CharacterBasicInfoView charInfoView = charService.getCharInfo(uuid);
+            CharacterBasicInfoView charInfoView = characterInfoService.getCharacterBasicInfoView(uuid);
             if (charInfoView != null) {
                 return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
             } else {
@@ -78,39 +78,39 @@ public class BasicCharInfoController {
         }
     }
 
-    /**
-     * 
-     * Update some of the values that will frequently be changed in the BasicCharInfo
-     * 
-     * @param uuid          unique idneitifer of the character
-     * @param patch         The filed that are to be updated
-     * @return              200 with an instance of the updated {@link CharacterBasicInfoView}
-     *                      401 if user not authorized
-     *                      500 on any unexpected server error
-     */
+    // /**
+    //  * 
+    //  * Update some of the values that will frequently be changed in the BasicCharInfo
+    //  * 
+    //  * @param uuid          unique idneitifer of the character
+    //  * @param patch         The filed that are to be updated
+    //  * @return              200 with an instance of the updated {@link CharacterBasicInfoView}
+    //  *                      401 if user not authorized
+    //  *                      500 on any unexpected server error
+    //  */
 
 
-    @PutMapping("/{uuid}")
-    public ResponseEntity<CharacterBasicInfoView> updateCharacterBasicView(Authentication authentication, @PathVariable UUID uuid , @RequestBody CharViewPatch patch) {
-        LOG.info(PUT_PATH + uuid);
-        List<UUID> characters = userService.getUsersCharacters(authentication);
-        if(!characters.contains(uuid)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+    // @PutMapping("/{uuid}")
+    // public ResponseEntity<CharacterBasicInfoView> updateCharacterBasicView(Authentication authentication, @PathVariable UUID uuid , @RequestBody CharViewPatch patch) {
+    //     LOG.info(PUT_PATH + uuid);
+    //     List<UUID> characters = userService.getUsersCharacters(authentication);
+    //     if(!characters.contains(uuid)) {
+    //         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    //     }
 
-        try {
-            CharacterBasicInfoView charInfoView = charService.updateCharInfo(uuid, patch);
-            if (charInfoView != null) {
-                return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            } 
+    //     try {
+    //         CharacterBasicInfoView charInfoView = charService.updateCharInfo(uuid, patch);
+    //         if (charInfoView != null) {
+    //             return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
+    //         } else {
+    //             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    //         } 
 
-        } catch (Exception e) {
-            LOG.severe(e::getMessage);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    //     } catch (Exception e) {
+    //         LOG.severe(e::getMessage);
+    //         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
    /**
     * 
@@ -136,7 +136,7 @@ public class BasicCharInfoController {
         UUID userUuid = userService.getUsersUuid(authentication);
 
         try {
-            boolean result = charService.deleteCharacter(userUuid, uuid);
+            boolean result = characterInfoService.deleteCharacter(userUuid, uuid);
             if(result != false) {
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {

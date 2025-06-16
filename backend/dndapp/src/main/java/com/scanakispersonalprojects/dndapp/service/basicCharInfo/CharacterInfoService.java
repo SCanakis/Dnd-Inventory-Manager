@@ -20,6 +20,9 @@ import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.CharacterIn
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.DndClassRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.RaceRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.SubClassRepo;
+import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserDaoPSQL;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class CharacterInfoService {
@@ -36,14 +39,17 @@ public class CharacterInfoService {
 
     private BackgroundRepo backgroundRepo;
 
+    private UserDaoPSQL userDao;
+
     public CharacterInfoService(CharacterInfoRepo characterInfoRepo, CharacterClassRepo characterClassRepo,
-            DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo) {
+            DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, UserDaoPSQL userDao) {
         this.characterInfoRepo = characterInfoRepo;
         this.characterClassRepo = characterClassRepo;
         this.dndClassRepo = dndClassRepo;
         this.subClassRepo = subClassRepo;
         this.raceRepo = raceRepo;
         this.backgroundRepo = backgroundRepo;
+        this.userDao = userDao;
     }
 
     public CharacterBasicInfoView getCharacterBasicInfoView(UUID charInfoUuid) {
@@ -109,20 +115,33 @@ public class CharacterInfoService {
     }
 
     public String getRaceName(UUID raceUuid) {
+        if(raceUuid == null) {
+            return "No Race";
+        }
         Optional<Race> raceOptional = raceRepo.findById(raceUuid);
         Race race = raceOptional.get();
         return race.getName();
     }
  
     public String getBackgroundName(UUID backgroundUuid) {
-        Optional<Background> backgroundOptional = backgroundRepo.findById(backgroundUuid);
-        Background bg= backgroundOptional.get();
-        return bg.getName();
+    if (backgroundUuid == null) {
+        return "No Background";
     }
+    
+    Optional<Background> background = backgroundRepo.findById(backgroundUuid);
+    if (background.isPresent()) {
+        return background.get().getName();
+    } else {
+        System.out.println("Background not found for UUID: " + backgroundUuid);
+        return "Unknown Background";
+    }
+}
 
-    public boolean deleteCharacter(UUID charInfoUuid) {
+    @Transactional
+    public boolean deleteCharacter(UUID charInfoUuid, UUID userUuid) {
         Optional<CharacterInfo> characterInfoOptional = characterInfoRepo.findById(charInfoUuid);
         if(characterInfoOptional.isPresent()) {
+            userDao.deleteCharacter(userUuid, charInfoUuid);
             characterInfoRepo.deleteById(charInfoUuid);
             characterInfoOptional = characterInfoRepo.findById(charInfoUuid);
             if(characterInfoOptional.isEmpty()) {
