@@ -36,7 +36,7 @@ public record CharacterBasicInfoView(
     String race,
     UUID raceUUID,
     Map<AbilityScore, Integer> abilityScores,
-    List<PlayerClass> classes,
+    List<CharacterClassDetail> classes, 
     HPHandler hpHandler,
     DeathSavingThrowsHelper deathSavingThrowsHelper
 ) {}
