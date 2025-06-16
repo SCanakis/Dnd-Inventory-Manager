@@ -11,12 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemProjection;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 import com.scanakispersonalprojects.dndapp.service.inventory.InventoryService;
 import com.scanakispersonalprojects.dndapp.service.inventory.ItemCatalogService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 @Controller
@@ -73,9 +75,24 @@ public class InventoryController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
 
+    @GetMapping("/id={itemUuid}")
+    public ResponseEntity<ItemCatalog> getItemFromInventory(@PathVariable UUID itemUuid, @PathVariable UUID uuid) {
+        LOG.info("GET /inventory/" + uuid + "/id="+ itemUuid);
+
+        try {
+            ItemCatalog item = itemCatalogService.getItemWithUUID(itemUuid);
+            if(item == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(item, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
+    
 
 
 
