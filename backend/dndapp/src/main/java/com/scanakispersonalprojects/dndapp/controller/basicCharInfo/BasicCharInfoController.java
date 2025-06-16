@@ -31,7 +31,9 @@ public class BasicCharInfoController {
     private static final Logger LOG = Logger.getLogger(BasicCharInfoController.class.getName());
     private CharacterService charService;
     private CustomUserDetailsService userService;
-
+    private final String GET_PATH = "GET /characters/";
+    private final String PUT_PATH = "PUT /characters/";
+    private final String DELETE_PATH = "DELETE /characters/";
    
     /**
      * Contructor instantiates the {@link CustomUserDetailsService} and 
@@ -61,7 +63,7 @@ public class BasicCharInfoController {
 
     @GetMapping("/{uuid}")
     public ResponseEntity<CharacterBasicInfoView> getCharacterBasicView(@PathVariable UUID uuid) {
-        LOG.info("GET /character/" + uuid);
+        LOG.info(GET_PATH + uuid);
         try {
             CharacterBasicInfoView charInfoView = charService.getCharInfo(uuid);
             if (charInfoView != null) {
@@ -90,7 +92,7 @@ public class BasicCharInfoController {
 
     @PutMapping("/{uuid}")
     public ResponseEntity<CharacterBasicInfoView> updateCharacterBasicView(Authentication authentication, @PathVariable UUID uuid , @RequestBody CharViewPatch patch) {
-        LOG.info("PUT /character/" + uuid);
+        LOG.info(PUT_PATH + uuid);
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -124,7 +126,8 @@ public class BasicCharInfoController {
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<CharacterBasicInfoView> deleteCharacter(Authentication authentication ,@PathVariable UUID uuid) {
-        
+        LOG.info(DELETE_PATH + uuid);
+
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

@@ -30,6 +30,7 @@ public class InventoryController {
     private InventoryService inventoryService;
     private CustomUserDetailsService userService;
     private ItemCatalogService itemCatalogService;
+    private final String GET_PATH = "GET /inventory/";
 
     public InventoryController(InventoryService inventoryService, CustomUserDetailsService userService, ItemCatalogService itemCatalogService) {
         this.inventoryService= inventoryService;
@@ -41,7 +42,7 @@ public class InventoryController {
 
     @GetMapping
     public ResponseEntity<List<CharacterHasItemProjection>> getInventoryUsingUUID(Authentication authentication, @PathVariable UUID uuid) {
-        LOG.info("GET /inventory/" + uuid);
+        LOG.info(GET_PATH + uuid);
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -60,7 +61,7 @@ public class InventoryController {
 
     @GetMapping("/searchTerm={searchTerm}")
     public ResponseEntity<List<CharacterHasItemProjection>> getInventoryFuzzySearch(Authentication authentication, @PathVariable String searchTerm, @PathVariable UUID uuid) {
-        LOG.info("GET /inventory/" + uuid + "/searchTerm="+ searchTerm);
+        LOG.info(GET_PATH + uuid + "/searchTerm="+ searchTerm);
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -79,7 +80,7 @@ public class InventoryController {
 
     @GetMapping("/id={itemUuid}")
     public ResponseEntity<ItemCatalog> getItemFromInventory(@PathVariable UUID itemUuid, @PathVariable UUID uuid) {
-        LOG.info("GET /inventory/" + uuid + "/id="+ itemUuid);
+        LOG.info(GET_PATH + uuid + "/id="+ itemUuid);
 
         try {
             ItemCatalog item = itemCatalogService.getItemWithUUID(itemUuid);
