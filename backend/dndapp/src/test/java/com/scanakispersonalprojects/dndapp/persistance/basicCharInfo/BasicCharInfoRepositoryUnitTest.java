@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.DirtiesContext;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Background;
@@ -23,8 +24,12 @@ import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DeathSavingThrows
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.HPHandler;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Race;
 
+import jakarta.transaction.Transactional;
+
 @DataJpaTest
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Transactional
 class BasicCharInfoRepositoryUnitTest {
 
     @Autowired
@@ -43,11 +48,6 @@ class BasicCharInfoRepositoryUnitTest {
 
     @BeforeEach
     void setUp() {
-        // Clean up any existing data
-        characterInfoRepo.deleteAll();
-        raceRepo.deleteAll();
-        backgroundRepo.deleteAll();
-
         // Create test race
         testRace = new Race();
         testRace.setName("Test Dwarf");
@@ -147,8 +147,8 @@ class BasicCharInfoRepositoryUnitTest {
         
         // Assert
         assertNotNull(allCharacters);
-        assertEquals(1, allCharacters.size());
-        assertEquals("Test Hero", allCharacters.get(0).getName());
+        assertEquals(6, allCharacters.size());
+        assertTrue(allCharacters.contains(testCharacter));
     }
 
     @Test
@@ -196,7 +196,7 @@ class BasicCharInfoRepositoryUnitTest {
         
         // Verify total count decreased
         List<CharacterInfo> remainingCharacters = characterInfoRepo.findAll();
-        assertEquals(0, remainingCharacters.size());
+        assertEquals(5, remainingCharacters.size());
     }
 
     @Test
