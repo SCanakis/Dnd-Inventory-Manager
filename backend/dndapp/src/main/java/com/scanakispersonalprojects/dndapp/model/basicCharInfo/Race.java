@@ -70,12 +70,6 @@ public class Race {
         return statIncreases != null && !statIncreases.isEmpty();
     }
 
-   
-    public Integer getTotalStatIncreases() {
-        return statIncreases != null ? 
-            statIncreases.values().stream().mapToInt(Integer::intValue).sum() : 0;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

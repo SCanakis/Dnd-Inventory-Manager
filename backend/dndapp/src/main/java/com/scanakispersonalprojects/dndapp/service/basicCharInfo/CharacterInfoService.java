@@ -168,7 +168,6 @@ public class CharacterInfoService {
             return false;
         } catch (Exception e) {
             System.out.println("Delete failed: " + e.getMessage());
-            e.printStackTrace();
             return false;
         }
     }
@@ -197,7 +196,6 @@ public class CharacterInfoService {
             return result;
             
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
 
@@ -251,7 +249,6 @@ public class CharacterInfoService {
             }
             
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         return getCharacterBasicInfoView(uuid);

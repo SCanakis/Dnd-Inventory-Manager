@@ -23,16 +23,13 @@ public class DndClass {
     @Column(name = "description", length = 255)
     private String description;
 
-    // Default constructor
     public DndClass() {}
 
-    // Constructor with required fields
     public DndClass(String name, HitDiceValue hitDiceValue) {
         this.name = name;
         this.hitDiceValue = hitDiceValue;
     }
-
-    // Full constructor
+    
     public DndClass(UUID classUuid, String name, HitDiceValue hitDiceValue, String description) {
         this.classUuid = classUuid;
         this.name = name;
@@ -40,7 +37,6 @@ public class DndClass {
         this.description = description;
     }
 
-    // Getters and Setters
     public UUID getClassUuid() {
         return classUuid;
     }
