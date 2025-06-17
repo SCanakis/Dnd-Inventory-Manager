@@ -2,6 +2,7 @@
 
 
 // import static org.junit.jupiter.api.Assertions.assertNotNull;
+// import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 // import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // import java.util.HashMap;
@@ -21,8 +22,10 @@
 // import org.testcontainers.junit.jupiter.Testcontainers;
 
 // import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
-// import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharViewPatch;
 // import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
+// import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterInfo;
+// import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DeathSavingThrowsHelper;
+// import com.scanakispersonalprojects.dndapp.model.basicCharInfo.HPHandler;
 
 // @SpringBootTest
 // @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -33,7 +36,7 @@
 // public class BasicCharInfoServiceTest {
     
 //     @Autowired
-//     private CharacterService service;
+//     private CharacterInfoService service;
 
 //     @Autowired
 //     private JdbcTemplate jdbcTemplate;
@@ -153,7 +156,7 @@
 //     @Test
 //     public void getCharInfoTest() throws Exception{
 //         // Act
-//         CharacterBasicInfoView result = service.getCharInfo(testCharUuid);
+//         CharacterBasicInfoView result = service.getCharacterBasicInfoView(testCharUuid);
 //         // Assert
 //         assertNotNull(result);
 //         assertEquals(result.charInfoUUID(), testCharUuid);
@@ -172,20 +175,20 @@
 //         assertEquals(result.classes().isEmpty(), false);
 //         assertEquals(result.classes().size(), 1);
 //         assertEquals(result.classes().get(0).className(), "Fighter");
-//         assertEquals(result.classes().get(0).level(), 5);
-//         assertEquals(result.classes().get(0).currentHitDice(), 4);
+//         assertEquals(result.classes().get(0).level(),(short) 5);
+//         assertEquals(result.classes().get(0).hitDiceRemaining(), (short) 4);
 //         assertEquals(result.classes().get(0).hitDiceValue(), 10);
 
 //         // Verify HP handler
 //         assertNotNull(result.hpHandler());
 //         assertEquals(result.hpHandler().currentHp(), 45);
 //         assertEquals(result.hpHandler().maxHp(), 50);
-//         assertEquals(result.hpHandler().tempHp(), 5);
+//         assertEquals(result.hpHandler().temporaryHp(), 5);
 
 //         // Verify death saving throws
 //         assertNotNull(result.deathSavingThrowsHelper());
-//         assertEquals(result.deathSavingThrowsHelper().success(), 2);
-//         assertEquals(result.deathSavingThrowsHelper().failure(), 1);
+//         assertEquals(result.deathSavingThrowsHelper().successes(), 2);
+//         assertEquals(result.deathSavingThrowsHelper().failures(), 1);
 //     }
 
 //     @Test
@@ -197,23 +200,39 @@
 //         Map<AbilityScore, Integer> as = new HashMap<>();
 //         as.put(AbilityScore.strength, 29);
 
-//         CharViewPatch patch = new CharViewPatch("Updated Test Character", 0, 50, hitDice, false, as, 3, 0);
+//         CharacterInfo characterInfo = new CharacterInfo(
+//             testCharUuid, 
+//             "Updated Test Character",
+//             false ,
+//             testRaceUuid,
+//             testBackgroundUuid,
+//             new HashMap<AbilityScore, Integer>() {{
+//                 put(AbilityScore.strength, 20);
+//                 put(AbilityScore.dexterity, 20);
+//                 put(AbilityScore.constitution, 20);
+//                 put(AbilityScore.wisdom, 20);
+//                 put(AbilityScore.intelligence, 20);
+//                 put(AbilityScore.charisma, 20);
+//             }},
+//             new HPHandler(100,100,100),
+//             new DeathSavingThrowsHelper(3,3) 
+//         );
 
 //         // Act
-//         CharacterBasicInfoView result = service.updateCharInfo(testCharUuid, patch);
+//         CharacterBasicInfoView result = service.updateCharInfo(testCharUuid, characterInfo);
 
 //         // Assert
 //         assertNotNull(result);
 //         assertEquals(result.charInfoUUID(), testCharUuid);
 
 //         assertEquals(result.name(), "Updated Test Character");
-//         assertEquals(result.name(), patch.name());
+//         assertEquals(result.name(), characterInfo.getName());
 
 //         assertEquals(result.race(), "Human");
 //         assertEquals(result.background(), "Acolyte");
 
 //         assertEquals(result.inspiration(), false);
-//         assertEquals(result.inspiration(), patch.inspiration());
+//         assertEquals(result.inspiration(), characterInfo.getInspiration());
 
 //         assertEquals(result.raceUUID(), testRaceUuid);
 //         assertEquals(result.backgroundUUID(), testBackgroundUuid);
@@ -221,16 +240,16 @@
 //         // Verify ability scores
 //         assertEquals((int) result.abilityScores().get(AbilityScore.strength), 29);
 //         assertEquals((int) result.abilityScores().get(AbilityScore.dexterity), 14);
-//         assertEquals((int)result.abilityScores().get(AbilityScore.strength), patch.abilityScore().get(AbilityScore.strength));
+//         assertEquals((int)result.abilityScores().get(AbilityScore.strength), characterInfo.getAbilityScores().get(AbilityScore.strength));
 
 //         // Verify classes
 //         assertEquals(result.classes().isEmpty(), false);
 //         assertEquals(result.classes().size(), 1);
 //         assertEquals(result.classes().get(0).className(), "Fighter");
-//         assertEquals(result.classes().get(0).level(), 5);
+//         assertEquals(result.classes().get(0).level(), (short) 5);
 
-//         assertEquals(result.classes().get(0).currentHitDice(),2);
-//         assertEquals(result.classes().get(0).currentHitDice(), patch.hitDice().get(testClassUuid));
+//         assertEquals(result.classes().get(0).hitDiceRemaining(),(short) 2);
+//         assertEquals(result.classes().get(0).hitDiceRemaining(), characterInfo.().get(testClassUuid));
         
 //         assertEquals(result.classes().get(0).hitDiceValue(), 10);
 
@@ -238,19 +257,19 @@
 //         assertNotNull(result.hpHandler());
         
 //         assertEquals(result.hpHandler().currentHp(), 0);
-//         assertEquals(result.hpHandler().currentHp(), patch.currentHP());
+//         assertEquals(result.hpHandler().currentHp(), characterInfo.getHpHandler().currentHp());
 
 //         assertEquals(result.hpHandler().maxHp(), 50);
-//         assertEquals(result.hpHandler().tempHp(), 50);
+//         assertEquals(result.hpHandler().temporaryHp(), 50);
 
 //         // Verify death saving throws
 //         assertNotNull(result.deathSavingThrowsHelper());
 
-//         assertEquals(result.deathSavingThrowsHelper().success(), 3);
-//         assertEquals(result.deathSavingThrowsHelper().success(), patch.success());
+//         assertEquals(result.deathSavingThrowsHelper().successes(), 3);
+//         assertEquals(result.deathSavingThrowsHelper().successes(), characterInfo.getDeathSavingThrowsHelper().successes());
         
-//         assertEquals(result.deathSavingThrowsHelper().failure(), 0);
-//         assertEquals(result.deathSavingThrowsHelper().failure(), patch.failure());
+//         assertEquals(result.deathSavingThrowsHelper().failures(), 0);
+//         assertEquals(result.deathSavingThrowsHelper().failures(), characterInfo.getDeathSavingThrowsHelper().failures());
 
 //     }
 
@@ -280,20 +299,20 @@
 //         assertEquals(result.classes().isEmpty(), false);
 //         assertEquals(result.classes().size(), 1);
 //         assertEquals(result.classes().get(0).className(), "Fighter");
-//         assertEquals(result.classes().get(0).level(), 5);
-//         assertEquals(result.classes().get(0).currentHitDice(), 4);
+//         assertEquals(result.classes().get(0).level(), (short)5);
+//         assertEquals(result.classes().get(0).hitDiceRemaining(), (short) 4);
 //         assertEquals(result.classes().get(0).hitDiceValue(), 10);
 
 //         // Verify HP handler
 //         assertNotNull(result.hpHandler());
 //         assertEquals(result.hpHandler().currentHp(), 45);
 //         assertEquals(result.hpHandler().maxHp(), 50);
-//         assertEquals(result.hpHandler().tempHp(), 5);
+//         assertEquals(result.hpHandler().temporaryHp(), 5);
 
 //         // Verify death saving throws
 //         assertNotNull(result.deathSavingThrowsHelper());
-//         assertEquals(result.deathSavingThrowsHelper().success(), 2);
-//         assertEquals(result.deathSavingThrowsHelper().failure(), 1);
+//         assertEquals(result.deathSavingThrowsHelper().successes(), 2);
+//         assertEquals(result.deathSavingThrowsHelper().failures(), 1);
 //     }
 
 

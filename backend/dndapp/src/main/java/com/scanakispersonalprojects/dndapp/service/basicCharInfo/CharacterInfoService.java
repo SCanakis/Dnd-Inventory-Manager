@@ -14,6 +14,7 @@ import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterInfo;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DndClass;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Race;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Subclass;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterInfoUpdateDTO;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.BackgroundRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.CharacterClassRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.CharacterInfoRepo;
@@ -172,16 +173,90 @@ public class CharacterInfoService {
         }
     }
 
+
+    @Transactional
+    public List<CharacterClassDetail> updateCharacterClassDetail(UUID charInfoUuid, List<CharacterClassDetail> characterClassDetails) {
+        List<CharacterClassDetail> result = new ArrayList<>();
+        try {
+            for(CharacterClassDetail dndClass : characterClassDetails) {
+                Optional<CharacterClass> existingClassOptional = characterClassRepo
+                .findByCharInfoUuidAndClassUuid(charInfoUuid, dndClass.classUuid());
+
+                if(existingClassOptional.isPresent()) {
+                    CharacterClass existingClass = existingClassOptional.get();
+
+                    existingClass.setSubclassUuid(dndClass.subclassUuid());
+                    existingClass.setLevel(dndClass.level());
+                    existingClass.setHitDiceRemaining(dndClass.hitDiceRemaining());
+
+                    CharacterClass savedClass = characterClassRepo.save(existingClass);
+
+                    result.add(mapToCharacterClassDetail(savedClass));
+                }
+            }
+            return result;
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
  
     @Transactional
-    public CharacterBasicInfoView updateCharInfo(UUID uuid, CharacterInfo patch) {
-        Optional<CharacterInfo> exists = characterInfoRepo.findById(uuid);
-        if(exists.isPresent()) {
-            characterInfoRepo.save(patch);
-            return getCharacterBasicInfoView(uuid);
-        }
-        return null;
+    public CharacterBasicInfoView updateCharInfo(UUID uuid, CharacterInfoUpdateDTO updateDTO) {
+        Optional<CharacterInfo> existsOptional = characterInfoRepo.findById(uuid);
+            if(existsOptional.isPresent()) {
+                CharacterInfo existing = existsOptional.get();
+                
+                // Update only non-null fields from DTO
+                if(updateDTO.getName() != null) {
+                    existing.setName(updateDTO.getName());
+                }
+                if(updateDTO.getInspiration() != null) {
+                    existing.setInspiration(updateDTO.getInspiration());
+                }
+                if(updateDTO.getBackgroundUuid() != null) {
+                    existing.setBackgroundUuid(updateDTO.getBackgroundUuid());
+                }
+                if(updateDTO.getRaceUuid() != null) {
+                    existing.setRaceUuid(updateDTO.getRaceUuid());
+                }
+                if(updateDTO.getAbilityScores() != null) {
+                    existing.setAbilityScores((updateDTO.getAbilityScores()));
+                }
+                if(updateDTO.getHpHandler() != null) {
+                    existing.setHpHandler(updateDTO.getHpHandler());
+                }
+                if(updateDTO.getDeathSavingThrowsHelper() != null) {
+                    existing.setDeathSavingThrowsHelper(updateDTO.getDeathSavingThrowsHelper());
+                }
+                
+                characterInfoRepo.save(existing);
+                return getCharacterBasicInfoView(uuid);
+            }
+    return null;
+
     }
+
+    @Transactional
+    public CharacterBasicInfoView updateUsingPatch(UUID uuid, CharacterInfoUpdateDTO updatePatch) {
+        try {
+            // Update character basic info
+            updateCharInfo(uuid, updatePatch);
+            
+            // Update character classes if provided
+            if(updatePatch.getCharacterClassDetail() != null && !updatePatch.getCharacterClassDetail().isEmpty()) {
+                updateCharacterClassDetail(uuid, updatePatch.getCharacterClassDetail());
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return getCharacterBasicInfoView(uuid);
+    }
+
 
 
 }

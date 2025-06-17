@@ -10,7 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
-import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterInfo;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterInfoUpdateDTO;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CharacterInfoService;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 
@@ -91,7 +91,7 @@ public class BasicCharInfoController {
 
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<CharacterBasicInfoView> updateCharacterBasicView(Authentication authentication, @PathVariable UUID uuid , @RequestBody CharacterInfo patch) {
+    public ResponseEntity<CharacterBasicInfoView> updateCharacterBasicView(Authentication authentication, @PathVariable UUID uuid , @RequestBody CharacterInfoUpdateDTO patch) {
         LOG.info(PUT_PATH + uuid);
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {
@@ -99,7 +99,7 @@ public class BasicCharInfoController {
         }
 
         try {
-            CharacterBasicInfoView charInfoView = characterInfoService.updateCharInfo(uuid, patch);
+            CharacterBasicInfoView charInfoView = characterInfoService.updateUsingPatch(uuid, patch);
             if (charInfoView != null) {
                 return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
             } else {
