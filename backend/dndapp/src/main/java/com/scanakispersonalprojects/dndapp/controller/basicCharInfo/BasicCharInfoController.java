@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharViewPatch;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterInfo;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CharacterInfoService;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 
@@ -90,27 +91,27 @@ public class BasicCharInfoController {
     //  */
 
 
-    // @PutMapping("/{uuid}")
-    // public ResponseEntity<CharacterBasicInfoView> updateCharacterBasicView(Authentication authentication, @PathVariable UUID uuid , @RequestBody CharViewPatch patch) {
-    //     LOG.info(PUT_PATH + uuid);
-    //     List<UUID> characters = userService.getUsersCharacters(authentication);
-    //     if(!characters.contains(uuid)) {
-    //         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    //     }
+    @PutMapping("/{uuid}")
+    public ResponseEntity<CharacterBasicInfoView> updateCharacterBasicView(Authentication authentication, @PathVariable UUID uuid , @RequestBody CharacterInfo patch) {
+        LOG.info(PUT_PATH + uuid);
+        List<UUID> characters = userService.getUsersCharacters(authentication);
+        if(!characters.contains(uuid)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
 
-    //     try {
-    //         CharacterBasicInfoView charInfoView = charService.updateCharInfo(uuid, patch);
-    //         if (charInfoView != null) {
-    //             return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
-    //         } else {
-    //             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    //         } 
+        try {
+            CharacterBasicInfoView charInfoView = characterInfoService.updateCharInfo(uuid, patch);
+            if (charInfoView != null) {
+                return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } 
 
-    //     } catch (Exception e) {
-    //         LOG.severe(e::getMessage);
-    //         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    //     }
-    // }
+        } catch (Exception e) {
+            LOG.severe(e::getMessage);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
    /**
     * 
@@ -136,7 +137,7 @@ public class BasicCharInfoController {
         UUID userUuid = userService.getUsersUuid(authentication);
 
         try {
-            boolean result = characterInfoService.deleteCharacter(userUuid, uuid);
+            boolean result = characterInfoService.deleteCharacter(uuid, userUuid);
             if(result != false) {
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {

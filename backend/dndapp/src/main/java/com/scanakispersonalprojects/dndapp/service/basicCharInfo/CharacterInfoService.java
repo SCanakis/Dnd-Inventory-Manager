@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.hibernate.annotations.processing.SQL;
 import org.springframework.stereotype.Service;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Background;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
@@ -58,7 +59,7 @@ public class CharacterInfoService {
             CharacterInfo charInfo = charInfoOptional.get();
             List<CharacterClassDetail> classes = getCharacterClassDetails(charInfoUuid);
             String raceName = getRaceName(charInfo.getRaceUuid());
-            String bgName = getBackgroundName(charInfo.getRaceUuid());
+            String bgName = getBackgroundName(charInfo.getBackgroundUuid());
         
             return new CharacterBasicInfoView(
                 charInfo.getCharInfoUuid(),
@@ -139,18 +140,49 @@ public class CharacterInfoService {
 
     @Transactional
     public boolean deleteCharacter(UUID charInfoUuid, UUID userUuid) {
-        Optional<CharacterInfo> characterInfoOptional = characterInfoRepo.findById(charInfoUuid);
-        if(characterInfoOptional.isPresent()) {
-            userDao.deleteCharacter(userUuid, charInfoUuid);
-            characterInfoRepo.deleteById(charInfoUuid);
-            characterInfoOptional = characterInfoRepo.findById(charInfoUuid);
-            if(characterInfoOptional.isEmpty()) {
+        try {
+            System.out.println("Attempting to delete character: " + charInfoUuid);
+            System.out.println("For user: " + userUuid);
+            
+            Optional<CharacterInfo> characterInfoOptional = characterInfoRepo.findById(charInfoUuid);
+            System.out.println("Character found: " + characterInfoOptional.isPresent());
+            
+            if(characterInfoOptional.isPresent()) {
+                System.out.println("Character found, attempting delete...");
+                
+                // Delete from users_characters first
+                userDao.deleteCharacter(userUuid, charInfoUuid);
+                System.out.println("Deleted from users_characters");
+                
+                // Delete character classes
+                characterClassRepo.deleteCharacterClasses(charInfoUuid);
+                System.out.println("Deleted character classes");
+                
+                // Delete character
+                characterInfoRepo.deleteById(charInfoUuid);
+                System.out.println("Deleted character");
+                
                 return true;
             }
+            System.out.println("Character not found");
+            return false;
+        } catch (Exception e) {
+            System.out.println("Delete failed: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-        return false;
-        
     }
+
  
+    @Transactional
+    public CharacterBasicInfoView updateCharInfo(UUID uuid, CharacterInfo patch) {
+        Optional<CharacterInfo> exists = characterInfoRepo.findById(uuid);
+        if(exists.isPresent()) {
+            characterInfoRepo.save(patch);
+            return getCharacterBasicInfoView(uuid);
+        }
+        return null;
+    }
+
 
 }

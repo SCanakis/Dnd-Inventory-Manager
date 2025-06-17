@@ -15,7 +15,6 @@ import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CustomUserPrincip
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.User;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserDaoPSQL;
 
-import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CharacterInfoService;
 
 /**
  * Tells Spring Security how to look up a user in the database.
