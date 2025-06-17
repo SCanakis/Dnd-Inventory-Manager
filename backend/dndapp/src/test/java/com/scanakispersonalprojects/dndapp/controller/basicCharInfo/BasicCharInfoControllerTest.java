@@ -218,7 +218,7 @@ public class BasicCharInfoControllerTest {
         
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
-     CharacterInfoUpdateDTO characterInfo = new CharacterInfoUpdateDTO();
+        CharacterInfoUpdateDTO characterInfo = new CharacterInfoUpdateDTO();
 
         CharacterClassDetail classDetail = new CharacterClassDetail(testClassUuid, null, null, testSubclassUuid, null, (short)20, (short)19);
 

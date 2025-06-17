@@ -98,18 +98,14 @@ public class BasicCharInfoController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        try {
-            CharacterBasicInfoView charInfoView = characterInfoService.updateUsingPatch(uuid, patch);
-            if (charInfoView != null) {
-                return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            } 
+        CharacterBasicInfoView charInfoView = characterInfoService.updateUsingPatch(uuid, patch);
+        if (charInfoView != null) {
+            return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } 
 
-        } catch (Exception e) {
-            LOG.severe(e::getMessage);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+  
     }
 
    /**
@@ -135,17 +131,12 @@ public class BasicCharInfoController {
  
         UUID userUuid = userService.getUsersUuid(authentication);
 
-        try {
-            boolean result = characterInfoService.deleteCharacter(uuid, userUuid);
-            if(result != false) {
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        boolean result = characterInfoService.deleteCharacter(uuid, userUuid);
+        if(result != false) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
          
     }
 
