@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
-import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharViewPatch;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterInfo;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CharacterInfoService;

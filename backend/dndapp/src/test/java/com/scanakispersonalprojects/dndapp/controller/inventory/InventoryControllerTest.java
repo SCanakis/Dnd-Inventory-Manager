@@ -22,15 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-
-import com.scanakispersonalprojects.dndapp.model.basicCharInfo.User;
-import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemSlot;
-import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
-import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserDaoPSQL;
-import com.scanakispersonalprojects.dndapp.persistance.inventory.InventoryJPARepo;
-import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemCatalogJPARepo;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
-import com.scanakispersonalprojects.dndapp.testutils.TestDataBuilder;
 
 import jakarta.transaction.Transactional;
 
@@ -46,43 +38,23 @@ public class InventoryControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private InventoryJPARepo inventoryRepo;
-    
-    @Autowired
-    private ItemCatalogJPARepo itemRepo;
-
-    @Autowired
-    private UserDaoPSQL userRepo;
 
     @SuppressWarnings("removal")
     @MockBean
     private CustomUserDetailsService userDetailsService;
 
-    // @Autowired
-    // private JdbcTemplate jdbcTemplate;
-
-    private User user;
     private UUID characterUuid;
-    private ItemCatalog sword;
-    private CharacterHasItemSlot swordSlot;
+  
+
+    // Use the same UUID that exists in your test schema
+    private static final UUID TEST_CHARACTER_UUID = UUID.fromString("eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9");
+
+
 
     @BeforeEach
     void setUp() {
-        user = TestDataBuilder.defaultUser().build();
-        userRepo.save(user);
-        characterUuid = UUID.randomUUID();
-        userRepo.addCharacterUser(characterUuid, characterUuid);
-        sword = TestDataBuilder.longSword().build();
-        swordSlot = TestDataBuilder.itemSlot(sword.getItemUuid(), characterUuid).build();
-        itemRepo.save(sword);
-        inventoryRepo.save(swordSlot);
+        characterUuid = TEST_CHARACTER_UUID;
     }
-
-    void setupTestData() {
-       
-    }
-
 
     @Test
     @WithMockUser(username = "testuser", roles = {"USER"})
@@ -91,8 +63,7 @@ public class InventoryControllerTest {
         when(userDetailsService.getUsersCharacters(ArgumentMatchers.<Authentication>any()))
             .thenReturn(List.of(characterUuid));
 
-        mockMvc.perform(get("/inventory/"+characterUuid))
-            .andExpect(status().isOk());
+            mockMvc.perform(get("/inventory/" + characterUuid))
+                .andExpect((status().isOk()));
     }
-
 }

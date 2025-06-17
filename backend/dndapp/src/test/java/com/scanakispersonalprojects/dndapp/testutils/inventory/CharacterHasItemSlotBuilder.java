@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.testutils;
+package com.scanakispersonalprojects.dndapp.testutils.inventory;
 
 import java.util.UUID;
 

@@ -37,17 +37,14 @@ public class CharacterInfo {
     @Column(name = "background_uuid", nullable = false, columnDefinition = "UUID")
     private UUID backgroundUuid;
 
-    // Store ability scores as JSON
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "ability_scores", columnDefinition = "json")
     private Map<AbilityScore, Integer> abilityScores;
 
-    // Store HP handler as JSON
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "hp_handler", columnDefinition = "json")
     private HPHandler hpHandler;
 
-    // Store death saving throws as JSON
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "death_saving_throws", columnDefinition = "json")
     private DeathSavingThrowsHelper deathSavingThrowsHelper;

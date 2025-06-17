@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.testutils;
+package com.scanakispersonalprojects.dndapp.testutils.inventory;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.User;
 
@@ -18,6 +18,12 @@ public class UserBuilder {
     
     public User build() {
         return new User(username, password);
+    }
+
+    public static UserBuilder defaultUser() {
+        return new UserBuilder()
+                .username("testuser")
+                .password("{noop}test");
     }
 }
     

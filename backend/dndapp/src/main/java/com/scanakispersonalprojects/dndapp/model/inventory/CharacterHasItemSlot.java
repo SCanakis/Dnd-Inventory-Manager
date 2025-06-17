@@ -26,6 +26,8 @@ public class CharacterHasItemSlot {
     @Column(name = "in_attack_tab")
     private boolean inAttackTab;
 
+    public CharacterHasItemSlot() {}
+
     public CharacterHasItemSlot(UUID itemUuid, UUID charUuid, UUID slotUuid, int quantity, boolean equipped, boolean attuned,
             boolean inAttackTab) {
 

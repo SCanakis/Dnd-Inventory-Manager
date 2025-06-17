@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.testutils;
+package com.scanakispersonalprojects.dndapp.testutils.inventory;
 
 import java.util.UUID;
 
@@ -8,7 +8,7 @@ import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.Equippabl
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.Rarity;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.Skill;
 
-public class TestDataBuilder {
+public class InventoryTestDataBuilder {
     
     public static UserBuilder defaultUser() {
         return new UserBuilder()
