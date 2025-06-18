@@ -75,7 +75,7 @@ public class ItemCatalogServiceUnitTest {
 
 
     @Test
-    public void getItemWithUUID_returnsItem() {
+    public void getItemWithUUID_returnsItem() throws Exception{
         ItemCatalog actualSword = itemCatalogService.getItemWithUUID(swordUuid);
 
         assertTrue(sword.equals(actualSword));
@@ -97,20 +97,20 @@ public class ItemCatalogServiceUnitTest {
     }
 
     @Test
-    public void getItemWithUUID_returnsNull() {
+    public void getItemWithUUID_returnsNull() throws Exception {
         ItemCatalog actualSword = itemCatalogService.getItemWithUUID(UUID.randomUUID());
     
         assertNull(actualSword);
     }
 
     @Test
-    public void getAll() {
+    public void getAll() throws Exception {
         List<ItemProjection> items = itemCatalogService.getAll();
         assertEquals(20, items.size());
     }
 
     @Test
-    public void searchByName_returnsItems() {
+    public void searchByName_returnsItems() throws Exception {
         List<ItemProjection> items = itemCatalogService.searchByName("sword");
         assertEquals(6, items.size());
         assertEquals("Longsword", items.get(1).getItemName());
@@ -118,7 +118,7 @@ public class ItemCatalogServiceUnitTest {
     }
 
     @Test
-    public void searchByName_returnsEmpty() {
+    public void searchByName_returnsEmpty() throws Exception {
         List<ItemProjection> items = itemCatalogService.searchByName("@asldkjf092kcxmzx");
         assertEquals(0, items.size());
     }
