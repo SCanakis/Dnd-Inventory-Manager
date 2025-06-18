@@ -91,7 +91,7 @@ public class CatalogController {
     public ResponseEntity<Boolean> addItemToCharacterInventory(Authentication authentication, @PathVariable UUID itemUuid, @PathVariable UUID charUuid, @RequestParam int quantity) {
         LOG.info(postPath + "id=" + itemUuid + "/charId=" + charUuid);
         List<UUID> characters = userService.getUsersCharacters(authentication);
-        LOG.info("User has {} characters "+ characters.size());
+        
         if(!characters.contains(charUuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }

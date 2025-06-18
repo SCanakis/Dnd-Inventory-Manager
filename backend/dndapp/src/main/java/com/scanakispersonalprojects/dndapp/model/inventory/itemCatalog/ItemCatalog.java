@@ -12,6 +12,7 @@ import jakarta.persistence.Transient;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.hibernate.annotations.JdbcTypeCode;
@@ -111,6 +112,29 @@ public class ItemCatalog {
         this.abilityRequirement = abilityRequirement;
         this.skillAlteredRollType = skillAlteredRollType;
         this.skillAlteredBonus = skillAlteredBonus;
+    }
+
+    public ItemCatalog(UUID itemUuid, String itemName, String itemDescription, Integer itemWeight, Integer itemValue,
+            Rarity itemRarity, boolean attackable, Short acBonus, Map<AbilityScore, Boolean> addToAc,
+            boolean equippable, boolean attunable, List<EquippableType> itemEquippableTypes,
+            Map<AbilityScore, Integer> abilityRequirement, Map<Skill, RollType> skillAlteredRollType,
+            Map<Skill, Integer> skillAlteredBonus, List<ClassNameIdPair> classNameIdPairs) {
+        this.itemUuid = itemUuid;
+        this.itemName = itemName;
+        this.itemDescription = itemDescription;
+        this.itemWeight = itemWeight;
+        this.itemValue = itemValue;
+        this.itemRarity = itemRarity;
+        this.attackable = attackable;
+        this.acBonus = acBonus;
+        this.addToAc = addToAc;
+        this.equippable = equippable;
+        this.attunable = attunable;
+        this.itemEquippableTypes = itemEquippableTypes;
+        this.abilityRequirement = abilityRequirement;
+        this.skillAlteredRollType = skillAlteredRollType;
+        this.skillAlteredBonus = skillAlteredBonus;
+        this.classNameIdPair = classNameIdPairs;
     }
 
     public UUID getItemUuid() {
@@ -241,5 +265,13 @@ public class ItemCatalog {
         this.classNameIdPair = classNameIdPair;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof ItemCatalog) {
+            ItemCatalog that = (ItemCatalog) obj;
+            return Objects.equals(that.itemUuid, this.itemUuid);
+        }  
+        return false;
+    }
     
 }

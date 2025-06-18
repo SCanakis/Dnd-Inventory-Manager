@@ -1,5 +1,6 @@
 package com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class ClassNameIdPair {
@@ -25,6 +26,21 @@ public class ClassNameIdPair {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        ClassNameIdPair that = (ClassNameIdPair) obj;
+        return Objects.equals(classUuid, that.classUuid) && 
+               Objects.equals(className, that.className);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(classUuid, className);
     }
 
     

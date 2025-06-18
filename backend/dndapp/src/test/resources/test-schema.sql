@@ -213,17 +213,14 @@ ALTER TABLE ONLY public.users_characters
 ALTER TABLE ONLY public.users_characters
     ADD CONSTRAINT users_characters_user_uuid_fkey FOREIGN KEY (user_uuid) REFERENCES public.users(user_uuid);
 
--- NOTE: Original schema is missing FK constraint for character_has_item_slot.item_uuid -> item_catalog.item_uuid
--- This is intentionally omitted to match the original schema exactly
+-- Insert test data with explicit UUID literals
 
--- Insert test data
-
--- Insert Users
-INSERT INTO users (username, password, enabled) VALUES
-('dungeon_master', '$2a$10$N.zmdr9k7uOCQb1TPyq.FuxHGH8dCQ1K6CYG8/AE.b', true),
-('player1', '$2a$10$N.zmdr9k7uOCQb1TPyq.FuxHGH8dCQ1K6CYG8/AE.c', true),
-('player2', '$2a$10$N.zmdr9k7uOCQb1TPyq.FuxHGH8dCQ1K6CYG8/AE.d', true),
-('player3', '$2a$10$N.zmdr9k7uOCQb1TPyq.FuxHGH8dCQ1K6CYG8/AE.e', true);
+-- Insert Users with explicit UUIDs
+INSERT INTO users (user_uuid, username, password, enabled) VALUES
+('11111111-1111-1111-1111-111111111111', 'dungeon_master', '$2a$10$N.zmdr9k7uOCQb1TPyq.FuxHGH8dCQ1K6CYG8/AE.b', true),
+('22222222-2222-2222-2222-222222222222', 'player1', '$2a$10$N.zmdr9k7uOCQb1TPyq.FuxHGH8dCQ1K6CYG8/AE.c', true),
+('33333333-3333-3333-3333-333333333333', 'player2', '$2a$10$N.zmdr9k7uOCQb1TPyq.FuxHGH8dCQ1K6CYG8/AE.d', true),
+('44444444-4444-4444-4444-444444444444', 'player3', '$2a$10$N.zmdr9k7uOCQb1TPyq.FuxHGH8dCQ1K6CYG8/AE.e', true);
 
 -- Insert Authorities
 INSERT INTO authorities (username, authority) VALUES
@@ -233,345 +230,211 @@ INSERT INTO authorities (username, authority) VALUES
 ('player2', 'ROLE_USER'),
 ('player3', 'ROLE_USER');
 
--- Insert Races
-INSERT INTO race (name, stat_increases) VALUES
-('Human', '{"strength": 1, "dexterity": 1, "constitution": 1, "intelligence": 1, "wisdom": 1, "charisma": 1}'::json),
-('Elf', '{"dexterity": 2}'::json),
-('Dwarf', '{"constitution": 2}'::json),
-('Halfling', '{"dexterity": 2}'::json),
-('Dragonborn', '{"strength": 2, "charisma": 1}'::json),
-('Gnome', '{"intelligence": 2}'::json),
-('Half-Elf', '{"charisma": 2}'::json),
-('Half-Orc', '{"strength": 2, "constitution": 1}'::json),
-('Tiefling', '{"intelligence": 1, "charisma": 2}'::json);
+-- Insert Races with explicit UUIDs
+INSERT INTO race (race_uuid, name, stat_increases) VALUES
+('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Human', '{"strength": 1, "dexterity": 1, "constitution": 1, "intelligence": 1, "wisdom": 1, "charisma": 1}'::json),
+('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Elf', '{"dexterity": 2}'::json),
+('cccccccc-cccc-cccc-cccc-cccccccccccc', 'Dwarf', '{"constitution": 2}'::json),
+('dddddddd-dddd-dddd-dddd-dddddddddddd', 'Halfling', '{"dexterity": 2}'::json),
+('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'Dragonborn', '{"strength": 2, "charisma": 1}'::json),
+('ffffffff-ffff-ffff-ffff-ffffffffffff', 'Gnome', '{"intelligence": 2}'::json),
+('aaaabbbb-aaaa-bbbb-aaaa-bbbbaaaabbbb', 'Half-Elf', '{"charisma": 2}'::json),
+('bbbbcccc-bbbb-cccc-bbbb-ccccbbbbcccc', 'Half-Orc', '{"strength": 2, "constitution": 1}'::json),
+('ccccdddd-cccc-dddd-cccc-ddddccccdddd', 'Tiefling', '{"intelligence": 1, "charisma": 2}'::json);
 
--- Insert Backgrounds
-INSERT INTO background (name, description, starting_gold) VALUES
-('Acolyte', 'You have spent your life in the service of a temple to a specific god or pantheon of gods.', 15),
-('Criminal', 'You are an experienced criminal with a history of breaking the law.', 15),
-('Folk Hero', 'You come from a humble social rank, but you are destined for so much more.', 10),
-('Noble', 'You understand wealth, power, and privilege.', 25),
-('Sage', 'You spent years learning the lore of the multiverse.', 10),
-('Soldier', 'War has been your life for as long as you care to remember.', 10),
-('Charlatan', 'You have always had a way with people and know what makes them tick.', 15),
-('Entertainer', 'You thrive in front of an audience and know how to entrance them.', 15),
-('Guild Artisan', 'You are a member of an artisan''s guild, skilled in a particular field.', 20),
-('Hermit', 'You lived in seclusion for a formative part of your life.', 5);
+-- Insert Backgrounds with explicit UUIDs
+INSERT INTO background (background_uuid, name, description, starting_gold) VALUES
+('10000000-0000-0000-0000-000000000001', 'Acolyte', 'You have spent your life in the service of a temple to a specific god or pantheon of gods.', 15),
+('10000000-0000-0000-0000-000000000002', 'Criminal', 'You are an experienced criminal with a history of breaking the law.', 15),
+('10000000-0000-0000-0000-000000000003', 'Folk Hero', 'You come from a humble social rank, but you are destined for so much more.', 10),
+('10000000-0000-0000-0000-000000000004', 'Noble', 'You understand wealth, power, and privilege.', 25),
+('10000000-0000-0000-0000-000000000005', 'Sage', 'You spent years learning the lore of the multiverse.', 10),
+('10000000-0000-0000-0000-000000000006', 'Soldier', 'War has been your life for as long as you care to remember.', 10),
+('10000000-0000-0000-0000-000000000007', 'Charlatan', 'You have always had a way with people and know what makes them tick.', 15),
+('10000000-0000-0000-0000-000000000008', 'Entertainer', 'You thrive in front of an audience and know how to entrance them.', 15),
+('10000000-0000-0000-0000-000000000009', 'Guild Artisan', 'You are a member of an artisan''s guild, skilled in a particular field.', 20),
+('10000000-0000-0000-0000-00000000000a', 'Hermit', 'You lived in seclusion for a formative part of your life.', 5);
 
--- Insert Classes
-INSERT INTO class (name, hit_dice_value, description, class_name) VALUES
-('Fighter', 'D10', 'A master of martial combat, skilled with a variety of weapons and armor.', 'Fighter'),
-('Wizard', 'D6', 'A scholarly magic-user capable of manipulating structures of reality.', 'Wizard'),
-('Rogue', 'D8', 'A scoundrel who uses stealth and trickery to accomplish goals.', 'Rogue'),
-('Cleric', 'D8', 'A priestly champion who wields divine magic in service of a higher power.', 'Cleric'),
-('Ranger', 'D10', 'A warrior of the wilderness, skilled in tracking, survival, and combat.', 'Ranger'),
-('Paladin', 'D10', 'A holy warrior bound to a sacred oath to fight against the forces of evil.', 'Paladin'),
-('Barbarian', 'D12', 'A fierce warrior of primitive background who can enter a battle rage.', 'Barbarian'),
-('Bard', 'D8', 'A performer whose music works magic—literally, weaving spells into song.', 'Bard'),
-('Druid', 'D8', 'A priest of nature, wielding elemental forces and transformative magic.', 'Druid'),
-('Monk', 'D8', 'A martial artist who harnesses inner power to achieve physical perfection.', 'Monk'),
-('Sorcerer', 'D6', 'A spellcaster who draws on inherent magic from a gift or bloodline.', 'Sorcerer'),
-('Warlock', 'D8', 'A wielder of magic derived from a bargain with an extraplanar entity.', 'Warlock');
+-- Insert Classes with explicit UUIDs
+INSERT INTO class (class_uuid, name, hit_dice_value, description, class_name) VALUES
+('c1a55000-0000-0000-0000-000000000001', 'Fighter', 'D10', 'A master of martial combat, skilled with a variety of weapons and armor.', 'Fighter'),
+('c1a55000-0000-0000-0000-000000000002', 'Wizard', 'D6', 'A scholarly magic-user capable of manipulating structures of reality.', 'Wizard'),
+('c1a55000-0000-0000-0000-000000000003', 'Rogue', 'D8', 'A scoundrel who uses stealth and trickery to accomplish goals.', 'Rogue'),
+('c1a55000-0000-0000-0000-000000000004', 'Cleric', 'D8', 'A priestly champion who wields divine magic in service of a higher power.', 'Cleric'),
+('c1a55000-0000-0000-0000-000000000005', 'Ranger', 'D10', 'A warrior of the wilderness, skilled in tracking, survival, and combat.', 'Ranger'),
+('c1a55000-0000-0000-0000-000000000006', 'Paladin', 'D10', 'A holy warrior bound to a sacred oath to fight against the forces of evil.', 'Paladin'),
+('c1a55000-0000-0000-0000-000000000007', 'Barbarian', 'D12', 'A fierce warrior of primitive background who can enter a battle rage.', 'Barbarian'),
+('c1a55000-0000-0000-0000-000000000008', 'Bard', 'D8', 'A performer whose music works magic—literally, weaving spells into song.', 'Bard'),
+('c1a55000-0000-0000-0000-000000000009', 'Druid', 'D8', 'A priest of nature, wielding elemental forces and transformative magic.', 'Druid'),
+('c1a55000-0000-0000-0000-00000000000a', 'Monk', 'D8', 'A martial artist who harnesses inner power to achieve physical perfection.', 'Monk'),
+('c1a55000-0000-0000-0000-00000000000b', 'Sorcerer', 'D6', 'A spellcaster who draws on inherent magic from a gift or bloodline.', 'Sorcerer'),
+('c1a55000-0000-0000-0000-00000000000c', 'Warlock', 'D8', 'A wielder of magic derived from a bargain with an extraplanar entity.', 'Warlock');
 
--- Insert Subclasses
-INSERT INTO subclass (name, class_source) 
-SELECT 'Champion', class_uuid FROM class WHERE name = 'Fighter'
-UNION ALL
-SELECT 'Battle Master', class_uuid FROM class WHERE name = 'Fighter'
-UNION ALL
-SELECT 'School of Evocation', class_uuid FROM class WHERE name = 'Wizard'
-UNION ALL
-SELECT 'School of Abjuration', class_uuid FROM class WHERE name = 'Wizard'
-UNION ALL
-SELECT 'Thief', class_uuid FROM class WHERE name = 'Rogue'
-UNION ALL
-SELECT 'Assassin', class_uuid FROM class WHERE name = 'Rogue'
-UNION ALL
-SELECT 'Life Domain', class_uuid FROM class WHERE name = 'Cleric'
-UNION ALL
-SELECT 'War Domain', class_uuid FROM class WHERE name = 'Cleric'
-UNION ALL
-SELECT 'Hunter', class_uuid FROM class WHERE name = 'Ranger'
-UNION ALL
-SELECT 'Beast Master', class_uuid FROM class WHERE name = 'Ranger'
-UNION ALL
-SELECT 'Oath of Devotion', class_uuid FROM class WHERE name = 'Paladin'
-UNION ALL
-SELECT 'Oath of Vengeance', class_uuid FROM class WHERE name = 'Paladin';
+-- Insert Subclasses with explicit UUIDs
+INSERT INTO subclass (subclass_uuid, name, class_source) VALUES
+('5cb00000-0000-0000-0000-000000000001', 'Champion', 'c1a55000-0000-0000-0000-000000000001'),
+('5cb00000-0000-0000-0000-000000000002', 'Battle Master', 'c1a55000-0000-0000-0000-000000000001'),
+('5cb00000-0000-0000-0000-000000000003', 'School of Evocation', 'c1a55000-0000-0000-0000-000000000002'),
+('5cb00000-0000-0000-0000-000000000004', 'School of Abjuration', 'c1a55000-0000-0000-0000-000000000002'),
+('5cb00000-0000-0000-0000-000000000005', 'Thief', 'c1a55000-0000-0000-0000-000000000003'),
+('5cb00000-0000-0000-0000-000000000006', 'Assassin', 'c1a55000-0000-0000-0000-000000000003'),
+('5cb00000-0000-0000-0000-000000000007', 'Life Domain', 'c1a55000-0000-0000-0000-000000000004'),
+('5cb00000-0000-0000-0000-000000000008', 'War Domain', 'c1a55000-0000-0000-0000-000000000004'),
+('5cb00000-0000-0000-0000-000000000009', 'Hunter', 'c1a55000-0000-0000-0000-000000000005'),
+('5cb00000-0000-0000-0000-00000000000a', 'Beast Master', 'c1a55000-0000-0000-0000-000000000005'),
+('5cb00000-0000-0000-0000-00000000000b', 'Oath of Devotion', 'c1a55000-0000-0000-0000-000000000006'),
+('5cb00000-0000-0000-0000-00000000000c', 'Oath of Vengeance', 'c1a55000-0000-0000-0000-000000000006');
 
--- Insert Item Catalog
-INSERT INTO item_catalog (item_name, item_description, item_weight, item_value, attackable, equippable, item_equippable_type, item_rarity) VALUES
-('Longsword', 'A versatile martial weapon with a straight double-edged blade.', 3, 15, true, true, '{weapon}', 'common'),
-('Leather Armor', 'The breastplate and shoulder protectors of this armor are made of leather.', 10, 10, false, true, '{armor}', 'common'),
-('Shield', 'A shield is made from wood or metal and is carried in one hand.', 6, 10, false, true, '{shield}', 'common'),
-('Shortbow', 'A simple ranged weapon made of flexible wood.', 2, 25, true, true, '{weapon}', 'common'),
-('Dagger', 'A simple light melee weapon that can also be thrown.', 1, 2, true, true, '{weapon}', 'common'),
-('Chain Mail', 'Made of interlocking metal rings, chain mail includes a layer of quilted fabric.', 55, 75, false, true, '{armor}', 'common'),
-('Battleaxe', 'A versatile martial weapon with a broad, sharp blade.', 4, 10, true, true, '{weapon}', 'common'),
-('Crossbow, Light', 'A simple ranged weapon that fires crossbow bolts.', 5, 25, true, true, '{weapon}', 'common'),
-('Rapier', 'A finesse martial weapon with a thin, sharp blade.', 2, 25, true, true, '{weapon}', 'common'),
-('Studded Leather', 'Made from tough but flexible leather reinforced with close-set rivets.', 13, 45, false, true, '{armor}', 'common'),
-('Warhammer', 'A versatile martial weapon with a heavy metal head.', 2, 15, true, true, '{weapon}', 'common'),
-('Scimitar', 'A finesse light martial weapon with a curved blade.', 3, 25, true, true, '{weapon}', 'common'),
-('Spellbook', 'Essential for wizards, this leather-bound tome contains spells.', 3, 50, false, false, '{}', 'common'),
-('Thieves'' Tools', 'This set of tools includes a small file, lock picks, and more.', 1, 25, false, false, '{}', 'common'),
-('Healing Potion', 'A magical red liquid that restores hit points when consumed.', 0, 50, false, false, '{}', 'common'),
-('+1 Sword', 'A magical longsword with a +1 enhancement to attack and damage rolls.', 3, 1000, true, true, '{weapon}', 'uncommon'),
-('Cloak of Elvenkind', 'This cloak grants advantage on Dexterity (Stealth) checks.', 1, 5000, false, true, '{cloak}', 'uncommon'),
-('Bag of Holding', 'This bag can hold much more than its size would suggest.', 15, 4000, false, false, '{}', 'uncommon'),
-('Ring of Protection', 'You gain a +1 bonus to AC and saving throws while wearing this ring.', 0, 3500, false, true, '{ring}', 'rare'),
-('Flame Tongue', 'This magic sword''s blade erupts in flames when activated.', 3, 5000, true, true, '{weapon}', 'rare');
+-- Insert Item Catalog with explicit UUIDs
+INSERT INTO item_catalog (item_uuid, item_name, item_description, item_weight, item_value, attackable, equippable, attunable, item_equippable_type, item_rarity) VALUES
+('aaaa0000-0000-0000-0000-000000000001', 'Longsword', 'A versatile martial weapon with a straight double-edged blade.', 3, 15, true, true, false, '{mainhand,offhand,twohand}', 'common'),
+('aaaa0000-0000-0000-0000-000000000002', 'Leather Armor', 'The breastplate and shoulder protectors of this armor are made of leather.', 10, 10, false, true, false, '{armor}', 'common'),
+('aaaa0000-0000-0000-0000-000000000003', 'Shield', 'A shield is made from wood or metal and is carried in one hand.', 6, 10, false, true, false, '{offhand}', 'common'),
+('aaaa0000-0000-0000-0000-000000000004', 'Shortbow', 'A simple ranged weapon made of flexible wood.', 2, 25, true, true, false, '{twohand}', 'common'),
+('aaaa0000-0000-0000-0000-000000000005', 'Dagger', 'A simple light melee weapon that can also be thrown.', 1, 2, true, true, false, '{mainhand,offhand}', 'common'),
+('aaaa0000-0000-0000-0000-000000000006', 'Chain Mail', 'Made of interlocking metal rings, chain mail includes a layer of quilted fabric.', 55, 75, false, true, false, '{armor}', 'common'),
+('aaaa0000-0000-0000-0000-000000000007', 'Battleaxe', 'A versatile martial weapon with a broad, sharp blade.', 4, 10, true, true, false, '{mainhand,twohand}', 'common'),
+('aaaa0000-0000-0000-0000-000000000008', 'Crossbow, Light', 'A simple ranged weapon that fires crossbow bolts.', 5, 25, true, true, false, '{mainhand}', 'common'),
+('aaaa0000-0000-0000-0000-000000000009', 'Rapier', 'A finesse martial weapon with a thin, sharp blade.', 2, 25, true, true, false, '{mainhand}', 'common'),
+('aaaa0000-0000-0000-0000-00000000000a', 'Studded Leather', 'Made from tough but flexible leather reinforced with close-set rivets.', 13, 45, false, true, false, '{armor}', 'common'),
+('aaaa0000-0000-0000-0000-00000000000b', 'Warhammer', 'A versatile martial weapon with a heavy metal head.', 2, 15, true, true, false, '{mainhand,twohand}', 'common'),
+('aaaa0000-0000-0000-0000-00000000000c', 'Scimitar', 'A finesse light martial weapon with a curved blade.', 3, 25, true, true, false, '{mainhand,offhand}', 'common'),
+('aaaa0000-0000-0000-0000-00000000000d', 'Spellbook', 'Essential for wizards, this leather-bound tome contains spells.', 3, 50, false, false, false, '{}', 'common'),
+('aaaa0000-0000-0000-0000-00000000000e', 'Thieves'' Tools', 'This set of tools includes a small file, lock picks, and more.', 1, 25, false, false, false, '{}', 'common'),
+('aaaa0000-0000-0000-0000-00000000000f', 'Healing Potion', 'A magical red liquid that restores hit points when consumed.', 0, 50, false, false, false, '{}', 'common'),
+('aaaa0000-0000-0000-0000-000000000010', '+1 Sword', 'A magical longsword with a +1 enhancement to attack and damage rolls.', 3, 1000, true, true, true, '{mainhand,offhand,twohand}', 'uncommon'),
+('aaaa0000-0000-0000-0000-000000000011', 'Cloak of Elvenkind', 'This cloak grants advantage on Dexterity (Stealth) checks.', 1, 5000, false, true, true, '{cloak}', 'uncommon'),
+('aaaa0000-0000-0000-0000-000000000012', 'Bag of Holding', 'This bag can hold much more than its size would suggest.', 15, 4000, false, false, false, '{}', 'uncommon'),
+('aaaa0000-0000-0000-0000-000000000013', 'Ring of Protection', 'You gain a +1 bonus to AC and saving throws while wearing this ring.', 0, 3500, false, true, true, '{ringl,ringr}', 'rare'),
+('aaaa0000-0000-0000-0000-000000000014', 'Flame Tongue', 'This magic sword''s blade erupts in flames when activated.', 3, 5000, true, true, true, '{mainhand,offhand,twohand}', 'rare');
 
--- Insert Characters with corrected JSON field names (camelCase)
-INSERT INTO characters_info (char_info_uuid, name, inspiration, race_uuid, background_uuid, ability_scores, hp_handler, death_saving_throws)
-SELECT 
-    'eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9'::uuid,
-    'Thorin Ironbeard', 
-    false,
-    r.race_uuid,
-    b.background_uuid,
-    '{"strength": 16, "dexterity": 12, "constitution": 15, "intelligence": 10, "wisdom": 13, "charisma": 8}'::json,
-    '{"maxHp": 12, "currentHp": 12, "temporaryHp": 0}'::json,
-    '{"successes": 0, "failures": 0}'::json
-FROM race r, background b 
-WHERE r.name = 'Dwarf' AND b.name = 'Soldier'
-UNION ALL
-SELECT 
-    'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::uuid,
-    'Elaria Moonwhisper', 
-    true,
-    r.race_uuid,
-    b.background_uuid,
-    '{"strength": 8, "dexterity": 16, "constitution": 12, "intelligence": 15, "wisdom": 14, "charisma": 13}'::json,
-    '{"maxHp": 8, "currentHp": 6, "temporaryHp": 2}'::json,
-    '{"successes": 0, "failures": 0}'::json
-FROM race r, background b 
-WHERE r.name = 'Elf' AND b.name = 'Sage'
-UNION ALL
-SELECT 
-    'b2c3d4e5-f6a7-8901-bcde-f12345678901'::uuid,
-    'Pip Lightfinger', 
-    false,
-    r.race_uuid,
-    b.background_uuid,
-    '{"strength": 10, "dexterity": 17, "constitution": 14, "intelligence": 12, "wisdom": 13, "charisma": 11}'::json,
-    '{"maxHp": 10, "currentHp": 10, "temporaryHp": 0}'::json,
-    '{"successes": 0, "failures": 0}'::json
-FROM race r, background b 
-WHERE r.name = 'Halfling' AND b.name = 'Criminal'
-UNION ALL
-SELECT 
-    'c3d4e5f6-a7b8-9012-cdef-123456789012'::uuid,
-    'Sir Gareth the Bold', 
-    true,
-    r.race_uuid,
-    b.background_uuid,
-    '{"strength": 15, "dexterity": 10, "constitution": 14, "intelligence": 11, "wisdom": 12, "charisma": 16}'::json,
-    '{"maxHp": 14, "currentHp": 14, "temporaryHp": 0}'::json,
-    '{"successes": 0, "failures": 0}'::json
-FROM race r, background b 
-WHERE r.name = 'Human' AND b.name = 'Noble'
-UNION ALL
-SELECT 
-    'd4e5f6a7-b8c9-0123-def0-234567890123'::uuid,
-    'Zara Flameheart', 
-    false,
-    r.race_uuid,
-    b.background_uuid,
-    '{"strength": 13, "dexterity": 12, "constitution": 13, "intelligence": 10, "wisdom": 15, "charisma": 16}'::json,
-    '{"maxHp": 9, "currentHp": 9, "temporaryHp": 0}'::json,
-    '{"successes": 0, "failures": 0}'::json
-FROM race r, background b 
-WHERE r.name = 'Tiefling' AND b.name = 'Entertainer';
+-- Insert Characters with explicit UUIDs
+INSERT INTO characters_info (char_info_uuid, name, inspiration, race_uuid, background_uuid, ability_scores, hp_handler, death_saving_throws) VALUES
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', 'Thorin Ironbeard', false, 'cccccccc-cccc-cccc-cccc-cccccccccccc', '10000000-0000-0000-0000-000000000006', '{"strength": 16, "dexterity": 12, "constitution": 15, "intelligence": 10, "wisdom": 13, "charisma": 8}'::json, '{"maxHp": 12, "currentHp": 12, "temporaryHp": 0}'::json, '{"successes": 0, "failures": 0}'::json),
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'Elaria Moonwhisper', true, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '10000000-0000-0000-0000-000000000005', '{"strength": 8, "dexterity": 16, "constitution": 12, "intelligence": 15, "wisdom": 14, "charisma": 13}'::json, '{"maxHp": 8, "currentHp": 6, "temporaryHp": 2}'::json, '{"successes": 0, "failures": 0}'::json),
+('b2c3d4e5-f6a7-8901-bcde-f12345678901', 'Pip Lightfinger', false, 'dddddddd-dddd-dddd-dddd-dddddddddddd', '10000000-0000-0000-0000-000000000002', '{"strength": 10, "dexterity": 17, "constitution": 14, "intelligence": 12, "wisdom": 13, "charisma": 11}'::json, '{"maxHp": 10, "currentHp": 10, "temporaryHp": 0}'::json, '{"successes": 0, "failures": 0}'::json),
+('c3d4e5f6-a7b8-9012-cdef-123456789012', 'Sir Gareth the Bold', true, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '10000000-0000-0000-0000-000000000004', '{"strength": 15, "dexterity": 10, "constitution": 14, "intelligence": 11, "wisdom": 12, "charisma": 16}'::json, '{"maxHp": 14, "currentHp": 14, "temporaryHp": 0}'::json, '{"successes": 0, "failures": 0}'::json),
+('d4e5f6a7-b8c9-0123-def0-234567890123', 'Zara Flameheart', false, 'ccccdddd-cccc-dddd-cccc-ddddccccdddd', '10000000-0000-0000-0000-000000000008', '{"strength": 13, "dexterity": 12, "constitution": 13, "intelligence": 10, "wisdom": 15, "charisma": 16}'::json, '{"maxHp": 9, "currentHp": 9, "temporaryHp": 0}'::json, '{"successes": 0, "failures": 0}'::json);
 
--- Insert Character Classes using specific UUIDs
-INSERT INTO character_class (char_info_uuid, class_uuid, subclass_uuid, level, hit_dice_remaining)
-SELECT 
-    'eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9'::uuid, 
-    c.class_uuid, 
-    s.subclass_uuid, 
-    2, 
-    2
-FROM class c, subclass s
-WHERE c.name = 'Fighter' AND s.name = 'Champion'
-UNION ALL
-SELECT 
-    'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::uuid, 
-    c.class_uuid, 
-    s.subclass_uuid, 
-    1, 
-    1
-FROM class c, subclass s
-WHERE c.name = 'Wizard' AND s.name = 'School of Evocation'
-UNION ALL
-SELECT 
-    'b2c3d4e5-f6a7-8901-bcde-f12345678901'::uuid, 
-    c.class_uuid, 
-    s.subclass_uuid, 
-    2, 
-    1
-FROM class c, subclass s
-WHERE c.name = 'Rogue' AND s.name = 'Thief'
-UNION ALL
-SELECT 
-    'c3d4e5f6-a7b8-9012-cdef-123456789012'::uuid, 
-    c.class_uuid, 
-    s.subclass_uuid, 
-    3, 
-    3
-FROM class c, subclass s
-WHERE c.name = 'Paladin' AND s.name = 'Oath of Devotion'
-UNION ALL
-SELECT 
-    'd4e5f6a7-b8c9-0123-def0-234567890123'::uuid, 
-    c.class_uuid, 
-    NULL, 
-    1, 
-    1
-FROM class c
-WHERE c.name = 'Bard';
+-- Insert Character Classes with explicit UUIDs
+INSERT INTO character_class (char_info_uuid, class_uuid, subclass_uuid, level, hit_dice_remaining) VALUES
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', 'c1a55000-0000-0000-0000-000000000001', '5cb00000-0000-0000-0000-000000000001', 2, 2),
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'c1a55000-0000-0000-0000-000000000002', '5cb00000-0000-0000-0000-000000000003', 1, 1),
+('b2c3d4e5-f6a7-8901-bcde-f12345678901', 'c1a55000-0000-0000-0000-000000000003', '5cb00000-0000-0000-0000-000000000005', 2, 1),
+('c3d4e5f6-a7b8-9012-cdef-123456789012', 'c1a55000-0000-0000-0000-000000000006', '5cb00000-0000-0000-0000-00000000000b', 3, 3),
+('d4e5f6a7-b8c9-0123-def0-234567890123', 'c1a55000-0000-0000-0000-000000000008', NULL, 1, 1);
 
--- Insert Item Class Eligibility (which classes can use which items)
-INSERT INTO item_class_eligibility (item_uuid, class_uuid)
-SELECT i.item_uuid, c.class_uuid
-FROM item_catalog i, class c
-WHERE i.item_name = 'Longsword' AND c.name IN ('Fighter', 'Paladin', 'Ranger')
-UNION ALL
-SELECT i.item_uuid, c.class_uuid
-FROM item_catalog i, class c
-WHERE i.item_name = 'Shortbow' AND c.name IN ('Fighter', 'Ranger', 'Rogue')
-UNION ALL
-SELECT i.item_uuid, c.class_uuid
-FROM item_catalog i, class c
-WHERE i.item_name = 'Dagger' AND c.name IN ('Fighter', 'Rogue', 'Wizard', 'Bard')
-UNION ALL
-SELECT i.item_uuid, c.class_uuid
-FROM item_catalog i, class c
-WHERE i.item_name = 'Spellbook' AND c.name = 'Wizard'
-UNION ALL
-SELECT i.item_uuid, c.class_uuid
-FROM item_catalog i, class c
-WHERE i.item_name = 'Thieves'' Tools' AND c.name = 'Rogue';
+-- Insert Item Class Eligibility with explicit UUIDs
+INSERT INTO item_class_eligibility (item_uuid, class_uuid) VALUES
+('aaaa0000-0000-0000-0000-000000000001', 'c1a55000-0000-0000-0000-000000000001'), -- Longsword -> Fighter
+('aaaa0000-0000-0000-0000-000000000001', 'c1a55000-0000-0000-0000-000000000006'), -- Longsword -> Paladin
+('aaaa0000-0000-0000-0000-000000000001', 'c1a55000-0000-0000-0000-000000000005'), -- Longsword -> Ranger
+('aaaa0000-0000-0000-0000-000000000004', 'c1a55000-0000-0000-0000-000000000001'), -- Shortbow -> Fighter
+('aaaa0000-0000-0000-0000-000000000004', 'c1a55000-0000-0000-0000-000000000005'), -- Shortbow -> Ranger
+('aaaa0000-0000-0000-0000-000000000004', 'c1a55000-0000-0000-0000-000000000003'), -- Shortbow -> Rogue
+('aaaa0000-0000-0000-0000-000000000005', 'c1a55000-0000-0000-0000-000000000001'), -- Dagger -> Fighter
+('aaaa0000-0000-0000-0000-000000000005', 'c1a55000-0000-0000-0000-000000000003'), -- Dagger -> Rogue
+('aaaa0000-0000-0000-0000-000000000005', 'c1a55000-0000-0000-0000-000000000002'), -- Dagger -> Wizard
+('aaaa0000-0000-0000-0000-000000000005', 'c1a55000-0000-0000-0000-000000000008'), -- Dagger -> Bard
+('aaaa0000-0000-0000-0000-00000000000d', 'c1a55000-0000-0000-0000-000000000002'), -- Spellbook -> Wizard
+('aaaa0000-0000-0000-0000-00000000000e', 'c1a55000-0000-0000-0000-000000000003'); -- Thieves' Tools -> Rogue
 
--- Link users to characters using the specific UUIDs
-INSERT INTO users_characters (user_uuid, character_uuid)
-SELECT u.user_uuid, 'eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9'::uuid
-FROM users u
-WHERE u.username = 'player1'
-UNION ALL
-SELECT u.user_uuid, 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::uuid
-FROM users u
-WHERE u.username = 'player1'
-UNION ALL
-SELECT u.user_uuid, 'b2c3d4e5-f6a7-8901-bcde-f12345678901'::uuid
-FROM users u
-WHERE u.username = 'player2'
-UNION ALL
-SELECT u.user_uuid, 'c3d4e5f6-a7b8-9012-cdef-123456789012'::uuid
-FROM users u
-WHERE u.username = 'player3'
-UNION ALL
-SELECT u.user_uuid, 'd4e5f6a7-b8c9-0123-def0-234567890123'::uuid
-FROM users u
-WHERE u.username = 'player3';
+-- Link users to characters using explicit UUIDs
+INSERT INTO users_characters (user_uuid, character_uuid) VALUES
+('22222222-2222-2222-2222-222222222222', 'eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9'), -- player1 -> Thorin
+('22222222-2222-2222-2222-222222222222', 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'), -- player1 -> Elaria
+('33333333-3333-3333-3333-333333333333', 'b2c3d4e5-f6a7-8901-bcde-f12345678901'), -- player2 -> Pip
+('44444444-4444-4444-4444-444444444444', 'c3d4e5f6-a7b8-9012-cdef-123456789012'), -- player3 -> Sir Gareth
+('44444444-4444-4444-4444-444444444444', 'd4e5f6a7-b8c9-0123-def0-234567890123'); -- player3 -> Zara
 
--- Insert some character inventory items using specific character UUIDs
-INSERT INTO character_has_item_slot (character_uuid, container_uuid, item_uuid, attuned, equipped, in_attack_tab, quantity)
-SELECT 
-    'eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9'::uuid,
-    uuid_generate_v4(),
-    i.item_uuid,
-    false,
-    true,
-    true,
-    1
-FROM item_catalog i
-WHERE i.item_name = 'Battleaxe'
-UNION ALL
-SELECT 
-    'eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9'::uuid,
-    uuid_generate_v4(),
-    i.item_uuid,
-    false,
-    true,
-    false,
-    1
-FROM item_catalog i
-WHERE i.item_name = 'Chain Mail'
-UNION ALL
-SELECT 
-    'eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9'::uuid,
-    uuid_generate_v4(),
-    i.item_uuid,
-    false,
-    false,
-    false,
-    3
-FROM item_catalog i
-WHERE i.item_name = 'Healing Potion'
-UNION ALL
-SELECT 
-    'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::uuid,
-    uuid_generate_v4(),
-    i.item_uuid,
-    false,
-    false,
-    true,
-    1
-FROM item_catalog i
-WHERE i.item_name = 'Dagger'
-UNION ALL
-SELECT 
-    'a1b2c3d4-e5f6-7890-abcd-ef1234567890'::uuid,
-    uuid_generate_v4(),
-    i.item_uuid,
-    false,
-    false,
-    false,
-    1
-FROM item_catalog i
-WHERE i.item_name = 'Spellbook'
-UNION ALL
-SELECT 
-    'b2c3d4e5-f6a7-8901-bcde-f12345678901'::uuid,
-    uuid_generate_v4(),
-    i.item_uuid,
-    false,
-    true,
-    false,
-    1
-FROM item_catalog i
-WHERE i.item_name = 'Leather Armor'
-UNION ALL
-SELECT 
-    'b2c3d4e5-f6a7-8901-bcde-f12345678901'::uuid,
-    uuid_generate_v4(),
-    i.item_uuid,
-    false,
-    false,
-    false,
-    1
-FROM item_catalog i
-WHERE i.item_name = 'Thieves'' Tools'
-UNION ALL
-SELECT 
-    'c3d4e5f6-a7b8-9012-cdef-123456789012'::uuid,
-    uuid_generate_v4(),
-    i.item_uuid,
-    true,
-    true,
-    true,
-    1
-FROM item_catalog i
-WHERE i.item_name = '+1 Sword'
-UNION ALL
-SELECT 
-    'c3d4e5f6-a7b8-9012-cdef-123456789012'::uuid,
-    uuid_generate_v4(),
-    i.item_uuid,
-    false,
-    true,
-    false,
-    1
-FROM item_catalog i
-WHERE i.item_name = 'Shield';
+-- Insert character inventory items using explicit UUIDs for containers
+INSERT INTO character_has_item_slot (character_uuid, container_uuid, item_uuid, attuned, equipped, in_attack_tab, quantity) VALUES
+-- Thorin's inventory
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000001-0000-0000-0000-000000000001', 'aaaa0000-0000-0000-0000-000000000007', false, true, true, 1), -- Battleaxe
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000001-0000-0000-0000-000000000002', 'aaaa0000-0000-0000-0000-000000000006', false, true, false, 1), -- Chain Mail
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000001-0000-0000-0000-000000000003', 'aaaa0000-0000-0000-0000-00000000000f', false, false, false, 3), -- Healing Potion
+
+-- Elaria's inventory
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000002-0000-0000-0000-000000000001', 'aaaa0000-0000-0000-0000-000000000005', false, false, true, 1), -- Dagger
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000002-0000-0000-0000-000000000002', 'aaaa0000-0000-0000-0000-00000000000d', false, false, false, 1), -- Spellbook
+
+-- Pip's inventory
+('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000003-0000-0000-0000-000000000001', 'aaaa0000-0000-0000-0000-000000000002', false, true, false, 1), -- Leather Armor
+('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000003-0000-0000-0000-000000000002', 'aaaa0000-0000-0000-0000-00000000000e', false, false, false, 1), -- Thieves' Tools
+
+-- Sir Gareth's inventory
+('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000004-0000-0000-0000-000000000001', 'aaaa0000-0000-0000-0000-000000000010', true, true, true, 1), -- +1 Sword
+('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000004-0000-0000-0000-000000000002', 'aaaa0000-0000-0000-0000-000000000003', false, true, false, 1); -- Shield
+
+-- UUID Reference Guide for Testing:
+-- Users:
+--   11111111-1111-1111-1111-111111111111 = dungeon_master
+--   22222222-2222-2222-2222-222222222222 = player1
+--   33333333-3333-3333-3333-333333333333 = player2
+--   44444444-4444-4444-4444-444444444444 = player3
+
+-- Races:
+--   aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa = Human
+--   bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb = Elf
+--   cccccccc-cccc-cccc-cccc-cccccccccccc = Dwarf
+--   dddddddd-dddd-dddd-dddd-dddddddddddd = Halfling
+--   eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee = Dragonborn
+--   ffffffff-ffff-ffff-ffff-ffffffffffff = Gnome
+--   aaaabbbb-aaaa-bbbb-aaaa-bbbbaaaabbbb = Half-Elf
+--   bbbbcccc-bbbb-cccc-bbbb-ccccbbbbcccc = Half-Orc
+--   ccccdddd-cccc-dddd-cccc-ddddccccdddd = Tiefling
+
+-- Backgrounds:
+--   10000000-0000-0000-0000-000000000001 = Acolyte
+--   10000000-0000-0000-0000-000000000002 = Criminal
+--   10000000-0000-0000-0000-000000000003 = Folk Hero
+--   10000000-0000-0000-0000-000000000004 = Noble
+--   10000000-0000-0000-0000-000000000005 = Sage
+--   10000000-0000-0000-0000-000000000006 = Soldier
+--   10000000-0000-0000-0000-000000000007 = Charlatan
+--   10000000-0000-0000-0000-000000000008 = Entertainer
+--   10000000-0000-0000-0000-000000000009 = Guild Artisan
+--   10000000-0000-0000-0000-00000000000a = Hermit
+
+-- Classes:
+--   c1a55000-0000-0000-0000-000000000001 = Fighter
+--   c1a55000-0000-0000-0000-000000000002 = Wizard
+--   c1a55000-0000-0000-0000-000000000003 = Rogue
+--   c1a55000-0000-0000-0000-000000000004 = Cleric
+--   c1a55000-0000-0000-0000-000000000005 = Ranger
+--   c1a55000-0000-0000-0000-000000000006 = Paladin
+--   c1a55000-0000-0000-0000-000000000007 = Barbarian
+--   c1a55000-0000-0000-0000-000000000008 = Bard
+--   c1a55000-0000-0000-0000-000000000009 = Druid
+--   c1a55000-0000-0000-0000-00000000000a = Monk
+--   c1a55000-0000-0000-0000-00000000000b = Sorcerer
+--   c1a55000-0000-0000-0000-00000000000c = Warlock
+
+-- Characters:
+--   eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9 = Thorin Ironbeard (Dwarf Fighter)
+--   a1b2c3d4-e5f6-7890-abcd-ef1234567890 = Elaria Moonwhisper (Elf Wizard)
+--   b2c3d4e5-f6a7-8901-bcde-f12345678901 = Pip Lightfinger (Halfling Rogue)
+--   c3d4e5f6-a7b8-9012-cdef-123456789012 = Sir Gareth the Bold (Human Paladin)
+--   d4e5f6a7-b8c9-0123-def0-234567890123 = Zara Flameheart (Tiefling Bard)
+
+-- Items (aaaa prefix):
+--   aaaa0000-0000-0000-0000-000000000001 = Longsword
+--   aaaa0000-0000-0000-0000-000000000002 = Leather Armor
+--   aaaa0000-0000-0000-0000-000000000003 = Shield
+--   aaaa0000-0000-0000-0000-000000000004 = Shortbow
+--   aaaa0000-0000-0000-0000-000000000005 = Dagger
+--   aaaa0000-0000-0000-0000-000000000006 = Chain Mail
+--   aaaa0000-0000-0000-0000-000000000007 = Battleaxe
+--   aaaa0000-0000-0000-0000-000000000008 = Crossbow, Light
+--   aaaa0000-0000-0000-0000-000000000009 = Rapier
+--   aaaa0000-0000-0000-0000-00000000000a = Studded Leather
+--   aaaa0000-0000-0000-0000-00000000000b = Warhammer
+--   aaaa0000-0000-0000-0000-00000000000c = Scimitar
+--   aaaa0000-0000-0000-0000-00000000000d = Spellbook
+--   aaaa0000-0000-0000-0000-00000000000e = Thieves' Tools
+--   aaaa0000-0000-0000-0000-00000000000f = Healing Potion
+--   aaaa0000-0000-0000-0000-000000000010 = +1 Sword
+--   aaaa0000-0000-0000-0000-000000000011 = Cloak of Elvenkind
+--   aaaa0000-0000-0000-0000-000000000012 = Bag of Holding
+--   aaaa0000-0000-0000-0000-000000000013 = Ring of Protection
+--   aaaa0000-0000-0000-0000-000000000014 = Flame Tongue
