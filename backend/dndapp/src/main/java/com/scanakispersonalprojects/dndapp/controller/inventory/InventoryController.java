@@ -105,7 +105,8 @@ public class InventoryController {
         }
         
         try {
-            if(inventoryService.deleteItemFromInventory(uuid, itemUuid, containerUuid) != null) {
+            if(inventoryService.deleteItemFromInventory(uuid, itemUuid, containerUuid) != null &&
+                inventoryService.deleteItemFromInventory(uuid, itemUuid, containerUuid) != false ) {
                 return new ResponseEntity<>(true, HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

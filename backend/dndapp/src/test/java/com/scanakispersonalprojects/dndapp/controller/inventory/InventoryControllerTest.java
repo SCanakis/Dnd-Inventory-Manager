@@ -1,6 +1,7 @@
 package com.scanakispersonalprojects.dndapp.controller.inventory;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,6 +59,8 @@ public class InventoryControllerTest {
     private UUID itemUuid = UUID.randomUUID();
 
     private static final UUID TEST_CHARACTER_UUID = UUID.fromString("eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9");
+
+    private final UUID emptyContainerUuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
 
 
@@ -182,6 +185,66 @@ public class InventoryControllerTest {
             .thenThrow(new RuntimeException("Throw Exception"));
         
         mockMvc.perform(get("/inventory/" + characterUuid + "/id=" + itemUuid))
+            .andExpect((status().isInternalServerError()));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void deleteItemFromInventory_returns200() throws Exception {
+        when(userDetailsService.getUsersCharacters(ArgumentMatchers.<Authentication>any()))
+            .thenReturn(List.of(characterUuid));
+
+        when(inventoryService.deleteItemFromInventory(characterUuid, itemUuid, emptyContainerUuid))
+            .thenReturn(true);
+
+        mockMvc.perform(delete("/inventory/" + characterUuid + "/id=" + itemUuid + "/containerId=" + emptyContainerUuid))
+            .andExpect((status().isOk()));
+    }
+
+    @Test
+    @WithMockUser(username = "NOT_AUTHORIZED", roles = {"USER"})
+    public void deleteItemFromInventory_returns401() throws Exception {
+
+        mockMvc.perform(delete("/inventory/" + characterUuid + "/id=" + itemUuid + "/containerId=" + emptyContainerUuid))
+            .andExpect((status().isUnauthorized()));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void deleteItemFromInventory_returns404() throws Exception {
+        when(userDetailsService.getUsersCharacters(ArgumentMatchers.<Authentication>any()))
+            .thenReturn(List.of(characterUuid));
+
+        when(inventoryService.deleteItemFromInventory(characterUuid, itemUuid, emptyContainerUuid))
+            .thenReturn(null);
+
+        mockMvc.perform(delete("/inventory/" + characterUuid + "/id=" + itemUuid + "/containerId=" + emptyContainerUuid))
+            .andExpect((status().isNotFound()));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void deleteItemFromInventory_returns_second_404() throws Exception {
+        when(userDetailsService.getUsersCharacters(ArgumentMatchers.<Authentication>any()))
+            .thenReturn(List.of(characterUuid));
+
+        when(inventoryService.deleteItemFromInventory(characterUuid, itemUuid, emptyContainerUuid))
+            .thenReturn(false);
+
+        mockMvc.perform(delete("/inventory/" + characterUuid + "/id=" + itemUuid + "/containerId=" + emptyContainerUuid))
+            .andExpect((status().isNotFound()));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void deleteItemFromInventory_returns500() throws Exception {
+        when(userDetailsService.getUsersCharacters(ArgumentMatchers.<Authentication>any()))
+            .thenReturn(List.of(characterUuid));
+
+        when(inventoryService.deleteItemFromInventory(characterUuid, itemUuid, emptyContainerUuid))
+            .thenThrow(new RuntimeException("Exception thrown"));
+
+        mockMvc.perform(delete("/inventory/" + characterUuid + "/id=" + itemUuid + "/containerId=" + emptyContainerUuid))
             .andExpect((status().isInternalServerError()));
     }
 

@@ -53,6 +53,6 @@ public interface InventoryJPARepo extends JpaRepository<CharacterHasItemSlot, Ch
                      "WHERE chis.character_uuid = :charUuid AND " + 
                      "chis.item_uuid = :itemUuid"
                      , nativeQuery = true)
-    List<CharacterHasItemSlot> getListAnItemWithDifferntContainers(@Param("characterUuid") UUID charUuid, @Param("itemUuid") UUID itemUuid); 
+    List<CharacterHasItemSlot> getListAnItemWithDifferntContainers(@Param("charUuid") UUID charUuid, @Param("itemUuid") UUID itemUuid); 
     
 }

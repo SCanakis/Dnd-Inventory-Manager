@@ -1,6 +1,9 @@
 package com.scanakispersonalprojects.dndapp.service.inventory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,8 +31,8 @@ public class InventoryServiceUnitTest {
     @Autowired
     private InventoryService inventoryService;
     private final UUID thorinUuid = UUID.fromString("eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9");
-     private final UUID longSwordUuid = UUID.fromString("aaaa0000-0000-0000-0000-000000000001");
-
+    private final UUID longSwordUuid = UUID.fromString("aaaa0000-0000-0000-0000-000000000001");
+    private final UUID chainMailUuid = UUID.fromString("aaaa0000-0000-0000-0000-000000000006");
 
     @Test
     public void getInventoryUsingUUID_returnsThorin() {
@@ -87,6 +90,62 @@ public class InventoryServiceUnitTest {
         items = inventoryService.getInventoryWithUUID(thorinUuid);
         assertEquals(4, items.size());
         assertEquals(items.get(0).getItemName(), "Longsword");
+    }
+
+    @Test
+    public void saveItemToInventoryNegativeNum() throws Exception{
+        List<CharacterHasItemProjection> items = inventoryService.getInventoryWithUUID(thorinUuid);
+        assertEquals(3, items.size());
+
+        assertFalse(inventoryService.saveItemToInventory(longSwordUuid, thorinUuid, -1));
+
+        items = inventoryService.getInventoryWithUUID(thorinUuid);
+        assertEquals(3, items.size());
+    }
+
+
+    @Test
+    public void deleteItemFromInventory_success() throws Exception{
+        List<CharacterHasItemProjection> items = inventoryService.getInventoryWithUUID(thorinUuid);
+        assertEquals(3, items.size());
+
+        assertTrue(inventoryService.deleteItemFromInventory(thorinUuid, chainMailUuid, UUID.fromString("00000001-0000-0000-0000-000000000002")));
+
+        items = inventoryService.getInventoryWithUUID(thorinUuid);
+        assertEquals(2, items.size());
+    }
+
+    @Test
+    public void deleteItemFromInventory_notFound() throws Exception{
+        List<CharacterHasItemProjection> items = inventoryService.getInventoryWithUUID(thorinUuid);
+        assertEquals(3, items.size());
+
+        assertNull(inventoryService.deleteItemFromInventory(thorinUuid, longSwordUuid , UUID.fromString("00000001-0000-0000-0000-000000000002")));
+
+        items = inventoryService.getInventoryWithUUID(thorinUuid);
+        assertEquals(3, items.size());
+    }
+
+    @Test
+    public void updateQuantity_success() throws Exception{
+        List<CharacterHasItemProjection> items = inventoryService.getInventoryWithUUID(thorinUuid);
+        assertEquals(3, items.size());
+
+        assertTrue(inventoryService.updateQuantity(thorinUuid, chainMailUuid, 5));
+
+        items = inventoryService.getInventoryWithUUID(thorinUuid);
+        assertEquals(3, items.size());
+        assertEquals(6, (int)items.get(0).getQuantity());
+    }
+
+    @Test
+    public void updateQuantity_notFound() throws Exception{
+        assertFalse(inventoryService.updateQuantity(thorinUuid, UUID.randomUUID(), 5));
+    }
+
+    @Test
+    public void updateQuantity_null() throws Exception{
+        assertFalse(inventoryService.updateQuantity(null, null, 5));
     }
 
 }
