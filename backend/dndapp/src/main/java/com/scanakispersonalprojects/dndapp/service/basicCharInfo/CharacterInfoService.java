@@ -141,33 +141,19 @@ public class CharacterInfoService {
     @Transactional
     public boolean deleteCharacter(UUID charInfoUuid, UUID userUuid) {
         try {
-            System.out.println("Attempting to delete character: " + charInfoUuid);
-            System.out.println("For user: " + userUuid);
             
             Optional<CharacterInfo> characterInfoOptional = characterInfoRepo.findById(charInfoUuid);
-            System.out.println("Character found: " + characterInfoOptional.isPresent());
             
             if(characterInfoOptional.isPresent()) {
-                System.out.println("Character found, attempting delete...");
                 
-                // Delete from users_characters first
                 userDao.deleteCharacter(userUuid, charInfoUuid);
-                System.out.println("Deleted from users_characters");
-                
-                // Delete character classes
                 characterClassRepo.deleteCharacterClasses(charInfoUuid);
-                System.out.println("Deleted character classes");
-                
-                // Delete character
                 characterInfoRepo.deleteById(charInfoUuid);
-                System.out.println("Deleted character");
                 
                 return true;
             }
-            System.out.println("Character not found");
             return false;
         } catch (Exception e) {
-            System.out.println("Delete failed: " + e.getMessage());
             return false;
         }
     }

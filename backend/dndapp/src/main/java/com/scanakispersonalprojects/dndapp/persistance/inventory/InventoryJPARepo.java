@@ -47,5 +47,12 @@ public interface InventoryJPARepo extends JpaRepository<CharacterHasItemSlot, Ch
            "WHERE chis.character_uuid = :characterUuid AND SIMILARITY(ic.item_name, :searchTerm) > 0.06 " + 
            "ORDER BY SIMILARITY(ic.item_name, :searchTerm) DESC", nativeQuery = true)
     List<CharacterHasItemProjection> getInventoyUsingFZF(@Param("characterUuid") UUID charUuid, @Param("searchTerm") String searchTerm);
+
+
+    @Query(value = " SELECT * FROM character_has_item_slot as chis " +
+                     "WHERE chis.character_uuid = :charUuid AND " + 
+                     "chis.item_uuid = :itemUuid"
+                     , nativeQuery = true)
+    List<CharacterHasItemSlot> getListAnItemWithDifferntContainers(@Param("characterUuid") UUID charUuid, @Param("itemUuid") UUID itemUuid); 
     
 }

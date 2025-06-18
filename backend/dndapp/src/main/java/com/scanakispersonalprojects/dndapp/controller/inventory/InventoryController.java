@@ -16,6 +16,7 @@ import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetai
 import com.scanakispersonalprojects.dndapp.service.inventory.InventoryService;
 import com.scanakispersonalprojects.dndapp.service.inventory.ItemCatalogService;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -31,6 +32,7 @@ public class InventoryController {
     private CustomUserDetailsService userService;
     private ItemCatalogService itemCatalogService;
     private final static String getPath = "GET /inventory/";
+    private final static String deletePath = "DELETE /inventory/";
 
     public InventoryController(InventoryService inventoryService, CustomUserDetailsService userService, ItemCatalogService itemCatalogService) {
         this.inventoryService= inventoryService;
@@ -88,6 +90,27 @@ public class InventoryController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(item, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/id={itemUuid}/containerId={containerUuid}")
+    public ResponseEntity<Boolean> deleteItemFromInvnetory(Authentication authentication, @PathVariable UUID itemUuid, @PathVariable UUID uuid, @PathVariable UUID containerUuid) {
+        LOG.info(deletePath + uuid + "/id="+ itemUuid + "/containerId=" + containerUuid);
+
+        List<UUID> characters = userService.getUsersCharacters(authentication);
+        if(!characters.contains(uuid)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        
+        try {
+            if(inventoryService.deleteItemFromInventory(containerUuid, itemUuid, containerUuid) != null) {
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
