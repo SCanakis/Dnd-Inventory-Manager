@@ -138,4 +138,61 @@ public class BasicCharInfoControllerUnitTest {
         .andExpect(status().isNotFound());
     }
 
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})  
+    public void deleteBasicCharInfo_return500() throws Exception {
+        UUID userTestUuid = UUID.randomUUID();
+        UUID characterTestUuid = UUID.randomUUID();
+
+        when(userService.getUsersCharacters(ArgumentMatchers.<Authentication>any()))
+            .thenReturn(List.of(characterTestUuid));
+
+        when(userService.getUsersUuid(ArgumentMatchers.<Authentication>any()))
+            .thenReturn(userTestUuid);
+
+        when(characterService.deleteCharacter(characterTestUuid, userTestUuid))
+            .thenThrow(new RuntimeException("Throws Exception"));
+
+        mockMvc.perform(delete("/character/{uuid}", characterTestUuid))
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})  
+    public void updateBasicCharInfo_Id_returns500() throws Exception {
+        
+        UUID testUuid = UUID.randomUUID();
+        // objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+
+        CharacterInfoUpdateDTO characterInfo = new CharacterInfoUpdateDTO();
+
+        characterInfo.setName("Updated aTestCharacter");
+        characterInfo.setInspiration((Boolean) false);
+        characterInfo.setAbilityScores(
+            new HashMap<AbilityScore, Integer>() {{
+                put(AbilityScore.strength, 20);
+                put(AbilityScore.dexterity, 20);
+                put(AbilityScore.constitution, 20);
+                put(AbilityScore.wisdom, 20);
+                put(AbilityScore.intelligence, 20);
+                put(AbilityScore.charisma, 20);
+            }}
+        );
+
+        String json = objectMapper.writeValueAsString(characterInfo);
+
+        when(userService.getUsersCharacters(ArgumentMatchers.<Authentication>any()))
+            .thenReturn(List.of(testUuid));
+
+        when(characterService.updateUsingPatch(eq(testUuid), any(CharacterInfoUpdateDTO.class)))
+            .thenThrow(new RuntimeException("Throws Exception"));
+
+        mockMvc.perform(
+            put("/character/{uuid}", testUuid)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+            )
+            .andExpect(status().isInternalServerError());
+    }
+
 }

@@ -78,16 +78,16 @@ public class BasicCharInfoController {
         }
     }
 
-    // /**
-    //  * 
-    //  * Update some of the values that will frequently be changed in the BasicCharInfo
-    //  * 
-    //  * @param uuid          unique idneitifer of the character
-    //  * @param patch         The filed that are to be updated
-    //  * @return              200 with an instance of the updated {@link CharacterBasicInfoView}
-    //  *                      401 if user not authorized
-    //  *                      500 on any unexpected server error
-    //  */
+    /**
+     * 
+     * Update some of the values that will frequently be changed in the BasicCharInfo
+     * 
+     * @param uuid          unique idneitifer of the character
+     * @param patch         The filed that are to be updated
+     * @return              200 with an instance of the updated {@link CharacterBasicInfoView}
+     *                      401 if user not authorized
+     *                      500 on any unexpected server error
+     */
 
 
     @PutMapping("/{uuid}")
@@ -97,13 +97,17 @@ public class BasicCharInfoController {
         if(!characters.contains(uuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
-        CharacterBasicInfoView charInfoView = characterInfoService.updateUsingPatch(uuid, patch);
-        if (charInfoView != null) {
-            return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } 
+        try {
+            CharacterBasicInfoView charInfoView = characterInfoService.updateUsingPatch(uuid, patch);
+            if (charInfoView != null) {
+                return new ResponseEntity<CharacterBasicInfoView>(charInfoView, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } 
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
 
   
     }
@@ -128,15 +132,20 @@ public class BasicCharInfoController {
         if(!characters.contains(uuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
- 
-        UUID userUuid = userService.getUsersUuid(authentication);
+        try {
+            
+            UUID userUuid = userService.getUsersUuid(authentication);
+            boolean result = characterInfoService.deleteCharacter(uuid, userUuid);
 
-        boolean result = characterInfoService.deleteCharacter(uuid, userUuid);
-        if(result != false) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if(result != false) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        
          
     }
 

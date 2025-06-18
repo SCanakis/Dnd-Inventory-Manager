@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
+import com.scanakispersonalprojects.dndapp.service.inventory.InventoryService;
 
 import jakarta.transaction.Transactional;
 
@@ -42,6 +43,10 @@ public class InventoryControllerTest {
     @SuppressWarnings("removal")
     @MockBean
     private CustomUserDetailsService userDetailsService;
+
+    @SuppressWarnings("removal")
+    @MockBean
+    private InventoryService inventoryService;
 
     private UUID characterUuid;
   
@@ -66,4 +71,40 @@ public class InventoryControllerTest {
             mockMvc.perform(get("/inventory/" + characterUuid))
                 .andExpect((status().isOk()));
     }
+    
+    @Test
+    @WithMockUser(username = "NOT_AUTHORIZED", roles = {"USER"})
+    public void getInventoryUsingUUID_returns401() throws Exception{
+        
+        mockMvc.perform(get("/inventory/" + characterUuid))
+                .andExpect(status().isUnauthorized());
+
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles={"USER"})
+    public void getInventoryUsingUUID_returns404() throws Exception {
+        when(userDetailsService.getUsersCharacters(ArgumentMatchers.<Authentication>any()))
+            .thenReturn(List.of(characterUuid));
+        
+        when(inventoryService.getInventoryWithUUID(characterUuid))
+            .thenReturn(null);
+        
+        mockMvc.perform(get("/inventory/" + characterUuid))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles={"USER"})
+    public void getInventoryUsingUUID_returns500() throws Exception {
+        when(userDetailsService.getUsersCharacters(ArgumentMatchers.<Authentication>any()))
+            .thenReturn(List.of(characterUuid));
+        
+        when(inventoryService.getInventoryWithUUID(characterUuid))
+            .thenThrow(new RuntimeException("Test Exception"));
+        
+        mockMvc.perform(get("/inventory/" + characterUuid))
+            .andExpect(status().isInternalServerError());
+    }
+
 }
