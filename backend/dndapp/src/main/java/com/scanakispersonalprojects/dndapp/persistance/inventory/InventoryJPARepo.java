@@ -10,10 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemProjection;
 import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemSlot;
-import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemSlotID;
+import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemSlotId;
 
 @Repository
-public interface InventoryJPARepo extends JpaRepository<CharacterHasItemSlot, CharacterHasItemSlotID>{
+public interface InventoryJPARepo extends JpaRepository<CharacterHasItemSlot, CharacterHasItemSlotId>{
 
 
 

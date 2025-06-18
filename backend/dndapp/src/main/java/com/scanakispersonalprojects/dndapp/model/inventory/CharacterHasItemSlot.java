@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 public class CharacterHasItemSlot {
     
     @EmbeddedId
-    private CharacterHasItemSlotID id;
+    private CharacterHasItemSlotId id;
 
     @Column(name = "quantity", nullable = false)
     private int quantity = 1;
@@ -31,18 +31,18 @@ public class CharacterHasItemSlot {
     public CharacterHasItemSlot(UUID itemUuid, UUID charUuid, UUID slotUuid, int quantity, boolean equipped, boolean attuned,
             boolean inAttackTab) {
 
-        this.id = new CharacterHasItemSlotID(itemUuid, charUuid, slotUuid);
+        this.id = new CharacterHasItemSlotId(itemUuid, charUuid, slotUuid);
         this.quantity = quantity;
         this.equipped = equipped;
         this.attuned = attuned;
         this.inAttackTab = inAttackTab;
     }
 
-    public CharacterHasItemSlotID getId() {
+    public CharacterHasItemSlotId getId() {
         return id;
     }
 
-    public void setId(CharacterHasItemSlotID id) {
+    public void setId(CharacterHasItemSlotId id) {
         this.id = id;
     }
 

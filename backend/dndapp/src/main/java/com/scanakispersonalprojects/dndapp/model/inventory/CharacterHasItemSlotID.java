@@ -8,7 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class CharacterHasItemSlotID implements Serializable{
+public class CharacterHasItemSlotId implements Serializable{
     
     @Column(name = "item_uuid")
     private UUID itemUuid;
@@ -19,9 +19,9 @@ public class CharacterHasItemSlotID implements Serializable{
     @Column(name = "container_uuid")
     private UUID containerUuid;
 
-    public CharacterHasItemSlotID() {}
+    public CharacterHasItemSlotId() {}
 
-    public CharacterHasItemSlotID(UUID itemUuid, UUID charUuid, UUID containerUuid) {
+    public CharacterHasItemSlotId(UUID itemUuid, UUID charUuid, UUID containerUuid) {
         this.itemUuid = itemUuid;
         this.charUuid = charUuid;
         this.containerUuid = containerUuid;
@@ -45,8 +45,8 @@ public class CharacterHasItemSlotID implements Serializable{
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof CharacterHasItemSlotID) {
-            CharacterHasItemSlotID other = (CharacterHasItemSlotID) obj;
+        if(obj instanceof CharacterHasItemSlotId) {
+            CharacterHasItemSlotId other = (CharacterHasItemSlotId) obj;
             return Objects.equals(other.charUuid, this.charUuid) &&
                 Objects.equals(other.itemUuid, this.itemUuid) &&
                 Objects.equals(other.containerUuid, this.containerUuid);

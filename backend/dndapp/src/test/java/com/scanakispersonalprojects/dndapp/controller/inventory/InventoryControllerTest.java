@@ -22,8 +22,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 import com.scanakispersonalprojects.dndapp.service.inventory.InventoryService;
+import com.scanakispersonalprojects.dndapp.service.inventory.ItemCatalogService;
 
 import jakarta.transaction.Transactional;
 
@@ -48,10 +50,13 @@ public class InventoryControllerTest {
     @MockBean
     private InventoryService inventoryService;
 
-    private UUID characterUuid;
-  
+    @SuppressWarnings("removal")
+    @MockBean
+    private ItemCatalogService itemCatalogService;
 
-    // Use the same UUID that exists in your test schema
+    private UUID characterUuid;
+    private UUID itemUuid = UUID.randomUUID();
+
     private static final UUID TEST_CHARACTER_UUID = UUID.fromString("eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9");
 
 
@@ -106,5 +111,82 @@ public class InventoryControllerTest {
         mockMvc.perform(get("/inventory/" + characterUuid))
             .andExpect(status().isInternalServerError());
     }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void getInventoryUsingFZF_returns200() throws Exception {
+        when(userDetailsService.getUsersCharacters(ArgumentMatchers.<Authentication>any()))
+            .thenReturn(List.of(characterUuid));
+
+        mockMvc.perform(get("/inventory/" + characterUuid + "/searchTerm=sword"))
+            .andExpect((status().isOk()));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void getInventoryUsingFZF_returns404() throws Exception {
+        when(userDetailsService.getUsersCharacters(ArgumentMatchers.<Authentication>any()))
+            .thenReturn(List.of(characterUuid));
+
+        when(inventoryService.getInventoryUsingFZF(characterUuid, "sword"))
+            .thenReturn(null);
+
+        mockMvc.perform(get("/inventory/" + characterUuid + "/searchTerm=sword"))
+            .andExpect((status().isNotFound()));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void getInventoryUsingFZF_returns500() throws Exception {
+        when(userDetailsService.getUsersCharacters(ArgumentMatchers.<Authentication>any()))
+            .thenReturn(List.of(characterUuid));
+
+        when(inventoryService.getInventoryUsingFZF(characterUuid, "sword"))
+            .thenThrow(new RuntimeException("Throw Exception"));
+
+        mockMvc.perform(get("/inventory/" + characterUuid + "/searchTerm=sword"))
+            .andExpect((status().isInternalServerError()));
+    }
+
+    @Test
+    @WithMockUser(username = "NOT_AUTHORIZED", roles = {"USER"})
+    public void getInventoryUsingFZF_returns401() throws Exception {   
+        mockMvc.perform(get("/inventory/" + characterUuid + "/searchTerm=sword"))
+            .andExpect((status().isUnauthorized()));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void getItemFromInventory_returns200() throws Exception {   
+        when(itemCatalogService.getItemWithUUID(itemUuid))
+            .thenReturn(new ItemCatalog());
+        
+        mockMvc.perform(get("/inventory/" + characterUuid + "/id=" + itemUuid))
+            .andExpect((status().isOk()));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void getItemFromInventory_returns404() throws Exception {   
+        when(itemCatalogService.getItemWithUUID(itemUuid))
+            .thenReturn(null);
+        
+        mockMvc.perform(get("/inventory/" + characterUuid + "/id=" + itemUuid))
+            .andExpect((status().isNotFound()));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    public void getItemFromInventory_returns500() throws Exception {   
+        when(itemCatalogService.getItemWithUUID(itemUuid))
+            .thenThrow(new RuntimeException("Throw Exception"));
+        
+        mockMvc.perform(get("/inventory/" + characterUuid + "/id=" + itemUuid))
+            .andExpect((status().isInternalServerError()));
+    }
+
+    
+
+
 
 }
