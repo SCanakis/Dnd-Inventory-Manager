@@ -96,7 +96,7 @@ public class InventoryController {
     }
 
     @DeleteMapping("/id={itemUuid}/containerId={containerUuid}")
-    public ResponseEntity<Boolean> deleteItemFromInvnetory(Authentication authentication, @PathVariable UUID itemUuid, @PathVariable UUID uuid, @PathVariable UUID containerUuid) {
+    public ResponseEntity<Boolean> deleteItemFromInventory(Authentication authentication, @PathVariable UUID itemUuid, @PathVariable UUID uuid, @PathVariable UUID containerUuid) {
         LOG.info(deletePath + uuid + "/id="+ itemUuid + "/containerId=" + containerUuid);
 
         List<UUID> characters = userService.getUsersCharacters(authentication);
@@ -105,7 +105,7 @@ public class InventoryController {
         }
         
         try {
-            if(inventoryService.deleteItemFromInventory(containerUuid, itemUuid, containerUuid) != null) {
+            if(inventoryService.deleteItemFromInventory(uuid, itemUuid, containerUuid) != null) {
                 return new ResponseEntity<>(true, HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
