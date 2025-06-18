@@ -6,14 +6,20 @@ import java.util.logging.Logger;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemProjection;
+import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
+import com.scanakispersonalprojects.dndapp.service.inventory.InventoryService;
 import com.scanakispersonalprojects.dndapp.service.inventory.ItemCatalogService;
+import org.springframework.web.bind.annotation.PostMapping;
+
 
 
 
@@ -23,12 +29,18 @@ public class CatalogController {
     
     private final static Logger LOG = Logger.getLogger(CatalogController.class.getName());
 
-    private final ItemCatalogService service;
+    private final ItemCatalogService itemCatalogService;
+    private final CustomUserDetailsService userService;
+    private final InventoryService inventoryService;
+
     private final static String getPath = "GET /itemCatalog/";
-
-
-    public CatalogController(ItemCatalogService service) {
-        this.service = service;
+    private final static String postPath = "POST /itemCatalog/";
+    
+    
+    public CatalogController(ItemCatalogService itemCatalogService, CustomUserDetailsService userService, InventoryService inventoryService) {
+        this.itemCatalogService = itemCatalogService;
+        this.userService = userService;
+        this.inventoryService = inventoryService;
     }
 
 
@@ -36,7 +48,7 @@ public class CatalogController {
     public ResponseEntity<ItemCatalog> getItem(@PathVariable UUID uuid) {
         LOG.info(getPath +"id=" + uuid);
         try {
-            ItemCatalog item = service.getItemWithUUID(uuid);
+            ItemCatalog item = itemCatalogService.getItemWithUUID(uuid);
             if(item == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -51,7 +63,7 @@ public class CatalogController {
     public ResponseEntity<List<ItemProjection>> getAll() {
         LOG.info(getPath);
         try {
-            List<ItemProjection> items = service.getAll();
+            List<ItemProjection> items = itemCatalogService.getAll();
             if(items == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -65,7 +77,7 @@ public class CatalogController {
     public ResponseEntity<List<ItemProjection>> searchByName(@PathVariable String searchTerm) {
         LOG.info(getPath + "/serachTerm=" + searchTerm);
         try {
-            List<ItemProjection> items = service.searchByName(searchTerm);
+            List<ItemProjection> items = itemCatalogService.searchByName(searchTerm);
             if(items == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -73,8 +85,31 @@ public class CatalogController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
+
+    @PostMapping("/id={itemUuid}/charId={charUuid}")
+    public ResponseEntity<Boolean> addItemToCharacterInventory(Authentication authentication, @PathVariable UUID itemUuid, @PathVariable UUID charUuid, @RequestParam int quantity) {
+        LOG.info(postPath + "id=" + itemUuid + "/charId=" + charUuid);
+        List<UUID> characters = userService.getUsersCharacters(authentication);
+        LOG.info("User has {} characters "+ characters.size());
+        if(!characters.contains(charUuid)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        
+        try {
+            boolean result = inventoryService.saveItemToInventory(itemUuid, charUuid, quantity);
+            if(result) {
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+    }
+    
     
 
 }
