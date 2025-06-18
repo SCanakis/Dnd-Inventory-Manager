@@ -31,9 +31,9 @@ public class BasicCharInfoController {
     private static final Logger LOG = Logger.getLogger(BasicCharInfoController.class.getName());
     private CharacterInfoService characterInfoService;
     private CustomUserDetailsService userService;
-    private final String GET_PATH = "GET /characters/";
-    private final String PUT_PATH = "PUT /characters/";
-    private final String DELETE_PATH = "DELETE /characters/";
+    private final static String getPath = "GET /characters/";
+    private final static String putPath = "PUT /characters/";
+    private final static String deletePath = "DELETE /characters/";
    
     /**
      * Contructor instantiates the {@link CustomUserDetailsService} and 
@@ -63,7 +63,7 @@ public class BasicCharInfoController {
 
     @GetMapping("/{uuid}")
     public ResponseEntity<CharacterBasicInfoView> getCharacterBasicView(@PathVariable UUID uuid) {
-        LOG.info(GET_PATH + uuid);
+        LOG.info(getPath + uuid);
         try {
             CharacterBasicInfoView charInfoView = characterInfoService.getCharacterBasicInfoView(uuid);
             if (charInfoView != null) {
@@ -92,7 +92,7 @@ public class BasicCharInfoController {
 
     @PutMapping("/{uuid}")
     public ResponseEntity<CharacterBasicInfoView> updateCharacterBasicView(Authentication authentication, @PathVariable UUID uuid , @RequestBody CharacterInfoUpdateDTO patch) {
-        LOG.info(PUT_PATH + uuid);
+        LOG.info(putPath + uuid);
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -126,7 +126,7 @@ public class BasicCharInfoController {
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<CharacterBasicInfoView> deleteCharacter(Authentication authentication ,@PathVariable UUID uuid) {
-        LOG.info(DELETE_PATH + uuid);
+        LOG.info(deletePath + uuid);
 
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {

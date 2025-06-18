@@ -24,7 +24,7 @@ public class CatalogController {
     private final static Logger LOG = Logger.getLogger(CatalogController.class.getName());
 
     private final ItemCatalogService service;
-    private final String GET_PATH = "GET /itemCatalog/";
+    private final static String getPath = "GET /itemCatalog/";
 
 
     public CatalogController(ItemCatalogService service) {
@@ -34,7 +34,7 @@ public class CatalogController {
 
     @GetMapping("/id={uuid}")
     public ResponseEntity<ItemCatalog> getItem(@PathVariable UUID uuid) {
-        LOG.info(GET_PATH +"id=" + uuid);
+        LOG.info(getPath +"id=" + uuid);
         try {
             ItemCatalog item = service.getItemWithUUID(uuid);
             if(item == null) {
@@ -49,7 +49,7 @@ public class CatalogController {
 
     @GetMapping
     public ResponseEntity<List<ItemProjection>> getAll() {
-        LOG.info(GET_PATH);
+        LOG.info(getPath);
         try {
             List<ItemProjection> items = service.getAll();
             if(items == null) {
@@ -63,7 +63,7 @@ public class CatalogController {
 
     @GetMapping("/searchTerm={searchTerm}")
     public ResponseEntity<List<ItemProjection>> searchByName(@PathVariable String searchTerm) {
-        LOG.info(GET_PATH + "/serachTerm=" + searchTerm);
+        LOG.info(getPath + "/serachTerm=" + searchTerm);
         try {
             List<ItemProjection> items = service.searchByName(searchTerm);
             if(items == null) {
