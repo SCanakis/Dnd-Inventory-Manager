@@ -57,7 +57,7 @@ class ItemCatalogTest {
 
         ItemCatalog item = new ItemCatalog(testUuid, itemName, itemDescription, itemWeight,
                 itemValue, rarity, attackable, acBonus, addToAc, equippable, attunable,
-                equippableTypes, abilityReq, skillRollType, skillBonus);
+                equippableTypes, abilityReq, skillRollType, skillBonus, false, null);
 
         assertEquals(testUuid, item.getItemUuid());
         assertEquals(itemName, item.getItemName());
@@ -85,7 +85,7 @@ class ItemCatalogTest {
                 
 
         ItemCatalog item = new ItemCatalog(testUuid, "Test Item", "Description", 1, 100,
-                Rarity.common, false, null, null, true, false, null, null, null, null, classPairs);
+                Rarity.common, false, null, null, true, false, null, null, null, null, false, null,classPairs);
 
         assertEquals(classPairs, item.getClassNameIdPair());
         assertEquals(testUuid, item.getItemUuid());

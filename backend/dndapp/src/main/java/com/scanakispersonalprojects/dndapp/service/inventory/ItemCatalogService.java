@@ -16,7 +16,7 @@ import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemClassEligib
 @Service
 public class ItemCatalogService {
     
-
+    
     private ItemCatalogJPARepo repo;
 
     private ItemClassEligibilityRepository classRepo;

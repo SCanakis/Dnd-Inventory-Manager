@@ -90,7 +90,9 @@ public class CatalogControllerTest {
             new HashMap<Skill, Integer>(){{
                 put(Skill.acrobatics, 3);
                 put(Skill.sleight_of_hand, 5);
-            }}
+            }},
+            false,
+            null
         );
         testItem = itemCatalogRepo.save(testItem);
         testItemUuid = testItem.getItemUuid();

@@ -121,7 +121,9 @@ public class ItemCatalogBuilder {
                 new ArrayList<>(equippableTypes),
                 new HashMap<>(bonusAbilityScores),
                 new HashMap<>(bonusSkillRollTypes),
-                new HashMap<>(bonusSkillModifiers)
+                new HashMap<>(bonusSkillModifiers),
+                false,
+                null
             );
         }
     }

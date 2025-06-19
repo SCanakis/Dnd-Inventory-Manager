@@ -59,33 +59,40 @@ public class InventoryService {
 
         try {
             
-            List<CharacterHasItemSlot> exisitingSlots = repo.getListAnItemWithDifferntContainers(charUuid, itemUuid);
-
-            if(!exisitingSlots.isEmpty()) {
-                updateQuantity(charUuid, itemUuid, quantity);
-            }
-
-            CharacterHasItemSlotId id = new CharacterHasItemSlotId(itemUuid, charUuid, emptyContainerUuid);        
-            CharacterHasItemSlot slot = new CharacterHasItemSlot();
-            slot.setId(id);
-
             ItemCatalog item = itemCatalogService.getItemWithUUID(itemUuid);
+ 
+            if(item != null) {
 
-            if(item == null) {
-                return false;
+                if(item.isContainer()) {
+                    if(item.getCapacity() > 0 && item.getCapacity() != null) {
+                        Container container = new Container(null, charUuid, itemUuid, item.getCapacity(), 0);
+                        containerRepo.save(container);
+                    }
+                }
+
+                List<CharacterHasItemSlot> exisitingSlots = repo.getListAnItemWithDifferntContainers(charUuid, itemUuid);
+
+                if(!exisitingSlots.isEmpty()) {
+                    updateQuantity(charUuid, itemUuid, quantity);
+                }
+
+                CharacterHasItemSlotId id = new CharacterHasItemSlotId(itemUuid, charUuid, emptyContainerUuid);        
+                CharacterHasItemSlot slot = new CharacterHasItemSlot();
+                slot.setId(id);
+
+                if(item.isEquippable()) {
+                    slot.setEquipped(false);
+                } 
+                if(item.isAttunable()) {
+                    slot.setAttuned(false);
+                } 
+
+                repo.save(slot);
+
+                return true;
             }
-
-            if(item.isEquippable()) {
-                slot.setEquipped(false);
-            } 
-            if(item.isAttunable()) {
-                slot.setAttuned(false);
-            } 
-
-            repo.save(slot);
-
-            return true;
-
+            return false;
+            
         } catch (Exception e) {
             return false;
         }

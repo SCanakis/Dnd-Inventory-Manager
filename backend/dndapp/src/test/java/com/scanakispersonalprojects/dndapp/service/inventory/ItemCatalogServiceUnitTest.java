@@ -57,6 +57,8 @@ public class ItemCatalogServiceUnitTest {
         null,
         null,
         null,
+        false,
+        null,
         new ArrayList<>() {{
             add(new ClassNameIdPair(
                 UUID.fromString("c1a55000-0000-0000-0000-000000000001"),
@@ -106,7 +108,7 @@ public class ItemCatalogServiceUnitTest {
     @Test
     public void getAll() throws Exception {
         List<ItemProjection> items = itemCatalogService.getAll();
-        assertEquals(20, items.size());
+        assertEquals(26, items.size());
     }
 
     @Test

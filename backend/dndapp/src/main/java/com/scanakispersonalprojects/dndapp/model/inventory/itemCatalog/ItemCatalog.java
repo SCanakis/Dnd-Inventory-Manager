@@ -87,6 +87,12 @@ public class ItemCatalog {
     @Column(name = "skill_altered_bonus")
     private Map<Skill, Integer> skillAlteredBonus;
 
+    @Column(name = "is_container")
+    private boolean isContainer = false;
+
+    @Column(name = "capacity")
+    private Integer capacity;
+
     @Transient
     private List<ClassNameIdPair> classNameIdPair;
 
@@ -96,7 +102,7 @@ public class ItemCatalog {
             Rarity itemRarity, boolean attackable, Short acBonus, Map<AbilityScore, Boolean> addToAc,
             boolean equippable, boolean attunable, List<EquippableType> itemEquippableTypes,
             Map<AbilityScore, Integer> abilityRequirement, Map<Skill, RollType> skillAlteredRollType,
-            Map<Skill, Integer> skillAlteredBonus) {
+            Map<Skill, Integer> skillAlteredBonus, boolean isContainer, Integer capacity) {
         this.itemUuid = itemUuid;
         this.itemName = itemName;
         this.itemDescription = itemDescription;
@@ -112,13 +118,15 @@ public class ItemCatalog {
         this.abilityRequirement = abilityRequirement;
         this.skillAlteredRollType = skillAlteredRollType;
         this.skillAlteredBonus = skillAlteredBonus;
+        this.isContainer = isContainer;
+        this.capacity = capacity;
     }
 
     public ItemCatalog(UUID itemUuid, String itemName, String itemDescription, Integer itemWeight, Integer itemValue,
             Rarity itemRarity, boolean attackable, Short acBonus, Map<AbilityScore, Boolean> addToAc,
             boolean equippable, boolean attunable, List<EquippableType> itemEquippableTypes,
             Map<AbilityScore, Integer> abilityRequirement, Map<Skill, RollType> skillAlteredRollType,
-            Map<Skill, Integer> skillAlteredBonus, List<ClassNameIdPair> classNameIdPairs) {
+            Map<Skill, Integer> skillAlteredBonus, boolean isContainer, Integer capacity, List<ClassNameIdPair> classNameIdPairs) {
         this.itemUuid = itemUuid;
         this.itemName = itemName;
         this.itemDescription = itemDescription;
@@ -134,7 +142,24 @@ public class ItemCatalog {
         this.abilityRequirement = abilityRequirement;
         this.skillAlteredRollType = skillAlteredRollType;
         this.skillAlteredBonus = skillAlteredBonus;
+        this.isContainer = isContainer;
         this.classNameIdPair = classNameIdPairs;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+    public boolean isContainer() {
+        return isContainer;
+    }
+
+    public void setContainer(boolean isContainer) {
+        this.isContainer = isContainer;
     }
 
     public UUID getItemUuid() {
