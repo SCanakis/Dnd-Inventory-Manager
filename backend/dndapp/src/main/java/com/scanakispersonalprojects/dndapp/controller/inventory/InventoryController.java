@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemProjection;
+import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemSlot;
+import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemUpdate;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 import com.scanakispersonalprojects.dndapp.service.inventory.InventoryService;
@@ -19,6 +21,9 @@ import com.scanakispersonalprojects.dndapp.service.inventory.ItemCatalogService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -33,6 +38,7 @@ public class InventoryController {
     private ItemCatalogService itemCatalogService;
     private final static String getPath = "GET /inventory/";
     private final static String deletePath = "DELETE /inventory/";
+    private final static String postPath = "POST /inventory/";
 
     public InventoryController(InventoryService inventoryService, CustomUserDetailsService userService, ItemCatalogService itemCatalogService) {
         this.inventoryService= inventoryService;
@@ -115,8 +121,29 @@ public class InventoryController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
+
+    @PostMapping("/id={itemUuid}/containerId={containerUuid}")
+    public ResponseEntity<CharacterHasItemSlot> characterHasItemUpdate(Authentication authentication, @PathVariable UUID uuid, @PathVariable UUID itemUuid, @PathVariable UUID containerUuid, @RequestBody CharacterHasItemUpdate update ) {
+        LOG.info(postPath + uuid + "/id="+ itemUuid + "/containerId=" + containerUuid);
+
+        List<UUID> characters = userService.getUsersCharacters(authentication);
+        if(!characters.contains(uuid)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        
+        try {
+            CharacterHasItemSlot result = inventoryService.updateCharacterHasSlot(uuid, itemUuid, containerUuid, update);
+
+            if(result != null) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
     
 
 

@@ -2,6 +2,7 @@ package com.scanakispersonalprojects.dndapp.service.inventory;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemProjection;
 import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemSlot;
 import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemSlotId;
+import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemUpdate;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
 import com.scanakispersonalprojects.dndapp.persistance.inventory.InventoryJPARepo;
 
@@ -127,5 +129,55 @@ public class InventoryService {
             return false;
         }
     }
+
+    @Transactional
+    public CharacterHasItemSlot updateCharacterHasSlot(UUID charUuid, UUID itemUuid, UUID containerUuid, CharacterHasItemUpdate update) {
+
+        if(charUuid == null || itemUuid == null) {
+            return null;
+        }
+
+        CharacterHasItemSlotId id = new CharacterHasItemSlotId(itemUuid, charUuid, containerUuid);
+        Optional<CharacterHasItemSlot> slotOptional = repo.findById(id);
+
+        if(!slotOptional.isPresent()) {
+            return null;
+        }
+
+        CharacterHasItemSlot slot = slotOptional.get();
+        if (update.getQuantity() != null) {
+        slot.setQuantity(update.getQuantity());
+        }
+        if (update.isEquipped() != null) {
+            slot.setEquipped(update.isEquipped());
+        }
+        if (update.isAttuned() != null) {
+            slot.setAttuned(update.isAttuned());
+        }
+        if (update.getContainerUuid() != null && !update.getContainerUuid().equals(containerUuid)) {
+            UUID newContainerUuid = update.getContainerUuid();
+
+            CharacterHasItemSlotId targetId = new CharacterHasItemSlotId(itemUuid, charUuid, newContainerUuid);
+
+            Optional<CharacterHasItemSlot> targetSlotOptional = repo.findById(targetId);
+
+            if(targetSlotOptional.isPresent()) {
+
+                CharacterHasItemSlot targetSlot = targetSlotOptional.get();
+                targetSlot.setQuantity(targetSlot.getQuantity() + slot.getQuantity());
+                repo.delete(slot);
+                return repo.save(targetSlot);
+
+            } else {
+                slot.getId().setgetContainerUuid(newContainerUuid);
+                return repo.save(slot);
+            }
+        }
+        
+        return repo.save(slot);
+    }
+
+       
+    
 
 }

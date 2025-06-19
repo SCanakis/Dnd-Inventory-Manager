@@ -49,7 +49,7 @@ public interface InventoryJPARepo extends JpaRepository<CharacterHasItemSlot, Ch
     List<CharacterHasItemProjection> getInventoyUsingFZF(@Param("characterUuid") UUID charUuid, @Param("searchTerm") String searchTerm);
 
 
-    @Query(value = " SELECT * FROM character_has_item_slot as chis " +
+    @Query(value = "SELECT * FROM character_has_item_slot as chis " +
                      "WHERE chis.character_uuid = :charUuid AND " + 
                      "chis.item_uuid = :itemUuid"
                      , nativeQuery = true)
