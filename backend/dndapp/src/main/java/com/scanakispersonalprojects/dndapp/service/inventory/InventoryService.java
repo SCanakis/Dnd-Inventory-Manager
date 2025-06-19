@@ -153,17 +153,65 @@ public class InventoryService {
         }
 
         CharacterHasItemSlot slot = slotOptional.get();
-        if (update.getQuantity() != null) {
-        slot.setQuantity(update.getQuantity());
-        }
-        if (update.isEquipped() != null) {
+
+
+        if(update.getQuantity() != null && update.getContainerUuid() != null && update.getContainerUuid() != containerUuid) {
+            if(slot.getQuantity() < update.getQuantity()) {
+                return null;
+            }
+
+            if(slot.getQuantity() > update.getQuantity()) {
+                return partialContainerTransfer(charUuid, itemUuid, containerUuid, update, slot);
+
+            } else {
+                return completeContainerTransfer(charUuid, itemUuid, containerUuid, update, slot);
+            }
+
+        } else {
+            if (update.isEquipped() != null) {
             slot.setEquipped(update.isEquipped());
+            }
+            if (update.isAttuned() != null) {
+                slot.setAttuned(update.isAttuned());
+            }
+            if (update.getQuantity() != null) {
+                slot.setQuantity(update.getQuantity());
+            }
+            
+            return repo.save(slot);
+        }
+    }
+
+    @Transactional 
+    private CharacterHasItemSlot partialContainerTransfer(UUID charUuid, UUID itemUuid, UUID containerUuid, CharacterHasItemUpdate update, CharacterHasItemSlot currentSlot) {
+        
+        
+        if(!checkIfItemFitsInContainerAndUpdateContainer(charUuid, update.getContainerUuid(), update) ||  
+        !removeItemFromContainer(charUuid, containerUuid, update)) {
+            return null;
+        } 
+
+        currentSlot.setQuantity(currentSlot.getQuantity() - update.getQuantity());
+        repo.save(currentSlot);
+
+        CharacterHasItemSlot newSlot = new CharacterHasItemSlot(itemUuid, charUuid, update.getContainerUuid(), update.getQuantity(), update.isEquipped(), update.isAttuned(), false);
+
+        return repo.save(newSlot);
+    }
+
+    @Transactional
+    private CharacterHasItemSlot completeContainerTransfer(UUID charUuid, UUID itemUuid, UUID containerUuid, CharacterHasItemUpdate update, CharacterHasItemSlot currentSlot) {
+        
+        if (update.isEquipped() != null) {
+            currentSlot.setEquipped(update.isEquipped());
         }
         if (update.isAttuned() != null) {
-            slot.setAttuned(update.isAttuned());
+            currentSlot.setAttuned(update.isAttuned());
         }
-
-
+        if (update.getQuantity() != null) {
+            currentSlot.setQuantity(update.getQuantity());
+        }
+        
         if (update.getContainerUuid() != null && !update.getContainerUuid().equals(containerUuid)) {
 
             if(!checkIfItemFitsInContainerAndUpdateContainer(charUuid, update.getContainerUuid(), update) ||  
@@ -178,27 +226,30 @@ public class InventoryService {
             if(targetSlotOptional.isPresent()) {
 
                 CharacterHasItemSlot targetSlot = targetSlotOptional.get();
-                targetSlot.setQuantity(targetSlot.getQuantity() + slot.getQuantity());
-                repo.delete(slot);
+                targetSlot.setQuantity(targetSlot.getQuantity() + currentSlot.getQuantity());
+                repo.delete(currentSlot);
                 return repo.save(targetSlot);
 
             } else {
                 CharacterHasItemSlot newSlot = new CharacterHasItemSlot();
                 newSlot.setId(new CharacterHasItemSlotId(itemUuid, charUuid, newContainerUuid));
-                newSlot.setQuantity(slot.getQuantity());
-                newSlot.setEquipped(slot.isEquipped());
-                newSlot.setAttuned(slot.isAttuned());
-                newSlot.setInAttackTab(slot.isInAttackTab());
+                newSlot.setQuantity(currentSlot.getQuantity());
+                newSlot.setEquipped(currentSlot.isEquipped());
+                newSlot.setAttuned(currentSlot.isAttuned());
+                newSlot.setInAttackTab(currentSlot.isInAttackTab());
                 
-                repo.delete(slot);  
+                repo.delete(currentSlot);  
                 return repo.save(newSlot);  
             }
         }
-        
-        return repo.save(slot);
+            
+        return repo.save(currentSlot);
     }
 
+    
+       
 
+    @Transactional
     private boolean checkIfItemFitsInContainerAndUpdateContainer(UUID charUuid, UUID conatinerUuid, CharacterHasItemUpdate update) {
         Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(conatinerUuid, charUuid));
 
@@ -215,6 +266,7 @@ public class InventoryService {
         return false;
     }
 
+    @Transactional
     private boolean removeItemFromContainer(UUID charUuid, UUID conatinerUuid, CharacterHasItemUpdate update) {
         Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(conatinerUuid, charUuid));
 

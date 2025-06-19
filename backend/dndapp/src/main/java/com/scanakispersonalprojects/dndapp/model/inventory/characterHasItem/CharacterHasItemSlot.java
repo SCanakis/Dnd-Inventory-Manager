@@ -28,10 +28,10 @@ public class CharacterHasItemSlot {
 
     public CharacterHasItemSlot() {}
 
-    public CharacterHasItemSlot(UUID itemUuid, UUID charUuid, UUID slotUuid, int quantity, boolean equipped, boolean attuned,
+    public CharacterHasItemSlot(UUID itemUuid, UUID charUuid, UUID containerUuid, int quantity, boolean equipped, boolean attuned,
             boolean inAttackTab) {
 
-        this.id = new CharacterHasItemSlotId(itemUuid, charUuid, slotUuid);
+        this.id = new CharacterHasItemSlotId(itemUuid, charUuid, containerUuid);
         this.quantity = quantity;
         this.equipped = equipped;
         this.attuned = attuned;
