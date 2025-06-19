@@ -50,4 +50,8 @@ public class ItemCatalogService {
         return repo.findByNameSimilarity(string);
     }
 
+    public ItemCatalog createItem(ItemCatalog item) {
+        return repo.save(item);
+    }
+
 }

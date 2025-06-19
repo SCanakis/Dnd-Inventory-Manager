@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,6 +40,10 @@ public class User {
     @Column(name="password")
     private String passwordHash;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private UserRole role = UserRole.user;
+
     /** JPA needs a no-args constructor. */
     protected User() {}
 
@@ -52,7 +58,21 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
+    public User(String username, String passwordHash, UserRole role) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.role = role;
+    }
+
     // Setters and Getters
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 
     public UUID getUuid() {
         return uuid;
@@ -78,6 +98,9 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
+    public boolean isAdmin() {
+        return role == UserRole.admin;
+    }
     
 
 }

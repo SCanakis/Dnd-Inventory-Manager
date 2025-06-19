@@ -2,6 +2,7 @@ package com.scanakispersonalprojects.dndapp.service.basicCharInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
@@ -82,6 +83,15 @@ public class CustomUserDetailsService implements UserDetailsService{
      */
     public List<UUID> getUsersCharacters(Authentication authentication) {
         return userDao.findCharacterUuidByUserUuid(getUsersUuid(authentication));
+    }
+
+    public boolean isAdmin(Authentication authentication) {
+        Optional<User> userOptional = userDao.findByUsername(authentication.getName());
+        if(userOptional.isPresent()) {
+            User user = userOptional.get();
+            return user.isAdmin();
+        }
+        return false;
     }
 
 }

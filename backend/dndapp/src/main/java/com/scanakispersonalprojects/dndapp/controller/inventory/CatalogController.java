@@ -19,6 +19,8 @@ import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetai
 import com.scanakispersonalprojects.dndapp.service.inventory.InventoryService;
 import com.scanakispersonalprojects.dndapp.service.inventory.ItemCatalogService;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -107,8 +109,26 @@ public class CatalogController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping
+    public ResponseEntity<ItemCatalog> createItem(Authentication authentication, @RequestBody ItemCatalog itemCatalog) {
+
+        if(!userService.isAdmin(authentication)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        try {
+            ItemCatalog item = itemCatalogService.createItem(itemCatalog);
+            if(item != null) {
+                return new ResponseEntity<>(item, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }    
         
     }
+    
     
     
 
