@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -18,6 +20,8 @@ import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetai
 import com.scanakispersonalprojects.dndapp.service.inventory.ContainerService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -30,6 +34,8 @@ public class ContainerController {
 
     private final static String getPath =  "GET /containers/";
     private final static String postPath =  "POST /containers/";
+    private final static String deletePath =  "DELETE /containers/";
+    private final static String putPath =  "PUT /containers/";
 
     private final ContainerService containerService;
     private final CustomUserDetailsService userService;    
@@ -43,7 +49,7 @@ public class ContainerController {
 
     @GetMapping()
     public ResponseEntity<List<ContainerView>> getContainers(@PathVariable("charUuid") UUID charUuid) {
-        LOG.info(getPath + "charUuid");
+        LOG.info(getPath + charUuid);
         try {
             List<ContainerView> result = containerService.getCharactersContainers(charUuid);
             if(result != null && !result.isEmpty()) {
@@ -58,7 +64,7 @@ public class ContainerController {
 
     @PostMapping
     public ResponseEntity<Container> createContainer(Authentication authentication, @PathVariable("charUuid") UUID charUuid, @RequestBody Container container) {
-        LOG.info(postPath + "charUuid");
+        LOG.info(postPath + charUuid);
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(charUuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -73,6 +79,44 @@ public class ContainerController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         
+    }
+
+
+    @DeleteMapping("/containerId={containerId}")
+    public ResponseEntity<Boolean> deleteContainer(Authentication authentication, @PathVariable("charUuid") UUID charUuid, @PathVariable("containerId") UUID containerUuid) {
+        LOG.info(deletePath + charUuid +"/containerId=" + containerUuid);
+
+        List<UUID> UUID = userService.getUsersCharacters(authentication);
+        if(!UUID.contains(charUuid)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        try {
+            boolean result = containerService.deleteContainer(charUuid, containerUuid);
+            if(result) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/containerId={containerId}")
+    public ResponseEntity<Container> updateMaxCapacityOfContainer(Authentication authentication, @PathVariable("charUuid") UUID charUuid, @PathVariable("containerId") UUID containerUuid, @RequestParam int maxCapacity) {
+        
+        LOG.info(putPath + charUuid +"/containerId=" + containerUuid);
+
+        List<UUID> UUID = userService.getUsersCharacters(authentication);
+        if(!UUID.contains(charUuid)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        try {
+            return null;
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    
     }
     
     
