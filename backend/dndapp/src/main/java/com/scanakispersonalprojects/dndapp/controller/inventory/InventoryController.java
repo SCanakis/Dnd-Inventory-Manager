@@ -10,9 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemProjection;
-import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemSlot;
-import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemUpdate;
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemProjection;
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemSlot;
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemUpdate;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 import com.scanakispersonalprojects.dndapp.service.inventory.InventoryService;
@@ -20,8 +20,8 @@ import com.scanakispersonalprojects.dndapp.service.inventory.ItemCatalogService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -38,7 +38,7 @@ public class InventoryController {
     private ItemCatalogService itemCatalogService;
     private final static String getPath = "GET /inventory/";
     private final static String deletePath = "DELETE /inventory/";
-    private final static String postPath = "POST /inventory/";
+    private final static String patchPath = "PATCH /inventory/";
 
     public InventoryController(InventoryService inventoryService, CustomUserDetailsService userService, ItemCatalogService itemCatalogService) {
         this.inventoryService= inventoryService;
@@ -123,9 +123,9 @@ public class InventoryController {
         }
     }
 
-    @PostMapping("/id={itemUuid}/containerId={containerUuid}")
+    @PatchMapping("/id={itemUuid}/containerId={containerUuid}")
     public ResponseEntity<CharacterHasItemSlot> characterHasItemUpdate(Authentication authentication, @PathVariable UUID uuid, @PathVariable UUID itemUuid, @PathVariable UUID containerUuid, @RequestBody CharacterHasItemUpdate update ) {
-        LOG.info(postPath + uuid + "/id="+ itemUuid + "/containerId=" + containerUuid);
+        LOG.info(patchPath + uuid + "/id="+ itemUuid + "/containerId=" + containerUuid);
 
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {

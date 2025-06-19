@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.model.inventory;
+package com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem;
 
 import java.util.UUID;
 
@@ -78,6 +78,9 @@ public class CharacterHasItemSlot {
         this.inAttackTab = inAttackTab;
     }
 
+    public void setContainerUuid(UUID containerUuid) {
+        this.id.setContainerUuid(containerUuid);
+    }
 
     
     

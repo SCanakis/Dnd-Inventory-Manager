@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.model.inventory;
+package com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem;
 
 import java.util.UUID;
 

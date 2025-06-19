@@ -2,7 +2,7 @@ package com.scanakispersonalprojects.dndapp.testutils.inventory;
 
 import java.util.UUID;
 
-import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemSlot;
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemSlot;
 
 public class CharacterHasItemSlotBuilder {
     private UUID itemUuid;

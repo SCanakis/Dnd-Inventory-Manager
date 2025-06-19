@@ -16,7 +16,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemProjection;
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemProjection;
 
 import jakarta.transaction.Transactional;
 

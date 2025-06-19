@@ -7,11 +7,14 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemProjection;
-import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemSlot;
-import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemSlotId;
-import com.scanakispersonalprojects.dndapp.model.inventory.CharacterHasItemUpdate;
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemProjection;
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemSlot;
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemSlotId;
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemUpdate;
+import com.scanakispersonalprojects.dndapp.model.inventory.containers.Container;
+import com.scanakispersonalprojects.dndapp.model.inventory.containers.ContainerId;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
+import com.scanakispersonalprojects.dndapp.persistance.inventory.ContainerRepo;
 import com.scanakispersonalprojects.dndapp.persistance.inventory.InventoryJPARepo;
 
 import jakarta.transaction.Transactional;
@@ -21,11 +24,14 @@ public class InventoryService {
     
     private InventoryJPARepo repo;
     private ItemCatalogService itemCatalogService;
+    private ContainerRepo containerRepo;
+
     private final static UUID emptyContainerUuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
-    public InventoryService(InventoryJPARepo repo, ItemCatalogService itemCatalogService) {
+    public InventoryService(InventoryJPARepo repo, ItemCatalogService itemCatalogService, ContainerRepo containerRepo) {
         this.repo = repo;
         this.itemCatalogService = itemCatalogService;
+        this.containerRepo = containerRepo;
     }
 
     public List<CharacterHasItemProjection> getInventoryWithUUID(UUID charUuid) {
@@ -139,6 +145,8 @@ public class InventoryService {
 
         CharacterHasItemSlotId id = new CharacterHasItemSlotId(itemUuid, charUuid, containerUuid);
         Optional<CharacterHasItemSlot> slotOptional = repo.findById(id);
+        
+        update.setItemUuid(itemUuid);
 
         if(!slotOptional.isPresent()) {
             return null;
@@ -154,11 +162,17 @@ public class InventoryService {
         if (update.isAttuned() != null) {
             slot.setAttuned(update.isAttuned());
         }
+
+
         if (update.getContainerUuid() != null && !update.getContainerUuid().equals(containerUuid)) {
+
+            if(!checkIfItemFitsInContainerAndUpdateContainer(charUuid, update.getContainerUuid(), update) && 
+            !removeItemFromContainer(charUuid, containerUuid, update)) {
+                return null;
+            } 
+
             UUID newContainerUuid = update.getContainerUuid();
-
             CharacterHasItemSlotId targetId = new CharacterHasItemSlotId(itemUuid, charUuid, newContainerUuid);
-
             Optional<CharacterHasItemSlot> targetSlotOptional = repo.findById(targetId);
 
             if(targetSlotOptional.isPresent()) {
@@ -169,14 +183,55 @@ public class InventoryService {
                 return repo.save(targetSlot);
 
             } else {
-                slot.getId().setgetContainerUuid(newContainerUuid);
-                return repo.save(slot);
+                CharacterHasItemSlot newSlot = new CharacterHasItemSlot();
+                newSlot.setId(new CharacterHasItemSlotId(itemUuid, charUuid, newContainerUuid));
+                newSlot.setQuantity(slot.getQuantity());
+                newSlot.setEquipped(slot.isEquipped());
+                newSlot.setAttuned(slot.isAttuned());
+                newSlot.setInAttackTab(slot.isInAttackTab());
+                
+                repo.delete(slot);  
+                return repo.save(newSlot);  
             }
         }
         
         return repo.save(slot);
     }
 
+
+    private boolean checkIfItemFitsInContainerAndUpdateContainer(UUID charUuid, UUID conatinerUuid, CharacterHasItemUpdate update) {
+        Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(conatinerUuid, charUuid));
+
+        ItemCatalog item = itemCatalogService.getItemWithUUID(update.getItemUuid());
+
+        if(optionalContainer.isPresent() && item != null) {
+            Container container = optionalContainer.get();
+            int sum = update.getQuantity() * item.getItemWeight() + container.getCurrentCapacity();
+            if(sum <= container.getMaxCapacity()) {
+                containerRepo.updateCurrentCapacity(charUuid, conatinerUuid, sum);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean removeItemFromContainer(UUID charUuid, UUID conatinerUuid, CharacterHasItemUpdate update) {
+        Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(conatinerUuid, charUuid));
+
+        ItemCatalog item = itemCatalogService.getItemWithUUID(update.getItemUuid());
+
+        if(optionalContainer.isPresent() && item != null) {
+
+            Container container = optionalContainer.get();
+            int remainder = container.getCurrentCapacity() - update.getQuantity() * item.getItemWeight();
+
+            if(remainder >= 0) {
+                containerRepo.updateCurrentCapacity(charUuid, conatinerUuid, remainder);
+                return true;
+            }
+        }
+        return false;
+    }
        
     
 

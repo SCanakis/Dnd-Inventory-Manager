@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.model.inventory;
+package com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -43,6 +43,8 @@ public class CharacterHasItemSlotId implements Serializable{
         this.charUuid = chaUuid;
     }
 
+    
+
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof CharacterHasItemSlotId) {
@@ -63,9 +65,10 @@ public class CharacterHasItemSlotId implements Serializable{
         return containerUuid;
     }
 
-    public void setgetContainerUuid(UUID containerUuid) {
+    public void setContainerUuid(UUID containerUuid) {
         this.containerUuid = containerUuid;
     }
+
 
     
 

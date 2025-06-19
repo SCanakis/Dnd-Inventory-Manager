@@ -9,6 +9,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemSlotId;
+
 @SpringBootTest
 public class CharacterHasItemSlotIdUnitTest {
     
@@ -34,7 +36,7 @@ public class CharacterHasItemSlotIdUnitTest {
         
         id.setItemUuid(itemUuid);
         id.setCharUuid(charUuid);
-        id.setgetContainerUuid(containerUuid);
+        id.setContainerUuid(containerUuid);
         
         assertEquals(itemUuid, id.getItemUuid());
         assertEquals(charUuid, id.getCharUuid());
