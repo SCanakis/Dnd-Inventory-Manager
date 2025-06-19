@@ -1,6 +1,7 @@
 package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
 
-public enum UserRole {
-    ROLE_USER,
-    ROLE_ADMIN
+public interface UserRoleProjection {
+
+    String getAuthority();
+ 
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.User;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.UserRoleProjection;
 
 /**
  * Spring Data JPA repository for the {@link User} entity. 
@@ -56,4 +57,9 @@ public interface UserDaoPSQL extends JpaRepository<User, UUID>{
     @Modifying
     @Query(value = "DELETE FROM users_characters WHERE user_uuid= :userUuid AND character_uuid = :characterUuid", nativeQuery = true)
     int deleteCharacter(@Param("userUuid") UUID userUuid,  @Param("characterUuid") UUID characterUuid);
+
+
+    @Query(value = "SELECT authority FROM authorities " +
+                    "WHERE username = :username;", nativeQuery= true)
+    UserRoleProjection getAuthoritiesFromUsername(@Param("username") String username);
 }

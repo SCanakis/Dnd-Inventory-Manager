@@ -2,7 +2,6 @@ package com.scanakispersonalprojects.dndapp.service.basicCharInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CustomUserPrincipal;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.User;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.UserRoleProjection;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserDaoPSQL;
 
 
@@ -86,12 +86,9 @@ public class CustomUserDetailsService implements UserDetailsService{
     }
 
     public boolean isAdmin(Authentication authentication) {
-        Optional<User> userOptional = userDao.findByUsername(authentication.getName());
-        if(userOptional.isPresent()) {
-            User user = userOptional.get();
-            return user.isAdmin();
-        }
-        return false;
+        UserRoleProjection projection = userDao.getAuthoritiesFromUsername(authentication.getName());
+        return projection.getAuthority() == "ROLE_ADMIN";
+
     }
 
 }
