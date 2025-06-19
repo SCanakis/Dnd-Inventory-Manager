@@ -166,7 +166,7 @@ public class InventoryService {
 
         if (update.getContainerUuid() != null && !update.getContainerUuid().equals(containerUuid)) {
 
-            if(!checkIfItemFitsInContainerAndUpdateContainer(charUuid, update.getContainerUuid(), update) && 
+            if(!checkIfItemFitsInContainerAndUpdateContainer(charUuid, update.getContainerUuid(), update) ||  
             !removeItemFromContainer(charUuid, containerUuid, update)) {
                 return null;
             } 
