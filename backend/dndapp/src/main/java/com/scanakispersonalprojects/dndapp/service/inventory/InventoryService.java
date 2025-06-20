@@ -81,7 +81,7 @@ public class InventoryService {
                 if(item.isAttunable()) {
                     slot.setAttuned(false);
                 } 
-                if(item.isAttackable() == true) {
+                if(item.isAttackable()) {
                     slot.setInAttackTab(false);
                 }
 
@@ -114,8 +114,7 @@ public class InventoryService {
             return null;
 
         } catch (Exception e) {
-            new SQLException();
-            return false;
+            throw new SQLException();
         }
     }
 

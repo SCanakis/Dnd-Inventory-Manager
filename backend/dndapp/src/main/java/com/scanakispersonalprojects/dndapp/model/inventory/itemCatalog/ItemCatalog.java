@@ -298,5 +298,10 @@ public class ItemCatalog {
         }  
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(itemUuid);
+    }
     
 }

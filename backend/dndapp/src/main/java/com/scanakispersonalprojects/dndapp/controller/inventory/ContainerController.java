@@ -47,7 +47,7 @@ public class ContainerController {
 
 
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<ContainerView>> getContainers(@PathVariable("charUuid") UUID charUuid) {
         LOG.info(GET_PATH + charUuid);
         try {
@@ -112,7 +112,14 @@ public class ContainerController {
         }
 
         try {
-            return null;
+            Container result = containerService.updateMaxCapacityOfContainer(charUuid, containerUuid, maxCapacity);
+
+            if(result != null) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
