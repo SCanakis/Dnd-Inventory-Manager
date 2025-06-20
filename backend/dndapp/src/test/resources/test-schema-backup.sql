@@ -96,8 +96,11 @@ CREATE TABLE public.item_catalog (
     skill_altered_roll_type json,
     skill_altered_bonus json,
     item_rarity character varying(255) DEFAULT 'common'::public.rarity NOT NULL,
+    is_container boolean DEFAULT false,
+    capacity integer,
     CONSTRAINT item_catalog_item_value_check CHECK ((item_value >= 0)),
-    CONSTRAINT item_catalog_item_weight_check CHECK ((item_weight >= 0))
+    CONSTRAINT item_catalog_item_weight_check CHECK ((item_weight >= 0)),
+    CONSTRAINT item_catalog_capacity_check CHECK ((capacity IS NULL OR capacity >= 0))
 );
 
 CREATE TABLE public.item_class_eligibility (
@@ -304,27 +307,34 @@ INSERT INTO subclass (subclass_uuid, name, class_source) VALUES
 ('5cb00000-0000-0000-0000-00000000000c', 'Oath of Vengeance', 'c1a55000-0000-0000-0000-000000000006');
 
 -- Insert Item Catalog with explicit UUIDs
-INSERT INTO item_catalog (item_uuid, item_name, item_description, item_weight, item_value, attackable, equippable, attunable, item_equippable_type, item_rarity) VALUES
-('aaaa0000-0000-0000-0000-000000000001', 'Longsword', 'A versatile martial weapon with a straight double-edged blade.', 3, 15, true, true, false, '{mainhand,offhand,twohand}', 'common'),
-('aaaa0000-0000-0000-0000-000000000002', 'Leather Armor', 'The breastplate and shoulder protectors of this armor are made of leather.', 10, 10, false, true, false, '{armor}', 'common'),
-('aaaa0000-0000-0000-0000-000000000003', 'Shield', 'A shield is made from wood or metal and is carried in one hand.', 6, 10, false, true, false, '{offhand}', 'common'),
-('aaaa0000-0000-0000-0000-000000000004', 'Shortbow', 'A simple ranged weapon made of flexible wood.', 2, 25, true, true, false, '{twohand}', 'common'),
-('aaaa0000-0000-0000-0000-000000000005', 'Dagger', 'A simple light melee weapon that can also be thrown.', 1, 2, true, true, false, '{mainhand,offhand}', 'common'),
-('aaaa0000-0000-0000-0000-000000000006', 'Chain Mail', 'Made of interlocking metal rings, chain mail includes a layer of quilted fabric.', 55, 75, false, true, false, '{armor}', 'common'),
-('aaaa0000-0000-0000-0000-000000000007', 'Battleaxe', 'A versatile martial weapon with a broad, sharp blade.', 4, 10, true, true, false, '{mainhand,twohand}', 'common'),
-('aaaa0000-0000-0000-0000-000000000008', 'Crossbow, Light', 'A simple ranged weapon that fires crossbow bolts.', 5, 25, true, true, false, '{mainhand}', 'common'),
-('aaaa0000-0000-0000-0000-000000000009', 'Rapier', 'A finesse martial weapon with a thin, sharp blade.', 2, 25, true, true, false, '{mainhand}', 'common'),
-('aaaa0000-0000-0000-0000-00000000000a', 'Studded Leather', 'Made from tough but flexible leather reinforced with close-set rivets.', 13, 45, false, true, false, '{armor}', 'common'),
-('aaaa0000-0000-0000-0000-00000000000b', 'Warhammer', 'A versatile martial weapon with a heavy metal head.', 2, 15, true, true, false, '{mainhand,twohand}', 'common'),
-('aaaa0000-0000-0000-0000-00000000000c', 'Scimitar', 'A finesse light martial weapon with a curved blade.', 3, 25, true, true, false, '{mainhand,offhand}', 'common'),
-('aaaa0000-0000-0000-0000-00000000000d', 'Spellbook', 'Essential for wizards, this leather-bound tome contains spells.', 3, 50, false, false, false, '{}', 'common'),
-('aaaa0000-0000-0000-0000-00000000000e', 'Thieves'' Tools', 'This set of tools includes a small file, lock picks, and more.', 1, 25, false, false, false, '{}', 'common'),
-('aaaa0000-0000-0000-0000-00000000000f', 'Healing Potion', 'A magical red liquid that restores hit points when consumed.', 0, 50, false, false, false, '{}', 'common'),
-('aaaa0000-0000-0000-0000-000000000010', '+1 Sword', 'A magical longsword with a +1 enhancement to attack and damage rolls.', 3, 1000, true, true, true, '{mainhand,offhand,twohand}', 'uncommon'),
-('aaaa0000-0000-0000-0000-000000000011', 'Cloak of Elvenkind', 'This cloak grants advantage on Dexterity (Stealth) checks.', 1, 5000, false, true, true, '{cloak}', 'uncommon'),
-('aaaa0000-0000-0000-0000-000000000012', 'Bag of Holding', 'This bag can hold much more than its size would suggest.', 15, 4000, false, false, false, '{}', 'uncommon'),
-('aaaa0000-0000-0000-0000-000000000013', 'Ring of Protection', 'You gain a +1 bonus to AC and saving throws while wearing this ring.', 0, 3500, false, true, true, '{ringl,ringr}', 'rare'),
-('aaaa0000-0000-0000-0000-000000000014', 'Flame Tongue', 'This magic sword''s blade erupts in flames when activated.', 3, 5000, true, true, true, '{mainhand,offhand,twohand}', 'rare');
+INSERT INTO item_catalog (item_uuid, item_name, item_description, item_weight, item_value, attackable, equippable, attunable, item_equippable_type, item_rarity, is_container, capacity) VALUES
+('aaaa0000-0000-0000-0000-000000000001', 'Longsword', 'A versatile martial weapon with a straight double-edged blade.', 3, 15, true, true, false, '{mainhand,offhand,twohand}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-000000000002', 'Leather Armor', 'The breastplate and shoulder protectors of this armor are made of leather.', 10, 10, false, true, false, '{armor}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-000000000003', 'Shield', 'A shield is made from wood or metal and is carried in one hand.', 6, 10, false, true, false, '{offhand}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-000000000004', 'Shortbow', 'A simple ranged weapon made of flexible wood.', 2, 25, true, true, false, '{twohand}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-000000000005', 'Dagger', 'A simple light melee weapon that can also be thrown.', 1, 2, true, true, false, '{mainhand,offhand}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-000000000006', 'Chain Mail', 'Made of interlocking metal rings, chain mail includes a layer of quilted fabric.', 55, 75, false, true, false, '{armor}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-000000000007', 'Battleaxe', 'A versatile martial weapon with a broad, sharp blade.', 4, 10, true, true, false, '{mainhand,twohand}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-000000000008', 'Crossbow, Light', 'A simple ranged weapon that fires crossbow bolts.', 5, 25, true, true, false, '{mainhand}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-000000000009', 'Rapier', 'A finesse martial weapon with a thin, sharp blade.', 2, 25, true, true, false, '{mainhand}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-00000000000a', 'Studded Leather', 'Made from tough but flexible leather reinforced with close-set rivets.', 13, 45, false, true, false, '{armor}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-00000000000b', 'Warhammer', 'A versatile martial weapon with a heavy metal head.', 2, 15, true, true, false, '{mainhand,twohand}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-00000000000c', 'Scimitar', 'A finesse light martial weapon with a curved blade.', 3, 25, true, true, false, '{mainhand,offhand}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-00000000000d', 'Spellbook', 'Essential for wizards, this leather-bound tome contains spells.', 3, 50, false, false, false, '{}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-00000000000e', 'Thieves'' Tools', 'This set of tools includes a small file, lock picks, and more.', 1, 25, false, false, false, '{}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-00000000000f', 'Healing Potion', 'A magical red liquid that restores hit points when consumed.', 0, 50, false, false, false, '{}', 'common', false, NULL),
+('aaaa0000-0000-0000-0000-000000000010', '+1 Sword', 'A magical longsword with a +1 enhancement to attack and damage rolls.', 3, 1000, true, true, true, '{mainhand,offhand,twohand}', 'uncommon', false, NULL),
+('aaaa0000-0000-0000-0000-000000000011', 'Cloak of Elvenkind', 'This cloak grants advantage on Dexterity (Stealth) checks.', 1, 5000, false, true, true, '{cloak}', 'uncommon', false, NULL),
+('aaaa0000-0000-0000-0000-000000000012', 'Bag of Holding', 'This bag can hold much more than its size would suggest.', 15, 4000, false, false, false, '{}', 'uncommon', true, 500),
+('aaaa0000-0000-0000-0000-000000000013', 'Ring of Protection', 'You gain a +1 bonus to AC and saving throws while wearing this ring.', 0, 3500, false, true, true, '{ringl,ringr}', 'rare', false, NULL),
+('aaaa0000-0000-0000-0000-000000000014', 'Flame Tongue', 'This magic sword''s blade erupts in flames when activated.', 3, 5000, true, true, true, '{mainhand,offhand,twohand}', 'rare', false, NULL),
+-- Container items
+('cccc0000-0000-0000-0000-000000000001', 'Belt Pouch', 'A small leather pouch that attaches to a belt.', 1, 5, false, true, false, '{belt}', 'common', true, 20),
+('cccc0000-0000-0000-0000-000000000002', 'Backpack', 'A sturdy canvas pack for carrying gear.', 5, 10, false, false, false, '{}', 'common', true, 30),
+('cccc0000-0000-0000-0000-000000000003', 'Hidden Pocket', 'A concealed pocket sewn into clothing.', 0, 15, false, false, false, '{}', 'common', true, 5),
+('cccc0000-0000-0000-0000-000000000004', 'Noble Pack', 'An ornate traveling pack made of fine materials.', 8, 50, false, false, false, '{}', 'common', true, 40),
+('cccc0000-0000-0000-0000-000000000005', 'Instrument Case', 'A protective case for musical instruments.', 3, 20, false, false, false, '{}', 'common', true, 15),
+('cccc0000-0000-0000-0000-000000000006', 'Portable Hole', 'A magical cloth that opens to an extradimensional space.', 0, 20000, false, false, false, '{}', 'rare', true, 1000);
 
 -- Insert Characters with explicit UUIDs
 INSERT INTO characters_info (char_info_uuid, name, inspiration, race_uuid, background_uuid, ability_scores, hp_handler, death_saving_throws) VALUES
@@ -365,132 +375,133 @@ INSERT INTO users_characters (user_uuid, character_uuid) VALUES
 ('44444444-4444-4444-4444-444444444444', 'c3d4e5f6-a7b8-9012-cdef-123456789012'), -- player3 -> Sir Gareth
 ('44444444-4444-4444-4444-444444444444', 'd4e5f6a7-b8c9-0123-def0-234567890123'); -- player3 -> Zara
 
--- Insert containers for each character (main inventory + any bags/containers they own)
+-- Insert containers for each character (main inventory + container items they own)
 INSERT INTO container (char_uuid, container_uuid, current_consumed, item_uuid, max_capacity) VALUES
-
 -- Thorin's containers
 ('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 59, NULL, 100), -- Main inventory: Battleaxe(4) + Chain Mail(55) = 59kg
-('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', 'bbb00001-0000-0000-0000-000000000001', 2, NULL, 20),   -- Belt Pouch: 2 Daggers(2kg)
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', 'cccc0000-0000-0000-0000-000000000001', 2, 'cccc0000-0000-0000-0000-000000000001', 20),   -- Belt Pouch: 2 Daggers(2kg), item_uuid references the pouch itself
 
 -- Elaria's containers  
-('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000000-0000-0000-0000-000000000000', 4, NULL, 80),    -- Main inventory: Dagger(1) + Spellbook(3) = 4kg
-('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'bbb00002-0000-0000-0000-000000000001', 0, NULL, 500),  -- Bag of Holding: 2 Healing Potions(0kg)
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000000-0000-0000-0000-000000000000', 19, NULL, 80),    -- Main inventory: Dagger(1) + Spellbook(3) + Bag of Holding(15) = 19kg
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'aaaa0000-0000-0000-0000-000000000012', 0, 'aaaa0000-0000-0000-0000-000000000012', 500),  -- Bag of Holding: 2 Healing Potions(0kg)
 
 -- Pip's containers
 ('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 13, NULL, 70),   -- Main inventory: Leather Armor(10) + Thieves' Tools(1) + Shortbow(2) = 13kg
-('b2c3d4e5-f6a7-8901-bcde-f12345678901', 'bbb00003-0000-0000-0000-000000000001', 0, NULL, 5),    -- Hidden Pocket: empty
+('b2c3d4e5-f6a7-8901-bcde-f12345678901', 'cccc0000-0000-0000-0000-000000000003', 0, 'cccc0000-0000-0000-0000-000000000003', 5),    -- Hidden Pocket: empty
 
 -- Sir Gareth's containers
-('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000000-0000-0000-0000-000000000000', 9, NULL, 120),   -- Main inventory: +1 Sword(3) + Shield(6) = 9kg  
-('c3d4e5f6-a7b8-9012-cdef-123456789012', 'bbb00004-0000-0000-0000-000000000001', 0, NULL, 40),   -- Noble's Pack: 5 Healing Potions(0kg)
+('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000000-0000-0000-0000-000000000000', 17, NULL, 120),   -- Main inventory: +1 Sword(3) + Shield(6) + Noble Pack(8) = 17kg  
+('c3d4e5f6-a7b8-9012-cdef-123456789012', 'cccc0000-0000-0000-0000-000000000004', 0, 'cccc0000-0000-0000-0000-000000000004', 40),   -- Noble's Pack: 5 Healing Potions(0kg)
 
 -- Zara's containers
-('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 11, NULL, 90),   -- Main inventory: Dagger(1) + Leather Armor(10) = 11kg
-('d4e5f6a7-b8c9-0123-def0-234567890123', 'bbb00005-0000-0000-0000-000000000001', 0, NULL, 15);   -- Instrument Case: empty
+('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 14, NULL, 90),   -- Main inventory: Dagger(1) + Leather Armor(10) + Instrument Case(3) = 14kg
+('d4e5f6a7-b8c9-0123-def0-234567890123', 'cccc0000-0000-0000-0000-000000000005', 0, 'cccc0000-0000-0000-0000-000000000005', 15);   -- Instrument Case: empty
 
--- Insert character inventory items distributed across their personal containers
+-- Insert character inventory items distributed across their personal containers  
 INSERT INTO character_has_item_slot (character_uuid, container_uuid, item_uuid, attuned, equipped, in_attack_tab, quantity) VALUES
-
 -- Thorin's items
 ('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000007', false, true, true, 1), -- Battleaxe in main inventory (4kg)
 ('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000006', false, true, false, 1), -- Chain Mail in main inventory (55kg)
 ('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-00000000000f', false, false, false, 3), -- 3 Healing Potions in main inventory (0kg)
-('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', 'bbb00001-0000-0000-0000-000000000001', 'aaaa0000-0000-0000-0000-000000000005', false, false, false, 2), -- 2 Daggers in belt pouch (2kg)
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 'cccc0000-0000-0000-0000-000000000001', false, true, false, 1), -- Belt Pouch in main inventory (1kg) - THIS IS THE CONTAINER ITEM
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', 'cccc0000-0000-0000-0000-000000000001', 'aaaa0000-0000-0000-0000-000000000005', false, false, false, 2), -- 2 Daggers in belt pouch (2kg)
 
 -- Elaria's items
 ('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000005', false, false, true, 1), -- Dagger in main inventory (1kg)
 ('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-00000000000d', false, false, false, 1), -- Spellbook in main inventory (3kg)
-('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'bbb00002-0000-0000-0000-000000000001', 'aaaa0000-0000-0000-0000-00000000000f', false, false, false, 2), -- 2 Healing Potions in Bag of Holding (0kg)
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000012', false, false, false, 1), -- Bag of Holding in main inventory (15kg) - THIS IS THE CONTAINER ITEM
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'aaaa0000-0000-0000-0000-000000000012', 'aaaa0000-0000-0000-0000-00000000000f', false, false, false, 2), -- 2 Healing Potions in Bag of Holding (0kg)
 
 -- Pip's items
 ('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000002', false, true, false, 1), -- Leather Armor in main inventory (10kg)
 ('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-00000000000e', false, false, false, 1), -- Thieves' Tools in main inventory (1kg)
 ('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000004', false, false, false, 1), -- Shortbow in main inventory (2kg)
+('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 'cccc0000-0000-0000-0000-000000000003', false, false, false, 1), -- Hidden Pocket in main inventory (0kg) - THIS IS THE CONTAINER ITEM
 
 -- Sir Gareth's items
 ('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000010', true, true, true, 1), -- +1 Sword in main inventory (3kg)
 ('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000003', false, true, false, 1), -- Shield in main inventory (6kg)
-('c3d4e5f6-a7b8-9012-cdef-123456789012', 'bbb00004-0000-0000-0000-000000000001', 'aaaa0000-0000-0000-0000-00000000000f', false, false, false, 5), -- 5 Healing Potions in Noble's Pack (0kg)
+('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000000-0000-0000-0000-000000000000', 'cccc0000-0000-0000-0000-000000000004', false, false, false, 1), -- Noble Pack in main inventory (8kg) - THIS IS THE CONTAINER ITEM
+('c3d4e5f6-a7b8-9012-cdef-123456789012', 'cccc0000-0000-0000-0000-000000000004', 'aaaa0000-0000-0000-0000-00000000000f', false, false, false, 5), -- 5 Healing Potions in Noble's Pack (0kg)
 
 -- Zara's items
 ('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000005', false, false, false, 1), -- Dagger in main inventory (1kg)
-('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000002', false, true, false, 1); -- Leather Armor in main inventory (10kg)
+('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000002', false, true, false, 1), -- Leather Armor in main inventory (10kg)
+('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 'cccc0000-0000-0000-0000-000000000005', false, false, false, 1); -- Instrument Case in main inventory (3kg) - THIS IS THE CONTAINER ITEM
 
--- Test Scenarios for Personal Container Management:
+-- =============================================================================
+-- CHARACTER INVENTORY SUMMARY
+-- =============================================================================
 
--- Each character now has multiple personal containers:
--- Thorin: Main Inventory (59/100kg) + Belt Pouch (2/20kg)
--- Elaria: Main Inventory (4/80kg) + Bag of Holding (0/500kg) 
--- Pip: Main Inventory (13/70kg) + Hidden Pocket (0/5kg)
--- Sir Gareth: Main Inventory (9/120kg) + Noble's Pack (0/40kg)
--- Zara: Main Inventory (11/90kg) + Instrument Case (0/15kg)
+-- THORIN IRONBEARD (Dwarf Fighter) - UUID: eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9
+-- Owner: player1 (22222222-2222-2222-2222-222222222222)
+-- Class: Fighter (Champion), Level 2
+-- Background: Soldier
+-- 
+-- CONTAINERS:
+--   • Main Inventory: 59/100kg capacity
+--     - Battleaxe (4kg) [EQUIPPED, IN ATTACK TAB]
+--     - Chain Mail (55kg) [EQUIPPED]
+--     - 3x Healing Potions (0kg)
+--     - Belt Pouch (1kg) [EQUIPPED] - the container item itself
+--   
+--   • Belt Pouch: 2/20kg capacity (container UUID: cccc0000-0000-0000-0000-000000000001)
+--     - 2x Daggers (2kg total)
 
--- Valid Test Cases:
--- 1. Move 1 Dagger from Thorin's belt pouch to main inventory (2kg -> 1kg in pouch, 59kg -> 60kg in main)
--- 2. Move 1 Healing Potion from Thorin's main to Elaria's Bag of Holding (0kg, plenty of space)
--- 3. Move Shortbow from Pip's main to hidden pocket (should fail: 2kg > 5kg capacity)
--- 4. Move items between Sir Gareth's containers (plenty of space in both)
--- 5. Try to move 10kg Leather Armor to Pip's 5kg Hidden Pocket (should fail)
+-- ELARIA MOONWHISPER (Elf Wizard) - UUID: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+-- Owner: player1 (22222222-2222-2222-2222-222222222222)
+-- Class: Wizard (School of Evocation), Level 1
+-- Background: Sage
+-- HP: 6/8 (2 temp HP)
+-- 
+-- CONTAINERS:
+--   • Main Inventory: 19/80kg capacity
+--     - Dagger (1kg) [IN ATTACK TAB]
+--     - Spellbook (3kg)
+--     - Bag of Holding (15kg) - the container item itself
+--   
+--   • Bag of Holding: 0/500kg capacity (container UUID: aaaa0000-0000-0000-0000-000000000012)
+--     - 2x Healing Potions (0kg total)
 
--- Container UUIDs by Character:
--- Thorin: 00000000-0000-0000-0000-000000000000 (main), bbb00001-0000-0000-0000-000000000001 (pouch)
--- Elaria: 00000000-0000-0000-0000-000000000000 (main), bbb00002-0000-0000-0000-000000000001 (bag of holding)  
--- Pip: 00000000-0000-0000-0000-000000000000 (main), bbb00003-0000-0000-0000-000000000001 (hidden pocket)
--- Sir Gareth: 00000000-0000-0000-0000-000000000000 (main), bbb00004-0000-0000-0000-000000000001 (noble pack)
--- Zara: 00000000-0000-0000-0000-000000000000 (main), bbb00005-0000-0000-0000-000000000001 (instrument case)
+-- PIP LIGHTFINGER (Halfling Rogue) - UUID: b2c3d4e5-f6a7-8901-bcde-f12345678901
+-- Owner: player2 (33333333-3333-3333-3333-333333333333)
+-- Class: Rogue (Thief), Level 2
+-- Background: Criminal
+-- 
+-- CONTAINERS:
+--   • Main Inventory: 13/70kg capacity
+--     - Leather Armor (10kg) [EQUIPPED]
+--     - Thieves' Tools (1kg)
+--     - Shortbow (2kg)
+--     - Hidden Pocket (0kg) - the container item itself
+--   
+--   • Hidden Pocket: 0/5kg capacity (container UUID: cccc0000-0000-0000-0000-000000000003)
+--     - (empty)
 
--- Your Java validation should ensure:
--- 1. Players can only move items between their OWN containers (same char_uuid)
--- 2. Weight limits are respected for each container
--- 3. Partial transfers work correctly
--- 4. Equipped items can be moved between personal containers
+-- SIR GARETH THE BOLD (Human Paladin) - UUID: c3d4e5f6-a7b8-9012-cdef-123456789012
+-- Owner: player3 (44444444-4444-4444-4444-444444444444)
+-- Class: Paladin (Oath of Devotion), Level 3
+-- Background: Noble
+-- 
+-- CONTAINERS:
+--   • Main Inventory: 17/120kg capacity
+--     - +1 Sword (3kg) [EQUIPPED, ATTUNED, IN ATTACK TAB]
+--     - Shield (6kg) [EQUIPPED]
+--     - Noble Pack (8kg) - the container item itself
+--   
+--   • Noble Pack: 0/40kg capacity (container UUID: cccc0000-0000-0000-0000-000000000004)
+--     - 5x Healing Potions (0kg total)
 
-
--- ⚔️ THORIN IRONBEARD (Dwarf Fighter) - eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9
--- Main Inventory (59/100kg capacity) - 00000000-0000-0000-0000-000000000000
---   ⚔️ Battleaxe (4kg) - equipped, in_attack_tab
---   🛡️ Chain Mail (55kg) - equipped
---   🧪 Healing Potion x3 (0kg each)
--- Belt Pouch (2/20kg capacity) - bbb00001-0000-0000-0000-000000000001
---   🗡️ Dagger x2 (1kg each)
-
--- 🧙‍♀️ ELARIA MOONWHISPER (Elf Wizard) - a1b2c3d4-e5f6-7890-abcd-ef1234567890
--- Main Inventory (4/80kg capacity) - 00000000-0000-0000-0000-000000000000
---   🗡️ Dagger (1kg) - in_attack_tab
---   📚 Spellbook (3kg)
--- Bag of Holding (0/500kg capacity) - bbb00002-0000-0000-0000-000000000001
---   🧪 Healing Potion x2 (0kg each)
-
--- 🥷 PIP LIGHTFINGER (Halfling Rogue) - b2c3d4e5-f6a7-8901-bcde-f12345678901
--- Main Inventory (13/70kg capacity) - 00000000-0000-0000-0000-000000000000
---   🦺 Leather Armor (10kg) - equipped
---   🔧 Thieves' Tools (1kg)
---   🏹 Shortbow (2kg)
--- Hidden Pocket (0/5kg capacity) - bbb00003-0000-0000-0000-000000000001
---   (empty)
-
--- ⚔️ SIR GARETH THE BOLD (Human Paladin) - c3d4e5f6-a7b8-9012-cdef-123456789012
--- Main Inventory (9/120kg capacity) - 00000000-0000-0000-0000-000000000000
---   ⚔️ +1 Sword (3kg) - attuned, equipped, in_attack_tab
---   🛡️ Shield (6kg) - equipped
--- Noble's Pack (0/40kg capacity) - bbb00004-0000-0000-0000-000000000001
---   🧪 Healing Potion x5 (0kg each)
-
--- 🎵 ZARA FLAMEHEART (Tiefling Bard) - d4e5f6a7-b8c9-0123-def0-234567890123
--- Main Inventory (11/90kg capacity) - 00000000-0000-0000-0000-000000000000
---   🗡️ Dagger (1kg)
---   🦺 Leather Armor (10kg) - equipped
--- Instrument Case (0/15kg capacity) - bbb00005-0000-0000-0000-000000000001
---   (empty)
-
--- ===============================================
--- CONTAINER UUID REFERENCE
--- ===============================================
-
--- Main Inventories (all characters): 00000000-0000-0000-0000-000000000000
--- Personal Containers:
---   Thorin's Belt Pouch:     bbb00001-0000-0000-0000-000000000001
---   Elaria's Bag of Holding: bbb00002-0000-0000-0000-000000000001  
---   Pip's Hidden Pocket:     bbb00003-0000-0000-0000-000000000001
---   Sir Gareth's Noble Pack: bbb00004-0000-0000-0000-000000000001
---   Zara's Instrument Case:  bbb00005-0000-0000-0000-000000000001
+-- ZARA FLAMEHEART (Tiefling Bard) - UUID: d4e5f6a7-b8c9-0123-def0-234567890123
+-- Owner: player3 (44444444-4444-4444-4444-444444444444)
+-- Class: Bard, Level 1
+-- Background: Entertainer
+-- 
+-- CONTAINERS:
+--   • Main Inventory: 14/90kg capacity
+--     - Dagger (1kg)
+--     - Leather Armor (10kg) [EQUIPPED]
+--     - Instrument Case (3kg) - the container item itself
+--   
+--   • Instrument Case: 0/15kg capacity (container UUID: cccc0000-0000-0000-0000-000000000005)
+--     - (empty)

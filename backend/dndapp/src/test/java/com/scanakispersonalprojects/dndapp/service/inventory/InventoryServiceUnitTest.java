@@ -156,4 +156,11 @@ public class InventoryServiceUnitTest {
         assertFalse(inventoryService.updateQuantity(null, null, 5));
     }
 
+
+    // @Test
+    // public void updateCharacterHasSlot_succesfulNoContainerUuid() throws Exception {
+
+
+    // }
+
 }

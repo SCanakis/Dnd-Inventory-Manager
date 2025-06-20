@@ -9,6 +9,7 @@ public class CharacterHasItemUpdate {
     private Integer quantity = null;
     private Boolean equipped = null;
     private Boolean attuned = null;
+    private Boolean inAttackTab = null;
     private UUID containerUuid = null;
 
 
@@ -16,6 +17,14 @@ public class CharacterHasItemUpdate {
 
     public UUID getItemUuid() {
         return itemUuid;
+    }
+
+    public Boolean getInAttackTab() {
+        return inAttackTab;
+    }
+
+    public void setInAttackTab(Boolean inAttackTab) {
+        this.inAttackTab = inAttackTab;
     }
 
     public void setItemUuid(UUID itemUuid) {

@@ -86,6 +86,10 @@ public class InventoryService {
                 if(item.isAttunable()) {
                     slot.setAttuned(false);
                 } 
+                if(item.isAttackable() == true) {
+                    slot.setInAttackTab(false);
+                }
+
 
                 repo.save(slot);
 
@@ -183,6 +187,9 @@ public class InventoryService {
             }
             if (update.getQuantity() != null) {
                 slot.setQuantity(update.getQuantity());
+            }
+            if(update.getInAttackTab() != null && slot.isInAttackTab() != null) {
+                slot.setInAttackTab(update.getInAttackTab());
             }
             
             return repo.save(slot);

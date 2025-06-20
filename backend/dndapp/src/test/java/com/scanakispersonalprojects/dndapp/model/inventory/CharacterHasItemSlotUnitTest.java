@@ -25,7 +25,7 @@ public class CharacterHasItemSlotUnitTest {
         assertEquals(1, slot.getQuantity()); // default value
         assertFalse(slot.isEquipped());
         assertFalse(slot.isAttuned());
-        assertFalse(slot.isInAttackTab());
+        assertNull(slot.isInAttackTab());
     }
 
     @Test

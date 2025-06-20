@@ -397,40 +397,41 @@ INSERT INTO container (char_uuid, container_uuid, current_consumed, item_uuid, m
 ('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 14, NULL, 90),   -- Main inventory: Dagger(1) + Leather Armor(10) + Instrument Case(3) = 14kg
 ('d4e5f6a7-b8c9-0123-def0-234567890123', 'cccc0000-0000-0000-0000-000000000005', 0, 'cccc0000-0000-0000-0000-000000000005', 15);   -- Instrument Case: empty
 
--- Insert character inventory items distributed across their personal containers  
+-- Insert character inventory items with corrected in_attack_tab values
+-- NOTE: in_attack_tab is now NULL for non-attackable items instead of false
 INSERT INTO character_has_item_slot (character_uuid, container_uuid, item_uuid, attuned, equipped, in_attack_tab, quantity) VALUES
 -- Thorin's items
-('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000007', false, true, true, 1), -- Battleaxe in main inventory (4kg)
-('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000006', false, true, false, 1), -- Chain Mail in main inventory (55kg)
-('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-00000000000f', false, false, false, 3), -- 3 Healing Potions in main inventory (0kg)
-('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 'cccc0000-0000-0000-0000-000000000001', false, true, false, 1), -- Belt Pouch in main inventory (1kg) - THIS IS THE CONTAINER ITEM
-('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', 'cccc0000-0000-0000-0000-000000000001', 'aaaa0000-0000-0000-0000-000000000005', false, false, false, 2), -- 2 Daggers in belt pouch (2kg)
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000007', false, true, true, 1), -- Battleaxe in main inventory (4kg) - ATTACKABLE
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000006', false, true, NULL, 1), -- Chain Mail in main inventory (55kg) - NON-ATTACKABLE
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-00000000000f', false, false, NULL, 3), -- 3 Healing Potions in main inventory (0kg) - NON-ATTACKABLE
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', '00000000-0000-0000-0000-000000000000', 'cccc0000-0000-0000-0000-000000000001', false, true, NULL, 1), -- Belt Pouch in main inventory (1kg) - NON-ATTACKABLE CONTAINER ITEM
+('eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9', 'cccc0000-0000-0000-0000-000000000001', 'aaaa0000-0000-0000-0000-000000000005', false, false, false, 2), -- 2 Daggers in belt pouch (2kg) - ATTACKABLE BUT NOT IN ATTACK TAB
 
 -- Elaria's items
-('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000005', false, false, true, 1), -- Dagger in main inventory (1kg)
-('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-00000000000d', false, false, false, 1), -- Spellbook in main inventory (3kg)
-('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000012', false, false, false, 1), -- Bag of Holding in main inventory (15kg) - THIS IS THE CONTAINER ITEM
-('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'aaaa0000-0000-0000-0000-000000000012', 'aaaa0000-0000-0000-0000-00000000000f', false, false, false, 2), -- 2 Healing Potions in Bag of Holding (0kg)
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000005', false, false, true, 1), -- Dagger in main inventory (1kg) - ATTACKABLE
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-00000000000d', false, false, NULL, 1), -- Spellbook in main inventory (3kg) - NON-ATTACKABLE
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000012', false, false, NULL, 1), -- Bag of Holding in main inventory (15kg) - NON-ATTACKABLE CONTAINER ITEM
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'aaaa0000-0000-0000-0000-000000000012', 'aaaa0000-0000-0000-0000-00000000000f', false, false, NULL, 2), -- 2 Healing Potions in Bag of Holding (0kg) - NON-ATTACKABLE
 
 -- Pip's items
-('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000002', false, true, false, 1), -- Leather Armor in main inventory (10kg)
-('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-00000000000e', false, false, false, 1), -- Thieves' Tools in main inventory (1kg)
-('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000004', false, false, false, 1), -- Shortbow in main inventory (2kg)
-('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 'cccc0000-0000-0000-0000-000000000003', false, false, false, 1), -- Hidden Pocket in main inventory (0kg) - THIS IS THE CONTAINER ITEM
+('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000002', false, true, NULL, 1), -- Leather Armor in main inventory (10kg) - NON-ATTACKABLE
+('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-00000000000e', false, false, NULL, 1), -- Thieves' Tools in main inventory (1kg) - NON-ATTACKABLE
+('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000004', false, false, false, 1), -- Shortbow in main inventory (2kg) - ATTACKABLE BUT NOT IN ATTACK TAB
+('b2c3d4e5-f6a7-8901-bcde-f12345678901', '00000000-0000-0000-0000-000000000000', 'cccc0000-0000-0000-0000-000000000003', false, false, NULL, 1), -- Hidden Pocket in main inventory (0kg) - NON-ATTACKABLE CONTAINER ITEM
 
 -- Sir Gareth's items
-('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000010', true, true, true, 1), -- +1 Sword in main inventory (3kg)
-('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000003', false, true, false, 1), -- Shield in main inventory (6kg)
-('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000000-0000-0000-0000-000000000000', 'cccc0000-0000-0000-0000-000000000004', false, false, false, 1), -- Noble Pack in main inventory (8kg) - THIS IS THE CONTAINER ITEM
-('c3d4e5f6-a7b8-9012-cdef-123456789012', 'cccc0000-0000-0000-0000-000000000004', 'aaaa0000-0000-0000-0000-00000000000f', false, false, false, 5), -- 5 Healing Potions in Noble's Pack (0kg)
+('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000010', true, true, true, 1), -- +1 Sword in main inventory (3kg) - ATTACKABLE
+('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000003', false, true, NULL, 1), -- Shield in main inventory (6kg) - NON-ATTACKABLE
+('c3d4e5f6-a7b8-9012-cdef-123456789012', '00000000-0000-0000-0000-000000000000', 'cccc0000-0000-0000-0000-000000000004', false, false, NULL, 1), -- Noble Pack in main inventory (8kg) - NON-ATTACKABLE CONTAINER ITEM
+('c3d4e5f6-a7b8-9012-cdef-123456789012', 'cccc0000-0000-0000-0000-000000000004', 'aaaa0000-0000-0000-0000-00000000000f', false, false, NULL, 5), -- 5 Healing Potions in Noble's Pack (0kg) - NON-ATTACKABLE
 
 -- Zara's items
-('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000005', false, false, false, 1), -- Dagger in main inventory (1kg)
-('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000002', false, true, false, 1), -- Leather Armor in main inventory (10kg)
-('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 'cccc0000-0000-0000-0000-000000000005', false, false, false, 1); -- Instrument Case in main inventory (3kg) - THIS IS THE CONTAINER ITEM
+('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000005', false, false, false, 1), -- Dagger in main inventory (1kg) - ATTACKABLE BUT NOT IN ATTACK TAB
+('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 'aaaa0000-0000-0000-0000-000000000002', false, true, NULL, 1), -- Leather Armor in main inventory (10kg) - NON-ATTACKABLE
+('d4e5f6a7-b8c9-0123-def0-234567890123', '00000000-0000-0000-0000-000000000000', 'cccc0000-0000-0000-0000-000000000005', false, false, NULL, 1); -- Instrument Case in main inventory (3kg) - NON-ATTACKABLE CONTAINER ITEM
 
 -- =============================================================================
--- CHARACTER INVENTORY SUMMARY
+-- CHARACTER INVENTORY SUMMARY (UPDATED FOR ATTACK TAB LOGIC)
 -- =============================================================================
 
 -- THORIN IRONBEARD (Dwarf Fighter) - UUID: eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9
@@ -440,13 +441,13 @@ INSERT INTO character_has_item_slot (character_uuid, container_uuid, item_uuid, 
 -- 
 -- CONTAINERS:
 --   • Main Inventory: 59/100kg capacity
---     - Battleaxe (4kg) [EQUIPPED, IN ATTACK TAB]
---     - Chain Mail (55kg) [EQUIPPED]
---     - 3x Healing Potions (0kg)
---     - Belt Pouch (1kg) [EQUIPPED] - the container item itself
+--     - Battleaxe (4kg) [EQUIPPED, IN ATTACK TAB] ✓ attackable=true, in_attack_tab=true
+--     - Chain Mail (55kg) [EQUIPPED] ✓ attackable=false, in_attack_tab=NULL
+--     - 3x Healing Potions (0kg) ✓ attackable=false, in_attack_tab=NULL
+--     - Belt Pouch (1kg) [EQUIPPED] ✓ attackable=false, in_attack_tab=NULL - the container item itself
 --   
 --   • Belt Pouch: 2/20kg capacity (container UUID: cccc0000-0000-0000-0000-000000000001)
---     - 2x Daggers (2kg total)
+--     - 2x Daggers (2kg total) ✓ attackable=true, in_attack_tab=false (stored, not actively used)
 
 -- ELARIA MOONWHISPER (Elf Wizard) - UUID: a1b2c3d4-e5f6-7890-abcd-ef1234567890
 -- Owner: player1 (22222222-2222-2222-2222-222222222222)
@@ -456,12 +457,12 @@ INSERT INTO character_has_item_slot (character_uuid, container_uuid, item_uuid, 
 -- 
 -- CONTAINERS:
 --   • Main Inventory: 19/80kg capacity
---     - Dagger (1kg) [IN ATTACK TAB]
---     - Spellbook (3kg)
---     - Bag of Holding (15kg) - the container item itself
+--     - Dagger (1kg) [IN ATTACK TAB] ✓ attackable=true, in_attack_tab=true
+--     - Spellbook (3kg) ✓ attackable=false, in_attack_tab=NULL
+--     - Bag of Holding (15kg) ✓ attackable=false, in_attack_tab=NULL - the container item itself
 --   
 --   • Bag of Holding: 0/500kg capacity (container UUID: aaaa0000-0000-0000-0000-000000000012)
---     - 2x Healing Potions (0kg total)
+--     - 2x Healing Potions (0kg total) ✓ attackable=false, in_attack_tab=NULL
 
 -- PIP LIGHTFINGER (Halfling Rogue) - UUID: b2c3d4e5-f6a7-8901-bcde-f12345678901
 -- Owner: player2 (33333333-3333-3333-3333-333333333333)
@@ -470,10 +471,10 @@ INSERT INTO character_has_item_slot (character_uuid, container_uuid, item_uuid, 
 -- 
 -- CONTAINERS:
 --   • Main Inventory: 13/70kg capacity
---     - Leather Armor (10kg) [EQUIPPED]
---     - Thieves' Tools (1kg)
---     - Shortbow (2kg)
---     - Hidden Pocket (0kg) - the container item itself
+--     - Leather Armor (10kg) [EQUIPPED] ✓ attackable=false, in_attack_tab=NULL
+--     - Thieves' Tools (1kg) ✓ attackable=false, in_attack_tab=NULL
+--     - Shortbow (2kg) ✓ attackable=true, in_attack_tab=false (not actively used)
+--     - Hidden Pocket (0kg) ✓ attackable=false, in_attack_tab=NULL - the container item itself
 --   
 --   • Hidden Pocket: 0/5kg capacity (container UUID: cccc0000-0000-0000-0000-000000000003)
 --     - (empty)
@@ -485,12 +486,12 @@ INSERT INTO character_has_item_slot (character_uuid, container_uuid, item_uuid, 
 -- 
 -- CONTAINERS:
 --   • Main Inventory: 17/120kg capacity
---     - +1 Sword (3kg) [EQUIPPED, ATTUNED, IN ATTACK TAB]
---     - Shield (6kg) [EQUIPPED]
---     - Noble Pack (8kg) - the container item itself
+--     - +1 Sword (3kg) [EQUIPPED, ATTUNED, IN ATTACK TAB] ✓ attackable=true, in_attack_tab=true
+--     - Shield (6kg) [EQUIPPED] ✓ attackable=false, in_attack_tab=NULL
+--     - Noble Pack (8kg) ✓ attackable=false, in_attack_tab=NULL - the container item itself
 --   
 --   • Noble Pack: 0/40kg capacity (container UUID: cccc0000-0000-0000-0000-000000000004)
---     - 5x Healing Potions (0kg total)
+--     - 5x Healing Potions (0kg total) ✓ attackable=false, in_attack_tab=NULL
 
 -- ZARA FLAMEHEART (Tiefling Bard) - UUID: d4e5f6a7-b8c9-0123-def0-234567890123
 -- Owner: player3 (44444444-4444-4444-4444-444444444444)
@@ -499,9 +500,9 @@ INSERT INTO character_has_item_slot (character_uuid, container_uuid, item_uuid, 
 -- 
 -- CONTAINERS:
 --   • Main Inventory: 14/90kg capacity
---     - Dagger (1kg)
---     - Leather Armor (10kg) [EQUIPPED]
---     - Instrument Case (3kg) - the container item itself
+--     - Dagger (1kg) ✓ attackable=true, in_attack_tab=false (not actively used)
+--     - Leather Armor (10kg) [EQUIPPED] ✓ attackable=false, in_attack_tab=NULL
+--     - Instrument Case (3kg) ✓ attackable=false, in_attack_tab=NULL - the container item itself
 --   
 --   • Instrument Case: 0/15kg capacity (container UUID: cccc0000-0000-0000-0000-000000000005)
 --     - (empty)
