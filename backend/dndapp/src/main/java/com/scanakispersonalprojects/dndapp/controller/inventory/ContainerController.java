@@ -24,29 +24,52 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 
-
+/**
+ * REST controller for managing character container operations in the D&D application.
+ * Handles creating, retrieving, updating, and deleting containers for specific characters.
+ * All operations require the authenticated user to own the specified character.
+ * 
+ * Base path: /containers/{charUuid}
+ */
 @Controller
 @RequestMapping("containers/{charUuid}")
 public class ContainerController {
     
+    /** Logger for this controller */
     private final Logger LOG = Logger.getLogger(ContainerController.class.getName());
     
-
+    
     private final static String GET_PATH =  "GET /containers/";
     private final static String POST_PATH =  "POST /containers/";
     private final static String DELETE_PATH =  "DELETE /containers/";
     private final static String PUT_PATH =  "PUT /containers/";
 
+    /** Service for container management operations */
     private final ContainerService containerService;
+
+    /** Service for user authentication and authorization */
     private final CustomUserDetailsService userService;    
 
+    /**
+     * Constructs a new ContainerController with the required service dependencies.
+     *
+     * @param containerService service for container management operations
+     * @param userService service for user authentication and authorization
+     */
     public ContainerController(ContainerService containerService, CustomUserDetailsService userService) {
         this.containerService = containerService;
         this.userService = userService;
     }
 
 
-
+    /**
+     * Retrieves all containers belonging to a specific character.
+     *
+     * @param charUuid the unique identifier of the character
+     * @return ResponseEntity containing list of ContainerView if found (200 OK),
+     *         404 NOT_FOUND if no containers exist for the character,
+     *         or 500 INTERNAL_SERVER_ERROR on error
+     */
     @GetMapping
     public ResponseEntity<List<ContainerView>> getContainers(@PathVariable("charUuid") UUID charUuid) {
         LOG.info(GET_PATH + charUuid);
@@ -62,6 +85,18 @@ public class ContainerController {
         }
     }
 
+    /**
+     * Creates a new container for the specified character.
+     * Requires the authenticated user to own the character.
+     *
+     * @param authentication the authentication context of the current user
+     * @param charUuid the unique identifier of the character
+     * @param container the container data to create
+     * @return ResponseEntity containing the created Container (200 OK),
+     *         401 UNAUTHORIZED if user doesn't own the character,
+     *         404 NOT_FOUND if creation failed,
+     *         or 500 INTERNAL_SERVER_ERROR on error
+     */
     @PostMapping
     public ResponseEntity<Container> createContainer(Authentication authentication, @PathVariable("charUuid") UUID charUuid, @RequestBody Container container) {
         LOG.info(POST_PATH + charUuid);
@@ -81,7 +116,18 @@ public class ContainerController {
         
     }
 
-
+/**
+     * Deletes a specific container belonging to a character.
+     * Requires the authenticated user to own the character.
+     *
+     * @param authentication the authentication context of the current user
+     * @param charUuid the unique identifier of the character
+     * @param containerUuid the unique identifier of the container to delete
+     * @return ResponseEntity with 200 OK if deletion successful,
+     *         401 UNAUTHORIZED if user doesn't own the character,
+     *         404 NOT_FOUND if container doesn't exist,
+     *         or 500 INTERNAL_SERVER_ERROR on error
+     */
     @DeleteMapping("/containerId={containerId}")
     public ResponseEntity<Boolean> deleteContainer(Authentication authentication, @PathVariable("charUuid") UUID charUuid, @PathVariable("containerId") UUID containerUuid) {
         LOG.info(DELETE_PATH + charUuid +"/containerId=" + containerUuid);
@@ -101,6 +147,19 @@ public class ContainerController {
         }
     }
 
+    /**
+     * Updates the maximum capacity of a specific container.
+     * Requires the authenticated user to own the character.
+     *
+     * @param authentication the authentication context of the current user
+     * @param charUuid the unique identifier of the character
+     * @param containerUuid the unique identifier of the container to update
+     * @param maxCapacity the new maximum capacity value for the container
+     * @return ResponseEntity containing the updated Container (200 OK),
+     *         401 UNAUTHORIZED if user doesn't own the character,
+     *         404 NOT_FOUND if container doesn't exist,
+     *         or 500 INTERNAL_SERVER_ERROR on error
+     */
     @PutMapping("/containerId={containerId}")
     public ResponseEntity<Container> updateMaxCapacityOfContainer(Authentication authentication, @PathVariable("charUuid") UUID charUuid, @PathVariable("containerId") UUID containerUuid, @RequestParam int maxCapacity) {
         
