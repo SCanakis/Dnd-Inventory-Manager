@@ -21,7 +21,7 @@ import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.CharacterIn
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.DndClassRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.RaceRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.SubClassRepo;
-import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserDaoPSQL;
+import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserRepo;
 
 import jakarta.transaction.Transactional;
 
@@ -56,7 +56,7 @@ public class CharacterInfoService {
     private BackgroundRepo backgroundRepo;
 
     /** Repository for user related operations */
-    private UserDaoPSQL userDao;
+    private UserRepo userDao;
 
     /**
      * Constructs a new CharacterInfoServie with the requires repo dependenceis
@@ -71,7 +71,7 @@ public class CharacterInfoService {
      */
 
     public CharacterInfoService(CharacterInfoRepo characterInfoRepo, CharacterClassRepo characterClassRepo,
-            DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, UserDaoPSQL userDao) {
+            DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, UserRepo userDao) {
         this.characterInfoRepo = characterInfoRepo;
         this.characterClassRepo = characterClassRepo;
         this.dndClassRepo = dndClassRepo;

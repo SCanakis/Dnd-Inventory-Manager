@@ -14,7 +14,7 @@ import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInf
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CustomUserPrincipal;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.User;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.UserRoleProjection;
-import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserDaoPSQL;
+import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserRepo;
 
 
 /**
@@ -33,7 +33,7 @@ import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserDaoPSQL
 @Service
 public class CustomUserDetailsService implements UserDetailsService{
 
-    private UserDaoPSQL userDao;
+    private UserRepo userDao;
 
     private CharacterInfoService characterService;
 
@@ -41,7 +41,7 @@ public class CustomUserDetailsService implements UserDetailsService{
      * Builds the {@link UserDetails} boject Srping Security needs.
      */
 
-    public CustomUserDetailsService(UserDaoPSQL userDaoPSQL, CharacterInfoService characterService) {
+    public CustomUserDetailsService(UserRepo userDaoPSQL, CharacterInfoService characterService) {
         this.characterService = characterService;
         this.userDao = userDaoPSQL;
     }

@@ -57,6 +57,6 @@ public class ContainerId implements Serializable{
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.containerUuid, this.containerUuid);
+        return Objects.hash(this.containerUuid, this.charUuid);
     }
 }
