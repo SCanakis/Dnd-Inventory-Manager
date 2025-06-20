@@ -19,21 +19,54 @@ import com.scanakispersonalprojects.dndapp.persistance.inventory.InventoryJPARep
 
 import jakarta.transaction.Transactional;
 
+/**
+ * Service class for managing character inventory operations.
+ * Handles business logic for adding, removing, updating, and searching items
+ * in character inventories, including container management and item transfers.
+ * 
+ * Manages complex operations like item stacking, container transfers,
+ * and automatic container creation for container items.
+ */
 @Service
 public class InventoryService {
     
+    /** Repository for inventory item operations */
     private InventoryJPARepo repo;
+
+    /** Service for item catalog operations */
     private ItemCatalogService itemCatalogService;
+    
+    /** Repository for container operations */
     private ContainerRepo containerRepo;
 
+    /** 
+     * Special UUID representing the default inventory space.
+     * Items placed in this "container" are in the character's base inventory.
+     */
     private final static UUID emptyContainerUuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
+    /**
+     * Constructs a new InventoryService with the required dependencies.
+     *
+     * @param repo repository for inventory operations
+     * @param itemCatalogService service for item catalog operations
+     * @param containerRepo repository for container operations
+     */
     public InventoryService(InventoryJPARepo repo, ItemCatalogService itemCatalogService, ContainerRepo containerRepo) {
         this.repo = repo;
         this.itemCatalogService = itemCatalogService;
         this.containerRepo = containerRepo;
     }
 
+
+
+    /**
+     * Retrieves the complete inventory for a character.
+     *
+     * @param charUuid the unique identifier of the character
+     * @return list of character inventory item projections
+     * @throws IllegalArgumentException if charUuid is null
+     */
     public List<CharacterHasItemProjection> getInventoryWithUUID(UUID charUuid) {
         if (charUuid == null) {
             throw new IllegalArgumentException();
@@ -41,6 +74,15 @@ public class InventoryService {
         return this.repo.getInventoryUsingUUID(charUuid);
     }
 
+
+    /**
+     * Searches a character's inventory using fuzzy string matching.
+     *
+     * @param charUuid the unique identifier of the character
+     * @param searchTerm the text to search for in item names
+     * @return list of matching inventory items ordered by similarity
+     * @throws IllegalArgumentException if charUuid is null
+     */
     public List<CharacterHasItemProjection> getInventoryUsingFZF(UUID charUuid, String searchTerm) {
         if (charUuid == null) {
             throw new IllegalArgumentException();
@@ -48,6 +90,18 @@ public class InventoryService {
         return this.repo.getInventoyUsingFZF(charUuid, searchTerm);
     }
 
+
+    /**
+     * Adds an item to a character's inventory.
+     * If the item is a container, automatically creates a corresponding Container entity.
+     * If the character already has the item, updates the quantity instead.
+     *
+     * @param itemUuid the unique identifier of the item to add
+     * @param charUuid the unique identifier of the character
+     * @param quantity the number of items to add (must be positive)
+     * @return true if the item was successfully added, false otherwise
+     * @throws IllegalArgumentException if any required parameter is null or quantity is non-positive
+     */
     @Transactional
     public boolean saveItemToInventory(UUID itemUuid, UUID charUuid, int quantity) {
         if (charUuid == null || itemUuid == null || quantity <= 0) {
@@ -97,6 +151,18 @@ public class InventoryService {
         }
     }
 
+
+
+    /**
+     * Removes an item from a character's inventory.
+     * Deletes the entire item slot regardless of quantity.
+     *
+     * @param charUuid the unique identifier of the character
+     * @param itemUuid the unique identifier of the item to remove
+     * @param containerUuid the unique identifier of the container holding the item
+     * @return true if deletion successful, null if item not found, false on error
+     * @throws SQLException if a database error occurs during deletion
+     */
     @Transactional
     public Boolean deleteItemFromInventory(UUID charUuid, UUID itemUuid, UUID containerUuid) throws Exception{
         
@@ -118,6 +184,16 @@ public class InventoryService {
         }
     }
 
+
+    /**
+     * Updates the quantity of an existing item in inventory.
+     * Adds the specified quantity to the first found slot of the item.
+     *
+     * @param charUuid the unique identifier of the character
+     * @param itemUuid the unique identifier of the item to update
+     * @param quantity the quantity to add (can be negative to reduce)
+     * @return true if update successful, false if item not found or error occurs
+     */
     @Transactional
     public boolean updateQuantity(UUID charUuid, UUID itemUuid, int quantity) {
         if(charUuid == null || itemUuid == null) {
@@ -141,6 +217,18 @@ public class InventoryService {
         }
     }
 
+
+    /**
+     * Updates properties of a character's item slot.
+     * Handles both simple property updates and complex container transfers.
+     * Container transfers can be partial (splitting stacks) or complete.
+     *
+     * @param charUuid the unique identifier of the character
+     * @param itemUuid the unique identifier of the item to update
+     * @param containerUuid the current container holding the item
+     * @param update the update data containing new values
+     * @return the updated CharacterHasItemSlot, or null if update failed
+     */
     @Transactional
     public CharacterHasItemSlot updateCharacterHasSlot(UUID charUuid, UUID itemUuid, UUID containerUuid, CharacterHasItemUpdate update) {
 
@@ -191,6 +279,17 @@ public class InventoryService {
         }
     }
 
+    /**
+     * Handles partial container transfer where only some items are moved.
+     * Creates a new slot in the target container and reduces quantity in the source.
+     *
+     * @param charUuid the unique identifier of the character
+     * @param itemUuid the unique identifier of the item being transferred
+     * @param containerUuid the source container UUID
+     * @param update the update containing transfer details
+     * @param currentSlot the current item slot being transferred from
+     * @return the new CharacterHasItemSlot in the target container, or null if transfer failed
+     */
     @Transactional 
     private CharacterHasItemSlot partialContainerTransfer(UUID charUuid, UUID itemUuid, UUID containerUuid, CharacterHasItemUpdate update, CharacterHasItemSlot currentSlot) {
         
@@ -208,6 +307,17 @@ public class InventoryService {
         return repo.save(newSlot);
     }
 
+    /**
+     * Handles complete container transfer where all items are moved.
+     * Either merges with existing slot in target container or creates new slot.
+     *
+     * @param charUuid the unique identifier of the character
+     * @param itemUuid the unique identifier of the item being transferred
+     * @param containerUuid the source container UUID
+     * @param update the update containing transfer details
+     * @param currentSlot the current item slot being transferred
+     * @return the updated or new CharacterHasItemSlot, or null if transfer failed
+     */
     @Transactional
     private CharacterHasItemSlot completeContainerTransfer(UUID charUuid, UUID itemUuid, UUID containerUuid, CharacterHasItemUpdate update, CharacterHasItemSlot currentSlot) {
         
@@ -257,7 +367,15 @@ public class InventoryService {
 
     
        
-
+/**
+     * Checks if items can fit in a container and updates the container's capacity.
+     * Validates against container weight/capacity limits and updates current usage.
+     *
+     * @param charUuid the unique identifier of the character
+     * @param conatinerUuid the unique identifier of the target container
+     * @param update the update containing item and quantity information
+     * @return true if items fit and container was updated, false otherwise
+     */
     @Transactional
     private boolean checkIfItemFitsInContainerAndUpdateContainer(UUID charUuid, UUID conatinerUuid, CharacterHasItemUpdate update) {
         Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(conatinerUuid, charUuid));
@@ -275,6 +393,15 @@ public class InventoryService {
         return false;
     }
 
+    /**
+     * Removes items from a container and updates the container's current capacity.
+     * Validates that the container has sufficient items to remove.
+     *
+     * @param charUuid the unique identifier of the character
+     * @param conatinerUuid the unique identifier of the source container
+     * @param update the update containing item and quantity information
+     * @return true if items were removed and container updated, false otherwise
+     */
     @Transactional
     private boolean removeItemFromContainer(UUID charUuid, UUID conatinerUuid, CharacterHasItemUpdate update) {
         Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(conatinerUuid, charUuid));
