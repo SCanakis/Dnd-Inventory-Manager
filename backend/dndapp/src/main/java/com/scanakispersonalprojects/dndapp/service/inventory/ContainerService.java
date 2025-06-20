@@ -43,7 +43,7 @@ public class ContainerService {
             for(Container container: list) {
                 ContainerView view = new ContainerView();
                 view.setContainer(container);
-                List<CharacterHasItemProjection>  items = inventoryJPARepo.getItemsForAContainer(charUuid, container.getContainerUuid());
+                List<CharacterHasItemProjection> items = inventoryJPARepo.getItemsForAContainer(charUuid, container.getContainerUuid());
 
                 if(!items.isEmpty()) {
                     view.setItems(items);
@@ -58,17 +58,10 @@ public class ContainerService {
 
     @Transactional
     public Container createContainer(UUID charUuid, Container container) {
-        if(charUuid == null || container == null || container.getItemUuid() == null || container.getMaxCapacity() <= 0) {
+        if(charUuid == null || container == null || container.getItemUuid() == null || container.getMaxCapacity() <= 0 || container.getContainerUuid() == inventoryContainerUuid) {
             return null;
         }
-        
-        if(container.getId() != null && container.getContainerUuid() != null) {
-            container.setContainerUuid(charUuid);
-        }
-        if(container.getId() == null) {
-            container.setId(new ContainerId());
-        }
-
+    
         container.setCharUuid(charUuid);
 
         return containerRepo.save(container);
@@ -82,15 +75,12 @@ public class ContainerService {
             }
             Optional<Container> optionalContainer = containerRepo.findById(new ContainerId(containerUuid, charUuid));
             if(optionalContainer.isPresent()) {
-                List<CharacterHasItemProjection> items = inventoryJPARepo.getItemsForAContainer(charUuid, optionalContainer.get().getContainerUuid());
+                List<CharacterHasItemProjection> items = inventoryJPARepo.getItemsForAContainer(charUuid, containerUuid);
                 if(items.isEmpty()) {
                     containerRepo.deleteById(new ContainerId(containerUuid, charUuid));
                     return true;
-
                 }
-
             }
-
             return false;
 
         } catch (Exception e) {

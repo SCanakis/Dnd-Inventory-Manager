@@ -2,6 +2,7 @@ package com.scanakispersonalprojects.dndapp.service.inventory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -17,6 +18,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemProjection;
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemSlot;
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemUpdate;
 
 import jakarta.transaction.Transactional;
 
@@ -30,9 +33,14 @@ public class InventoryServiceUnitTest {
     
     @Autowired
     private InventoryService inventoryService;
+
     private final UUID thorinUuid = UUID.fromString("eb5a1cd2-97b3-4f2e-90d2-b1e99dfaeac9");
     private final UUID longSwordUuid = UUID.fromString("aaaa0000-0000-0000-0000-000000000001");
     private final UUID chainMailUuid = UUID.fromString("aaaa0000-0000-0000-0000-000000000006");
+    private final UUID daggerUuid = UUID.fromString("aaaa0000-0000-0000-0000-000000000005");
+    private final UUID battleAxeUuid = UUID.fromString("aaaa0000-0000-0000-0000-000000000007");
+    private final UUID inventoryUuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
+    private final UUID beltPouchUuid = UUID.fromString("cccc0000-0000-0000-0000-000000000001");
 
     @Test
     public void getInventoryUsingUUID_returnsThorin() {
@@ -157,10 +165,190 @@ public class InventoryServiceUnitTest {
     }
 
 
-    // @Test
-    // public void updateCharacterHasSlot_succesfulNoContainerUuid() throws Exception {
+    @Test
+    public void updateCharacterHasSlot_succesfulNoContainerUuid() throws Exception {
+        
+        CharacterHasItemUpdate update = new CharacterHasItemUpdate();
+        update.setItemUuid(chainMailUuid);
+        update.setQuantity(5);
+        update.setEquipped(false);
+        update.setAttuned(true);
+
+        CharacterHasItemSlot slot = inventoryService.updateCharacterHasSlot(thorinUuid, chainMailUuid, inventoryUuid, update);
+
+        assertEquals(slot.getId().getItemUuid(), update.getItemUuid());
+        assertEquals((int)slot.getQuantity(), (int)update.getQuantity());
+        assertEquals(slot.isEquipped() , update.isEquipped());
+        assertEquals(slot.isAttuned() , update.isAttuned());   
+    }
+
+    @Test
+    public void updateCharacterHasSlot_completeContainerTransfer() throws Exception {
+        
+        CharacterHasItemUpdate update = new CharacterHasItemUpdate();
+        update.setItemUuid(battleAxeUuid);
+        update.setQuantity(1);
+        update.setEquipped(false);
+        update.setAttuned(true);
+        update.setContainer(beltPouchUuid);
+        update.setInAttackTab(true);
+        
+        CharacterHasItemSlot slot = inventoryService.updateCharacterHasSlot(thorinUuid, battleAxeUuid, inventoryUuid, update);
+
+        assertEquals(slot.getId().getItemUuid(), update.getItemUuid());
+        assertEquals((int)slot.getQuantity(), (int)update.getQuantity());
+        assertEquals(slot.isEquipped() , update.isEquipped());
+        assertEquals(slot.isAttuned() , update.isAttuned());
+        assertEquals(slot.getId().getContainerUuid(), update.getContainerUuid()); 
+        assertEquals(slot.isInAttackTab(), update.getInAttackTab());
+    }
+
+    @Test
+    public void updateCharacterHasSlot_partialContainerTransfer() throws Exception {
+        
+        CharacterHasItemUpdate update = new CharacterHasItemUpdate();
+        update.setItemUuid(daggerUuid);
+        update.setQuantity(1);
+        update.setEquipped(false);
+        update.setAttuned(true);
+        update.setContainer(inventoryUuid);
+        
+        CharacterHasItemSlot slot = inventoryService.updateCharacterHasSlot(thorinUuid, daggerUuid, beltPouchUuid, update);
+
+        assertEquals(slot.getId().getItemUuid(), update.getItemUuid());
+        assertEquals((int)slot.getQuantity(), (int)update.getQuantity());
+        assertEquals(slot.isEquipped() , update.isEquipped());
+        assertEquals(slot.isAttuned() , update.isAttuned());
+        assertEquals(slot.getId().getContainerUuid(), update.getContainerUuid()); 
+    }
+
+    @Test
+    public void updateCharacterHasSlot_negativeQuantity() throws Exception {
+        
+        CharacterHasItemUpdate update = new CharacterHasItemUpdate();
+        update.setItemUuid(daggerUuid);
+        update.setQuantity(-1);
+        update.setEquipped(false);
+        update.setAttuned(true);
+        update.setContainer(inventoryUuid);
+        
+        CharacterHasItemSlot slot = inventoryService.updateCharacterHasSlot(thorinUuid, daggerUuid, beltPouchUuid, update);
+
+        assertNull(slot);
+    }
+
+    @Test
+    public void updateCharacterHasSlot_quantityTransferNotEnoughQuantity() throws Exception {
+        
+        CharacterHasItemUpdate update = new CharacterHasItemUpdate();
+        update.setItemUuid(daggerUuid);
+        update.setQuantity(3);
+        update.setEquipped(false);
+        update.setAttuned(true);
+        update.setContainer(inventoryUuid);
+        
+        CharacterHasItemSlot slot = inventoryService.updateCharacterHasSlot(thorinUuid, daggerUuid, beltPouchUuid, update);
+
+        assertNull(slot);
+    }
+
+    @Test
+    public void updateCharacterHasSlot_updateIsEmpty() throws Exception {
+        
+        CharacterHasItemUpdate update = new CharacterHasItemUpdate();
+        
+        CharacterHasItemSlot slot = inventoryService.updateCharacterHasSlot(thorinUuid, daggerUuid, beltPouchUuid, update);
+
+        assertNotNull(slot);
+
+    }
+
+    @Test
+    public void updateCharacterHasSlot_updateUUIDsAreNotAnItem() throws Exception {
+    
+        CharacterHasItemUpdate update = new CharacterHasItemUpdate();
+        update.setItemUuid(daggerUuid);
+        update.setQuantity(3);
+        update.setEquipped(false);
+        update.setAttuned(true);
+        update.setContainer(inventoryUuid);  
+
+        CharacterHasItemSlot slot = inventoryService.updateCharacterHasSlot(inventoryUuid, inventoryUuid, inventoryUuid, update);
+
+        assertNull(slot);
+
+    }
+
+    @Test
+    public void updateCharacterHasSlot_returnsNull() throws Exception {
+        
+        CharacterHasItemSlot slot = inventoryService.updateCharacterHasSlot(null, null, null, null);
+
+        assertNull(slot);
+    }
+
+    @Test
+    public void updateCharacterHasSlot_chainMailToPouchDoesntFit() throws Exception {
+        
+        CharacterHasItemUpdate update = new CharacterHasItemUpdate();
+        update.setItemUuid(chainMailUuid);
+        update.setQuantity(1);
+        update.setEquipped(false);
+        update.setAttuned(true);
+        update.setContainer(beltPouchUuid);  
+
+        CharacterHasItemSlot slot = inventoryService.updateCharacterHasSlot(thorinUuid, chainMailUuid, beltPouchUuid, update);
+
+        assertNull(slot);
+    }
+    
+    @Test
+    public void updateCharacterHasSlot_justContainerChange() throws Exception {
+        
+        CharacterHasItemUpdate update = new CharacterHasItemUpdate();
+        update.setItemUuid(daggerUuid);
+        update.setContainer(inventoryUuid);  
+        update.setQuantity(2);  
+
+        CharacterHasItemSlot slot = inventoryService.updateCharacterHasSlot(thorinUuid, daggerUuid, beltPouchUuid, update);
+
+        assertEquals(2, slot.getQuantity());
+        assertEquals(daggerUuid, slot.getId().getItemUuid());
+        assertEquals(inventoryUuid, slot.getId().getContainerUuid());
+    }
+
+    @Test
+    public void updateCharacterHasSlot_completeTransferSameItemDiffernetContainer() throws Exception {
+        
+        inventoryService.saveItemToInventory(daggerUuid, thorinUuid, 1);
+
+        CharacterHasItemUpdate update = new CharacterHasItemUpdate();
+        update.setItemUuid(daggerUuid);
+        update.setQuantity(2);
+        update.setEquipped(false);
+        update.setAttuned(true);
+        update.setContainer(inventoryUuid); 
+
+        CharacterHasItemSlot slot = inventoryService.updateCharacterHasSlot(thorinUuid, daggerUuid, beltPouchUuid, update);
+
+        assertEquals(slot.getId().getItemUuid(), update.getItemUuid());
+        assertEquals((int)slot.getQuantity(), 2);
+        assertEquals(slot.isEquipped() , update.isEquipped());
+        assertEquals(slot.isAttuned() , update.isAttuned());
+        assertEquals(slot.getId().getContainerUuid(), update.getContainerUuid());
+
+        update = new CharacterHasItemUpdate();
+        update.setItemUuid(daggerUuid);
+        update.setQuantity(1);
+        update.setEquipped(false);
+        update.setAttuned(true);
+        update.setContainer(inventoryUuid); 
+
+        slot = inventoryService.updateCharacterHasSlot(thorinUuid, daggerUuid, beltPouchUuid, update);
+
+        assertEquals((int)slot.getQuantity(), 3);
+    }
 
 
-    // }
 
 }

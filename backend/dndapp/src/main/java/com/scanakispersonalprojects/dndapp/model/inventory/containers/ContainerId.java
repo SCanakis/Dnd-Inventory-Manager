@@ -21,8 +21,8 @@ public class ContainerId implements Serializable{
 
     public ContainerId() {}
 
-    public ContainerId(UUID containUuid,  UUID charUuid) {
-        this.containerUuid = containUuid;
+    public ContainerId(UUID containerUuid,  UUID charUuid) {
+        this.containerUuid = containerUuid;
         this.charUuid = charUuid;
     }
 

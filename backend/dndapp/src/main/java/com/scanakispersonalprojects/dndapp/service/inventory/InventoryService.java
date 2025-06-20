@@ -150,9 +150,10 @@ public class InventoryService {
     @Transactional
     public CharacterHasItemSlot updateCharacterHasSlot(UUID charUuid, UUID itemUuid, UUID containerUuid, CharacterHasItemUpdate update) {
 
-        if(charUuid == null || itemUuid == null) {
+        if(charUuid == null || itemUuid == null || update == null) {
             return null;
         }
+
 
         CharacterHasItemSlotId id = new CharacterHasItemSlotId(itemUuid, charUuid, containerUuid);
         Optional<CharacterHasItemSlot> slotOptional = repo.findById(id);
@@ -164,10 +165,10 @@ public class InventoryService {
         }
 
         CharacterHasItemSlot slot = slotOptional.get();
-
+        
 
         if(update.getQuantity() != null && update.getContainerUuid() != null && update.getContainerUuid() != containerUuid) {
-            if(slot.getQuantity() < update.getQuantity()) {
+            if(slot.getQuantity() < update.getQuantity() || update.getQuantity() < 0) {
                 return null;
             }
 
