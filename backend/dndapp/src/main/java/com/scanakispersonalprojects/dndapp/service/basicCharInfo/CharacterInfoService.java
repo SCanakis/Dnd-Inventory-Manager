@@ -25,22 +25,50 @@ import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserDaoPSQL
 
 import jakarta.transaction.Transactional;
 
+/**
+ * This service manages all the business logic in CRUD operations
+ * regarding basic character information in the Dnd app.
+ *  
+ * This service handles character creation, updates, deletions, and retrivals
+ * operation, including managing relationships between cahracter and their
+ * classes, races, and backgrounds.
+ */
+
 @Service
 public class CharacterInfoService {
     
+    /** Repository for character information ops */
     private CharacterInfoRepo characterInfoRepo;
 
+    /** Repository for character class relationship operation */
     private CharacterClassRepo characterClassRepo;
 
+    /** Repository for dnd class definitions */
     private DndClassRepo dndClassRepo;
 
+    /** Repository for dnd subclass definitions */
     private SubClassRepo subClassRepo;
 
+    /** Repository for dnd race definitions */
     private RaceRepo raceRepo;
 
+    /** Repository for dnd background definitions */
     private BackgroundRepo backgroundRepo;
 
+    /** Repository for user related operations */
     private UserDaoPSQL userDao;
+
+    /**
+     * Constructs a new CharacterInfoServie with the requires repo dependenceis
+     * 
+     * @param characterInfoRepo
+     * @param characterClassRepo
+     * @param dndClassRepo
+     * @param subClassRepo
+     * @param raceRepo
+     * @param backgroundRepo
+     * @param userDao
+     */
 
     public CharacterInfoService(CharacterInfoRepo characterInfoRepo, CharacterClassRepo characterClassRepo,
             DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, UserDaoPSQL userDao) {
@@ -52,6 +80,15 @@ public class CharacterInfoService {
         this.backgroundRepo = backgroundRepo;
         this.userDao = userDao;
     }
+
+
+    /**
+     * Retrieves a complete view of a character's basic information including
+     * classes, race, background, and game statistics.
+     *  
+     * @param charInfoUuid - the unique character identifier
+     * @return CharacterBasicInfoView - containng all character details, or null if not found
+     */
 
     public CharacterBasicInfoView getCharacterBasicInfoView(UUID charInfoUuid) {
         Optional<CharacterInfo> charInfoOptional = characterInfoRepo.findById(charInfoUuid);
@@ -79,6 +116,12 @@ public class CharacterInfoService {
 
     }
 
+    /**
+     * Retrives detailed information about all classes for a specific character
+     * 
+     * @param charInfoUuid the character identifer
+     * @return list of CharacterClassDetail containing class information
+     */
     public List<CharacterClassDetail> getCharacterClassDetails(UUID charInfoUuid) {
         List<CharacterClass> characterClasses = characterClassRepo.findByIdCharInfoUuid(charInfoUuid);
         
@@ -88,7 +131,14 @@ public class CharacterInfoService {
         }
         return result;
     }
-    
+
+    /**
+     * Maps of CharacterClass entity to a CahracterClassDetail view of object,
+     * including class name, subclass information, and level details.
+     * 
+     * @param characterClass - the character class entity to map
+     * @return CharacteClassDetail view objects, or null if class not found
+     */
     public CharacterClassDetail mapToCharacterClassDetail(CharacterClass characterClass) {
         Optional<DndClass> dndClass = dndClassRepo.findById(characterClass.getClassUuid());
         String subClassName = "";
@@ -115,6 +165,12 @@ public class CharacterInfoService {
         
     }
 
+    /**
+     * Get race name using race idenifier
+     * 
+     * @param raceUuid
+     * @return
+     */
     public String getRaceName(UUID raceUuid) {
         if(raceUuid == null) {
             return "No Race";
@@ -124,19 +180,33 @@ public class CharacterInfoService {
         return race.getName();
     }
  
+    /**
+     * Get race background using background idenifier
+     * 
+     * @param backgroundUuid
+     * @return
+     */
     public String getBackgroundName(UUID backgroundUuid) {
-    if (backgroundUuid == null) {
-        return "No Background";
+        if (backgroundUuid == null) {
+            return "No Background";
+        }
+        
+        Optional<Background> background = backgroundRepo.findById(backgroundUuid);
+        if (background.isPresent()) {
+            return background.get().getName();
+        } else {
+            return "Unknown Background";
+        }
     }
-    
-    Optional<Background> background = backgroundRepo.findById(backgroundUuid);
-    if (background.isPresent()) {
-        return background.get().getName();
-    } else {
-        return "Unknown Background";
-    }
-}
 
+    /**
+     * Deletes a charcter and all associated data including class relationships
+     * and user association.
+     * 
+     * @param charInfoUuid - the unique identifier of teh character to delete
+     * @param userUuid - the user identifer of the use who owns the character
+     * @return - true if deleted
+     */
     @Transactional
     public boolean deleteCharacter(UUID charInfoUuid, UUID userUuid) {
         try {
@@ -157,7 +227,13 @@ public class CharacterInfoService {
         }
     }
 
-
+    /**
+     * Updates character class details including subclass, level, and hit dice information
+     * 
+     * @param charInfoUuid - the unique identifer of the character
+     * @param characterClassDetails - list of updated class details
+     * @return - list of updated CharacterClassDetail objects, or null if update failed.
+     */
     @Transactional
     public List<CharacterClassDetail> updateCharacterClassDetail(UUID charInfoUuid, List<CharacterClassDetail> characterClassDetails) {
         List<CharacterClassDetail> result = new ArrayList<>();
@@ -186,6 +262,15 @@ public class CharacterInfoService {
 
     }
  
+    /**
+     * Updates character information with the provided data. Only non-null
+     * fileds in teh update DTO will be applied to the character.
+     * 
+     * @param uuid - the character identifer
+     * @param updateDTO - the data transfer onbject containing update information
+     * @return updated CharacterBasicInfoView, or null if character not found.
+     */
+
     @Transactional
     public CharacterBasicInfoView updateCharInfo(UUID uuid, CharacterInfoUpdateDTO updateDTO) {
         Optional<CharacterInfo> existsOptional = characterInfoRepo.findById(uuid);
@@ -221,6 +306,14 @@ public class CharacterInfoService {
 
     }
 
+    /**
+     * Perfomrs a patch update on character information, updating both 
+     * basic character info and class details if provided.
+     * 
+     * @param uuid - the unique idneitifer of the character to update
+     * @param updatePatch - the patch dat containing updated information
+     * @return updated CharacterBasicInfoView after appliying all changes.
+     */
     @Transactional
     public CharacterBasicInfoView updateUsingPatch(UUID uuid, CharacterInfoUpdateDTO updatePatch) {
         try {
