@@ -7,6 +7,24 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
+
+/**
+ * Entity representing a specific item slot in a character's inventory.
+ * This class models the relationship between a character and an item,
+ * including quantity, equipped status, attunement, and container location.
+ * 
+ * Uses a composite primary key consisting of item UUID, character UUID,
+ * and container UUID to uniquely identify each inventory slot.
+ * 
+ * pk       char_uuid       UUID
+ * pk       item_uuid       UUID
+ * pk       container_uuid  UUID
+ *          quantity        INT 
+ *          equipped        boolean
+ *          attuned         boolean
+ *          inATtackTab     boolean
+ * 
+ */
 @Entity
 @Table(name="character_has_item_slot")
 public class CharacterHasItemSlot {

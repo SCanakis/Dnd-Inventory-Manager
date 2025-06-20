@@ -2,6 +2,16 @@ package com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem;
 
 import java.util.UUID;
 
+
+/**
+ * Data transfer object for updating character inventory item properties.
+ * Used in PATCH operations to modify specific attributes of an item slot
+ * without requiring all fields to be provided. Only non-null fields
+ * will be applied during the update operation.
+ * 
+ * This class follows the partial update pattern where null values
+ * indicate that the field should not be modified.
+ */
 public class CharacterHasItemUpdate {
     
 

@@ -7,7 +7,14 @@ import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
-
+/**
+ * Composite primary key for the ItemClassEligibility entity.
+ * Uniquely identifies an item-class eligibility relationship by combining
+ * the item UUID with the class UUID that is eligible to use it.
+ * 
+ * This design allows the same item to have multiple class restrictions
+ * while preventing duplicate eligibility entries for the same item-class pair.
+ */
 @Embeddable
 public class ItemClassEligibilityId implements Serializable{
 

@@ -21,6 +21,39 @@ import org.hibernate.type.SqlTypes;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.RollType;
 
+/**
+ * Entity representing an item in the D&D catalog system.
+ * This is the master definition of all items that can exist in the game,
+ * including weapons, armor, magic items, containers, and miscellaneous equipment.
+ * 
+ * Each catalog item defines the base properties, requirements, and mechanical
+ * effects that apply when characters acquire or use the item. Individual
+ * character inventories reference these catalog entries.
+ * 
+ * pk       item_uuid           UUID
+ *          item_name           VARCHAR(50)
+ *          item_description    TEXT
+ *          item_weight         INT
+ *          item_value          INT
+ *          item_rarity         String.Enumeration
+ *          attackable          boolean
+ * 
+ *          ac_bonus            short
+ *          add_as_to_ac        json
+ * 
+ *          equippable          boolean
+ *          attunaable          boolean
+ * 
+ *      item_equippable_type    String.array[] 
+ *      ability_requirments     json
+ *          
+ *      skill_altered_roll_type json
+ *      skill_altered_bonus     json
+ * 
+ *          is_container        boolean
+ *          capactiy            int
+ */
+
 
 @Entity
 @Table(name = "item_catalog")

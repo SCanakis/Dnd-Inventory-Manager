@@ -6,6 +6,16 @@ import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DndClass;
 
 import jakarta.persistence.*;
 
+/**
+ * Entity representing the relationship between items and the D&D classes
+ * that are eligible to use them. This junction table enforces class
+ * restrictions on items (e.g., only Paladins can use Holy Avengers,
+ * only spellcasters can use arcane focuses).
+ * 
+ * Uses a composite primary key consisting of item UUID and class UUID
+ * to create a many-to-many relationship between items and classes.
+ */
+
 @Entity
 @Table(name ="item_class_eligibility")
 public class ItemClassEligibility {

@@ -7,6 +7,22 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
+/**
+ * Entity representing an inventory container owned by a character.
+ * Containers can hold items and have capacity limits to manage inventory organization.
+ * Examples include bags, chests, backpacks, or any item that can store other items.
+ * A character's general inventory is also considered a container
+ * 
+ * Uses a composite primary key consisting of container UUID and character UUID
+ * to uniquely identify each container within a character's inventory.
+ * 
+ * pk       container_uuid      UUID
+ * pk       character_uuid      UUID
+ *          item_uuid           UUID
+ *          max_capactiy        INT
+ *          current_capacity    INTA
+ * 
+ */
 @Entity
 @Table(name = "container")
 public class Container {
@@ -14,6 +30,7 @@ public class Container {
     @EmbeddedId
     private ContainerId id;
 
+    /** Reference to the item in the catalog that represents this container */
     @Column(name = "item_uuid", columnDefinition = "UUID")
     private UUID itemUuid;
 

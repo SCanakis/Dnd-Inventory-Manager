@@ -4,7 +4,6 @@ package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
 /**
  * This an enum used in {@link DndClass}
  * for a classes particuarl hitDice.
- * 
  */
 public enum HitDiceValue {
     

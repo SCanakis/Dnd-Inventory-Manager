@@ -3,6 +3,15 @@ package com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog;
 import java.util.Objects;
 import java.util.UUID;
 
+
+/**
+ * Data transfer object representing a D&D class requirement for an item.
+ * Used to store class restrictions that determine which character classes
+ * can use, equip, or attune to specific items in the catalog.
+ * 
+ * For example, a "Holy Avenger" sword might require the "Paladin" class,
+ * or a spellcaster focus might require "Wizard" or "Sorcerer" classes.
+ */
 public class ClassNameIdPair {
     private UUID classUuid;
     private String className;

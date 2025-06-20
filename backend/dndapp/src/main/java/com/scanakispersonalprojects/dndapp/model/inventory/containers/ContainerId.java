@@ -9,6 +9,9 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
+/**
+ * Composite primary key for the Container entity.
+ */
 @Embeddable
 public class ContainerId implements Serializable{
     

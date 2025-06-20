@@ -7,6 +7,9 @@ import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
+/**
+ * Composite primary key for the CharactreHasItemSlot entity.
+ */
 @Embeddable
 public class CharacterHasItemSlotId implements Serializable{
     
