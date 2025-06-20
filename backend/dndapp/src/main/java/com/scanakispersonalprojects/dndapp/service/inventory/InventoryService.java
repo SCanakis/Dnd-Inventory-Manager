@@ -50,11 +50,8 @@ public class InventoryService {
 
     @Transactional
     public boolean saveItemToInventory(UUID itemUuid, UUID charUuid, int quantity) {
-        if (charUuid == null || itemUuid == null) {
+        if (charUuid == null || itemUuid == null || quantity <= 0) {
             throw new IllegalArgumentException();
-        }
-        if(quantity <= 0) {
-            return false;
         }
 
         try {
@@ -63,11 +60,9 @@ public class InventoryService {
  
             if(item != null) {
 
-                if(item.isContainer()) {
-                    if(item.getCapacity() > 0 && item.getCapacity() != null) {
-                        Container container = new Container(null, charUuid, itemUuid, item.getCapacity(), 0);
-                        containerRepo.save(container);
-                    }
+                if(item.isContainer() && item.getCapacity() > 0 && item.getCapacity() != null) {
+                    Container container = new Container(null, charUuid, itemUuid, item.getCapacity(), 0);
+                    containerRepo.save(container);
                 }
 
                 List<CharacterHasItemSlot> exisitingSlots = repo.getListAnItemWithDifferntContainers(charUuid, itemUuid);

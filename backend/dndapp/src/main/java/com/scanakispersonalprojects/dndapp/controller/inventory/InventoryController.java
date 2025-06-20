@@ -36,9 +36,9 @@ public class InventoryController {
     private InventoryService inventoryService;
     private CustomUserDetailsService userService;
     private ItemCatalogService itemCatalogService;
-    private final static String getPath = "GET /inventory/";
-    private final static String deletePath = "DELETE /inventory/";
-    private final static String patchPath = "PATCH /inventory/";
+    private final static String GET_PATH = "GET /inventory/";
+    private final static String DELETE_PATH = "DELETE /inventory/";
+    private final static String PATCH_PATH = "PATCH /inventory/";
 
     public InventoryController(InventoryService inventoryService, CustomUserDetailsService userService, ItemCatalogService itemCatalogService) {
         this.inventoryService= inventoryService;
@@ -50,7 +50,7 @@ public class InventoryController {
 
     @GetMapping
     public ResponseEntity<List<CharacterHasItemProjection>> getInventoryUsingUUID(Authentication authentication, @PathVariable UUID uuid) {
-        LOG.info(getPath + uuid);
+        LOG.info(GET_PATH + uuid);
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -69,7 +69,7 @@ public class InventoryController {
 
     @GetMapping("/searchTerm={searchTerm}")
     public ResponseEntity<List<CharacterHasItemProjection>> getInventoryFuzzySearch(Authentication authentication, @PathVariable String searchTerm, @PathVariable UUID uuid) {
-        LOG.info(getPath + uuid + "/searchTerm="+ searchTerm);
+        LOG.info(GET_PATH + uuid + "/searchTerm="+ searchTerm);
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -88,7 +88,7 @@ public class InventoryController {
 
     @GetMapping("/id={itemUuid}")
     public ResponseEntity<ItemCatalog> getItemFromInventory(@PathVariable UUID itemUuid, @PathVariable UUID uuid) {
-        LOG.info(getPath + uuid + "/id="+ itemUuid);
+        LOG.info(GET_PATH + uuid + "/id="+ itemUuid);
 
         try {
             ItemCatalog item = itemCatalogService.getItemWithUUID(itemUuid);
@@ -103,7 +103,7 @@ public class InventoryController {
 
     @DeleteMapping("/id={itemUuid}/containerId={containerUuid}")
     public ResponseEntity<Boolean> deleteItemFromInventory(Authentication authentication, @PathVariable UUID itemUuid, @PathVariable UUID uuid, @PathVariable UUID containerUuid) {
-        LOG.info(deletePath + uuid + "/id="+ itemUuid + "/containerId=" + containerUuid);
+        LOG.info(DELETE_PATH + uuid + "/id="+ itemUuid + "/containerId=" + containerUuid);
 
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {
@@ -125,7 +125,7 @@ public class InventoryController {
 
     @PatchMapping("/id={itemUuid}/containerId={containerUuid}")
     public ResponseEntity<CharacterHasItemSlot> characterHasItemUpdate(Authentication authentication, @PathVariable UUID uuid, @PathVariable UUID itemUuid, @PathVariable UUID containerUuid, @RequestBody CharacterHasItemUpdate update ) {
-        LOG.info(patchPath + uuid + "/id="+ itemUuid + "/containerId=" + containerUuid);
+        LOG.info(PATCH_PATH + uuid + "/id="+ itemUuid + "/containerId=" + containerUuid);
 
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {

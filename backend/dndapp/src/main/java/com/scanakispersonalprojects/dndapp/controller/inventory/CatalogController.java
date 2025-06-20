@@ -35,8 +35,8 @@ public class CatalogController {
     private final CustomUserDetailsService userService;
     private final InventoryService inventoryService;
 
-    private final static String getPath = "GET /itemCatalog/";
-    private final static String postPath = "POST /itemCatalog/";
+    private final static String GET_PATH = "GET /itemCatalog/";
+    private final static String POST_PATH = "POST /itemCatalog/";
     
     
     public CatalogController(ItemCatalogService itemCatalogService, CustomUserDetailsService userService, InventoryService inventoryService) {
@@ -48,7 +48,7 @@ public class CatalogController {
 
     @GetMapping("/id={uuid}")
     public ResponseEntity<ItemCatalog> getItem(@PathVariable UUID uuid) {
-        LOG.info(getPath +"id=" + uuid);
+        LOG.info(GET_PATH +"id=" + uuid);
         try {
             ItemCatalog item = itemCatalogService.getItemWithUUID(uuid);
             if(item == null) {
@@ -63,7 +63,7 @@ public class CatalogController {
 
     @GetMapping
     public ResponseEntity<List<ItemProjection>> getAll() {
-        LOG.info(getPath);
+        LOG.info(GET_PATH);
         try {
             List<ItemProjection> items = itemCatalogService.getAll();
             if(items == null) {
@@ -77,7 +77,7 @@ public class CatalogController {
 
     @GetMapping("/searchTerm={searchTerm}")
     public ResponseEntity<List<ItemProjection>> searchByName(@PathVariable String searchTerm) {
-        LOG.info(getPath + "/serachTerm=" + searchTerm);
+        LOG.info(GET_PATH + "/serachTerm=" + searchTerm);
         try {
             List<ItemProjection> items = itemCatalogService.searchByName(searchTerm);
             if(items == null) {
@@ -91,7 +91,7 @@ public class CatalogController {
 
     @PostMapping("/id={itemUuid}/charId={charUuid}")
     public ResponseEntity<Boolean> addItemToCharacterInventory(Authentication authentication, @PathVariable UUID itemUuid, @PathVariable UUID charUuid, @RequestParam int quantity) {
-        LOG.info(postPath + "id=" + itemUuid + "/charId=" + charUuid);
+        LOG.info(POST_PATH + "id=" + itemUuid + "/charId=" + charUuid);
         List<UUID> characters = userService.getUsersCharacters(authentication);
         
         if(!characters.contains(charUuid)) {

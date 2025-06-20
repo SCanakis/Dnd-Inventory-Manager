@@ -32,10 +32,10 @@ public class ContainerController {
     private final Logger LOG = Logger.getLogger(ContainerController.class.getName());
     
 
-    private final static String getPath =  "GET /containers/";
-    private final static String postPath =  "POST /containers/";
-    private final static String deletePath =  "DELETE /containers/";
-    private final static String putPath =  "PUT /containers/";
+    private final static String GET_PATH =  "GET /containers/";
+    private final static String POST_PATH =  "POST /containers/";
+    private final static String DELETE_PATH =  "DELETE /containers/";
+    private final static String PUT_PATH =  "PUT /containers/";
 
     private final ContainerService containerService;
     private final CustomUserDetailsService userService;    
@@ -49,7 +49,7 @@ public class ContainerController {
 
     @GetMapping()
     public ResponseEntity<List<ContainerView>> getContainers(@PathVariable("charUuid") UUID charUuid) {
-        LOG.info(getPath + charUuid);
+        LOG.info(GET_PATH + charUuid);
         try {
             List<ContainerView> result = containerService.getCharactersContainers(charUuid);
             if(result != null && !result.isEmpty()) {
@@ -64,7 +64,7 @@ public class ContainerController {
 
     @PostMapping
     public ResponseEntity<Container> createContainer(Authentication authentication, @PathVariable("charUuid") UUID charUuid, @RequestBody Container container) {
-        LOG.info(postPath + charUuid);
+        LOG.info(POST_PATH + charUuid);
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(charUuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -84,7 +84,7 @@ public class ContainerController {
 
     @DeleteMapping("/containerId={containerId}")
     public ResponseEntity<Boolean> deleteContainer(Authentication authentication, @PathVariable("charUuid") UUID charUuid, @PathVariable("containerId") UUID containerUuid) {
-        LOG.info(deletePath + charUuid +"/containerId=" + containerUuid);
+        LOG.info(DELETE_PATH + charUuid +"/containerId=" + containerUuid);
 
         List<UUID> UUID = userService.getUsersCharacters(authentication);
         if(!UUID.contains(charUuid)) {
@@ -104,7 +104,7 @@ public class ContainerController {
     @PutMapping("/containerId={containerId}")
     public ResponseEntity<Container> updateMaxCapacityOfContainer(Authentication authentication, @PathVariable("charUuid") UUID charUuid, @PathVariable("containerId") UUID containerUuid, @RequestParam int maxCapacity) {
         
-        LOG.info(putPath + charUuid +"/containerId=" + containerUuid);
+        LOG.info(PUT_PATH + charUuid +"/containerId=" + containerUuid);
 
         List<UUID> UUID = userService.getUsersCharacters(authentication);
         if(!UUID.contains(charUuid)) {

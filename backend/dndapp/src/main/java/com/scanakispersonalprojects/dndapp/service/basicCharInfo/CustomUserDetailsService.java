@@ -87,7 +87,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 
     public boolean isAdmin(Authentication authentication) {
         UserRoleProjection projection = userDao.getAuthoritiesFromUsername(authentication.getName());
-        return projection.getAuthority() == "ROLE_ADMIN";
+        return projection.getAuthority().equals("ROLE_ADMIN");
 
     }
 

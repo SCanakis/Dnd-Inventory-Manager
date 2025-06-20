@@ -133,7 +133,6 @@ public class CharacterInfoService {
     if (background.isPresent()) {
         return background.get().getName();
     } else {
-        System.out.println("Background not found for UUID: " + backgroundUuid);
         return "Unknown Background";
     }
 }
@@ -193,7 +192,6 @@ public class CharacterInfoService {
             if(existsOptional.isPresent()) {
                 CharacterInfo existing = existsOptional.get();
                 
-                // Update only non-null fields from DTO
                 if(updateDTO.getName() != null) {
                     existing.setName(updateDTO.getName());
                 }
@@ -226,10 +224,8 @@ public class CharacterInfoService {
     @Transactional
     public CharacterBasicInfoView updateUsingPatch(UUID uuid, CharacterInfoUpdateDTO updatePatch) {
         try {
-            // Update character basic info
             updateCharInfo(uuid, updatePatch);
             
-            // Update character classes if provided
             if(updatePatch.getCharacterClassDetail() != null && !updatePatch.getCharacterClassDetail().isEmpty()) {
                 updateCharacterClassDetail(uuid, updatePatch.getCharacterClassDetail());
             }
