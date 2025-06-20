@@ -38,18 +38,30 @@ public class Container {
     }
 
     public UUID getCharUuid() {
+        if(id == null) {
+            return null;
+        }
         return id.getCharUuid();
     }
 
     public void setCharUuid(UUID charUuid) {
+        if(this.id == null) {
+            this.id = new ContainerId();
+        }
         this.id.setCharUuid(charUuid);
     }
 
     public UUID getContainerUuid() {
-    return id.getContainerUuid();
-}
+        if(id == null) {
+            return null;
+        }
+        return id.getContainerUuid();
+    }
 
     public void setContainerUuid(UUID containerUuid) {
+        if(this.id == null) {
+            this.id = new ContainerId();
+        }
         this.id.setContainerUuid(containerUuid);
     }
 

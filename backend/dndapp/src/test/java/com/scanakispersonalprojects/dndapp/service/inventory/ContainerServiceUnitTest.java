@@ -47,7 +47,7 @@ public class ContainerServiceUnitTest {
     }
 
     @Test
-    public void getCharactersContainers_returnsNull() {
+    public void getCharactersContainers_returnsNull() throws Exception {
         List<ContainerView> result = containerService.getCharactersContainers(null);
         assertNull(result);
         result = containerService.getCharactersContainers(UUID.randomUUID());
@@ -55,7 +55,7 @@ public class ContainerServiceUnitTest {
     }
 
     @Test
-    public void createContainer_succesfull() {
+    public void createContainer_succesfull() throws Exception {
         Container container = containerService.createContainer(thorinUuid, new Container(UUID.fromString("00000000-0000-0000-0000-000000000002"), thorinUuid, bagOfHoldingUuid, 500, 0));
 
         assertEquals(thorinUuid, container.getCharUuid());
@@ -67,14 +67,14 @@ public class ContainerServiceUnitTest {
     }
 
     @Test
-    public void createContainer_null() {
+    public void createContainer_null() throws Exception {
         Container container = containerService.createContainer(null, new Container(null, null, null, -500, 0));
 
         assertNull(container);
     }
 
     @Test
-    public void createContainer_succesfullNoId() {
+    public void createContainer_succesfullNoId() throws Exception {
         Container container = containerService.createContainer(thorinUuid, new Container(null, null, bagOfHoldingUuid, 500, 0));
 
         assertEquals(thorinUuid, container.getCharUuid());
@@ -83,7 +83,7 @@ public class ContainerServiceUnitTest {
     }
 
     @Test
-    public void deleteContainer_successfull() {
+    public void deleteContainer_successfull() throws Exception {
         Container container = containerService.createContainer(thorinUuid, new Container(null, thorinUuid, bagOfHoldingUuid, 500, 0));
         System.out.println("containerUUID: " + container.getContainerUuid());
 
@@ -100,16 +100,28 @@ public class ContainerServiceUnitTest {
     }
 
     @Test
-    public void deleteContainer_inventory() {
+    public void deleteContainer_inventory() throws Exception {
         boolean result = containerService.deleteContainer(thorinUuid, inventoryContainerUuid);
         assertFalse(result);
     }
 
-        // TODO : TEST FOR DELETION WHEN CONTAINER IS NOT EMPTY
-
+    @Test void deteleNonEmptyContainer() throws Exception {
+        boolean result = containerService.deleteContainer(thorinUuid,beltPouchUuid);
+        assertFalse(result);
+    }
+ 
     @Test
-    public void updateMaxCapacityOfContainer_succesful() {
-        // TODO : CONTAINER SHOULD BE EMPTY BEFORE UPDATING MAX CAPACITY
+    public void updateMaxCapacityOfContainer_succesful() throws Exception {
+        Container container = containerService.updateMaxCapacityOfContainer(thorinUuid, beltPouchUuid, 200);
+
+        assertEquals(200, container.getMaxCapacity());
+    }
+    
+    @Test
+    public void updateMaxCapacityOfContainer_null() throws Exception {
+        Container container = containerService.updateMaxCapacityOfContainer(null, null, 200);
+
+        assertNull(container);
     }
 
 }

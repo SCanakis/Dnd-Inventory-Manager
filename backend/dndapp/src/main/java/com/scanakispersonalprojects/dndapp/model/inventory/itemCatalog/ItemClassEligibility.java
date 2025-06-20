@@ -2,6 +2,8 @@ package com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog;
 
 import java.util.UUID;
 
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DndClass;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,7 +14,7 @@ public class ItemClassEligibility {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_uuid",  insertable = false, updatable = false)
-    private ClassEntity ClassEntity;
+    private DndClass ClassEntity;
 
     public ItemClassEligibility() {}
     
@@ -28,11 +30,11 @@ public class ItemClassEligibility {
         this.id = id;
     }
 
-    public ClassEntity getClassEntity() {
+    public DndClass getClassEntity() {
         return ClassEntity;
     }
 
-    public void setClassEntity(ClassEntity classEntity) {
+    public void setClassEntity(DndClass classEntity) {
         ClassEntity = classEntity;
     }
     

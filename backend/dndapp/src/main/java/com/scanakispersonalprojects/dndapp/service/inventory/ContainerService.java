@@ -97,6 +97,9 @@ public class ContainerService {
         Optional<Container> currentContainerOptional = containerRepo.findById(new ContainerId(containerUuid, charUuid));
         if(currentContainerOptional.isPresent()) {
             Container currentContainer = currentContainerOptional.get();
+            if(maxCapacity < currentContainer.getCurrentCapacity()) {
+                return null;
+            }
             currentContainer.setMaxCapacity(maxCapacity);
             return containerRepo.save(currentContainer);
         }
