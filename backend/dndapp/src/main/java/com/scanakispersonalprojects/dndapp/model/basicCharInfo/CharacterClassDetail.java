@@ -5,6 +5,23 @@ import java.util.UUID;
 
 
 
+/**
+ * This record is for the purpose of display.
+ * 
+ * It is the combiantion of multiple tables
+ * to display consistent and understandable
+ * representation of the character's class
+ * information
+ * 
+ * @param classUuid
+ * @param className
+ * @param hitDiceValue
+ * @param subClassUuid
+ * @param subClassName
+ * @param level
+ * @param hitDiceRemaining
+ */
+
 public record CharacterClassDetail(
     UUID classUuid,
     String className,

@@ -7,6 +7,26 @@ import jakarta.persistence.*;
 import java.util.Map;
 import java.util.UUID;
 
+
+/**
+ * Entity represnt a race sql table.
+ * 
+ * The table include the following fields:
+ * 
+ * 
+ * pk   race_uuid           UUID
+ *      name                VARCHAR(50) UNIQUE
+ *      stat_increases      json
+ * 
+ * 
+ * Stat increases are stat racial bonuses
+ * that a particular race can give.
+ * 
+ * In the model these racial bonuses are 
+ * stored as a AbilityScore, Integer Map,
+ * but is stored as json in postgres
+ * 
+ */
 @Entity
 @Table(name = "race")
 public class Race {

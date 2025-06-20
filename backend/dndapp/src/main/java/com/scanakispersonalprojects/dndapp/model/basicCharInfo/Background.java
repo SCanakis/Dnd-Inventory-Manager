@@ -3,6 +3,21 @@ package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
 import jakarta.persistence.*;
 import java.util.UUID;
 
+
+
+/**
+ * Entity represnt a character backgournd sql table.
+ * 
+ * The table include the following fields:
+ * 
+ * pk   background_uuid     UUID
+ *      name                VARCHAR(50) UNIQUE
+ *      description         TEXT
+ *      starting_gold       SMALLINT
+ */
+
+
+
 @Entity
 @Table(name = "background")
 public class Background {

@@ -3,6 +3,16 @@ package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
 import jakarta.persistence.*;
 import java.util.UUID;
 
+
+/**
+ * Entity represnt a subclass sql table.
+ * 
+ * The table include the following fields:
+ * 
+ * pk   subclass_uuid       UUID
+ *      name                VARCHAR(50) UNIQUE
+ *      class_source        UUID
+ */
 @Entity
 @Table(name = "subclass")
 public class Subclass {

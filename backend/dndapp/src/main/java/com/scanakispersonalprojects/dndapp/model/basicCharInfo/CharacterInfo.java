@@ -16,6 +16,35 @@ import jakarta.persistence.Table;
 
 import jakarta.persistence.*;
 
+/**
+ * Entity represent the general character_info sql table.
+ * 
+ * It gets the general character information of a character
+ * 
+ * 
+ * The table include the following fields:
+ * 
+ * pk   char_info_uuid      UUID
+ *      name                VARCHAR(50)
+ *      inspiration         boolean
+ *      race_uuid           UUID
+ *      background_uuid     UUID
+ *      ability_score       json
+ *      hp_hanlder          json
+ *      death_saving_throws json
+ *      created_at          time
+ *      updated_at          time
+ * 
+ * 
+ * The classes field is so the character-class
+ * relations can later be added and displayed
+ * to the client. 
+ * 
+ * Character-class information is displayed in 
+ * a different table for allow for multiclassing
+ * and Many-to-Many relations.
+ */
+
 @Entity
 @Table(name = "characters_info")
 public class CharacterInfo {

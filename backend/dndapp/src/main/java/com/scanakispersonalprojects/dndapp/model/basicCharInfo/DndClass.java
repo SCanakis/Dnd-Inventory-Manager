@@ -4,6 +4,20 @@ package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
 import jakarta.persistence.*;
 import java.util.UUID;
 
+
+/**
+ * Entity represnt the classes sql table.
+ * 
+ * This table represents a basic dnd class
+ * 
+ * The table include the following fields:
+ * 
+ * pk   class_uuid          UUID
+ *      name                VARCHAR(50) UNIQUE
+ *      hit_dice_value      String (Enum)
+ *      description         TEXT
+ */
+
 @Entity
 @Table(name = "class")
 public class DndClass {

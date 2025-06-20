@@ -7,6 +7,13 @@ import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
+
+/**
+ * This is an Embeddable Id for the {@link CharacterClass} entity
+ * This class is to allow CharacterClass to have a composite
+ * PrimaryId.
+ */
+
 @Embeddable
 public class CharacterHasClassId implements Serializable {
     

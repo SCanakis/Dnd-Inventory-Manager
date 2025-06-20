@@ -4,6 +4,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+
+/**
+ * This class it an updateDTO. This object was
+ * created to specifically prevent clients 
+ * from destroying or manipulating immutable
+ * data such as the char_info_uuid
+ * 
+ * This is the only data the client should be
+ * able to manipulate.
+ * 
+ */
 public class CharacterInfoUpdateDTO {
     
     private String name;

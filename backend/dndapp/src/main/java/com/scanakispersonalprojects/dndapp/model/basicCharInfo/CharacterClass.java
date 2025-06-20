@@ -4,6 +4,19 @@ package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
 import jakarta.persistence.*;
 import java.util.UUID;
 
+/**
+ * Entity represnt a character__class sql table.
+ * This table represent the relationship between
+ * characters and their classes
+ * 
+ * The table include the following fields:
+ * 
+ * pk   char_info_uuidU     UUID
+ * pk   class_uuid          UUID
+ *      subclass_uuid       UUID
+ *      level               SMALLINT
+ *      hit_dice_remaining  SMALLINT
+ */
 @Entity
 @Table(name = "character_class")
 public class CharacterClass {
@@ -20,17 +33,14 @@ public class CharacterClass {
     @Column(name = "hit_dice_remaining", nullable = false)
     private Short hitDiceRemaining;
 
-    // Default constructor
     public CharacterClass() {}
 
-    // Constructor with required fields
     public CharacterClass(UUID charInfoUuid, UUID classUuid, Short level, Short hitDiceRemaining) {
         this.id = new CharacterHasClassId(charInfoUuid, classUuid);
         this.level = level;
         this.hitDiceRemaining = hitDiceRemaining;
     }
 
-    // Full constructor
     public CharacterClass(UUID charInfoUuid, UUID classUuid, UUID subclassUuid, 
                          Short level, Short hitDiceRemaining) {
         this.id = new CharacterHasClassId(charInfoUuid, classUuid);
@@ -39,7 +49,6 @@ public class CharacterClass {
         this.hitDiceRemaining = hitDiceRemaining;
     }
 
-    // Getters and Setters
     public CharacterHasClassId getId() {
         return id;
     }
