@@ -7,6 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DndClass;
 
+
+/**
+ * Basic JPA repo for access to the classes
+ * table. Used for it's findById() method
+ * to get full information about a class
+ */
 @Repository
 public interface DndClassRepo extends JpaRepository<DndClass, UUID>{
     

@@ -8,6 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Subclass;
 
+
+
+/**
+ * Basic JPA repo for access to the subclasses
+ * table. Used for it's findById() method
+ * to get full information about a subclasses
+ */
 @Repository
 public interface SubClassRepo extends JpaRepository<Subclass, UUID>{
     
