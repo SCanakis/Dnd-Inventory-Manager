@@ -51,7 +51,7 @@ public class InventoryController {
 
     private final static String GET_PATH = "GET /inventory/";
     private final static String DELETE_PATH = "DELETE /inventory/";
-    private final static String PATCH_PATH = "PATCH /inventory/";
+    private final static String PUT_PATH = "PATCH /inventory/";
 
     /**
      * Constructs a new InventoryController with the required service dependencies.
@@ -207,7 +207,7 @@ public class InventoryController {
      */
     @PatchMapping("/id={itemUuid}/containerId={containerUuid}")
     public ResponseEntity<CharacterHasItemSlot> characterHasItemUpdate(Authentication authentication, @PathVariable UUID uuid, @PathVariable UUID itemUuid, @PathVariable UUID containerUuid, @RequestBody CharacterHasItemUpdate update ) {
-        LOG.info(PATCH_PATH + uuid + "/id="+ itemUuid + "/containerId=" + containerUuid);
+        LOG.info(PUT_PATH + uuid + "/id="+ itemUuid + "/containerId=" + containerUuid);
 
         List<UUID> characters = userService.getUsersCharacters(authentication);
         if(!characters.contains(uuid)) {

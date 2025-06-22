@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ClassNameIdPair;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemProjection;
-import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemCatalogJPARepo;
-import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemClassEligibilityRepository;
+import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemCatalogRepo;
+import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemClassEligibilityRepo;
 
 
 /**
@@ -26,10 +26,10 @@ import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemClassEligib
 public class ItemCatalogService {
     
     /** Repository for item catalog database operations */
-    private ItemCatalogJPARepo repo;
+    private ItemCatalogRepo repo;
 
     /** Repository for item class eligibility operations */
-    private ItemClassEligibilityRepository classRepo;
+    private ItemClassEligibilityRepo classRepo;
 
     /**
      * Constructs a new ItemCatalogService with the required repository dependencies.
@@ -37,7 +37,7 @@ public class ItemCatalogService {
      * @param repo repository for item catalog operations
      * @param classRepo repository for item class eligibility operations
      */
-    public ItemCatalogService(ItemCatalogJPARepo repo, ItemClassEligibilityRepository classRepo) {
+    public ItemCatalogService(ItemCatalogRepo repo, ItemClassEligibilityRepo classRepo) {
         this.repo = repo;
         this.classRepo = classRepo;
     }

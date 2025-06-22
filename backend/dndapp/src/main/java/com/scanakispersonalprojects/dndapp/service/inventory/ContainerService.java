@@ -12,7 +12,7 @@ import com.scanakispersonalprojects.dndapp.model.inventory.containers.Container;
 import com.scanakispersonalprojects.dndapp.model.inventory.containers.ContainerId;
 import com.scanakispersonalprojects.dndapp.model.inventory.containers.ContainerView;
 import com.scanakispersonalprojects.dndapp.persistance.inventory.ContainerRepo;
-import com.scanakispersonalprojects.dndapp.persistance.inventory.InventoryJPARepo;
+import com.scanakispersonalprojects.dndapp.persistance.inventory.InventoryRepo;
 
 import jakarta.transaction.Transactional;
 
@@ -32,7 +32,7 @@ public class ContainerService {
     private ContainerRepo containerRepo;
 
     /** Repository for inventory item operations */
-    private InventoryJPARepo inventoryJPARepo;
+    private InventoryRepo inventoryRepo;
 
     /** 
      * Special UUID representing the default inventory container.
@@ -45,11 +45,11 @@ public class ContainerService {
      * Constructs a new ContainerService with the required repository dependencies.
      *
      * @param containerRepo repository for container operations
-     * @param inventoryJPARepo repository for inventory item operations
+     * @param inventoryRepo repository for inventory item operations
      */
-    public ContainerService(ContainerRepo containerRepo, InventoryJPARepo inventoryJPARepo) {
+    public ContainerService(ContainerRepo containerRepo, InventoryRepo inventoryRepo) {
         this.containerRepo = containerRepo;
-        this.inventoryJPARepo = inventoryJPARepo;
+        this.inventoryRepo = inventoryRepo;
     }
 
     /**
@@ -73,7 +73,7 @@ public class ContainerService {
             for(Container container: list) {
                 ContainerView view = new ContainerView();
                 view.setContainer(container);
-                List<CharacterHasItemProjection> items = inventoryJPARepo.getItemsForAContainer(charUuid, container.getContainerUuid());
+                List<CharacterHasItemProjection> items = inventoryRepo.getItemsForAContainer(charUuid, container.getContainerUuid());
 
                 if(!items.isEmpty()) {
                     view.setItems(items);
@@ -124,7 +124,7 @@ public class ContainerService {
             }
             Optional<Container> optionalContainer = containerRepo.findById(new ContainerId(containerUuid, charUuid));
             if(optionalContainer.isPresent()) {
-                List<CharacterHasItemProjection> items = inventoryJPARepo.getItemsForAContainer(charUuid, containerUuid);
+                List<CharacterHasItemProjection> items = inventoryRepo.getItemsForAContainer(charUuid, containerUuid);
                 if(items.isEmpty()) {
                     containerRepo.deleteById(new ContainerId(containerUuid, charUuid));
                     return true;

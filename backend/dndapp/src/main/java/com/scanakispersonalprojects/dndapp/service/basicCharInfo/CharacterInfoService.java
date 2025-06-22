@@ -56,7 +56,7 @@ public class CharacterInfoService {
     private BackgroundRepo backgroundRepo;
 
     /** Repository for user related operations */
-    private UserRepo userDao;
+    private UserRepo userRepo;
 
     /**
      * Constructs a new CharacterInfoServie with the requires repo dependenceis
@@ -67,18 +67,18 @@ public class CharacterInfoService {
      * @param subClassRepo
      * @param raceRepo
      * @param backgroundRepo
-     * @param userDao
+     * @param userRepo
      */
 
     public CharacterInfoService(CharacterInfoRepo characterInfoRepo, CharacterClassRepo characterClassRepo,
-            DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, UserRepo userDao) {
+            DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, UserRepo userRepo) {
         this.characterInfoRepo = characterInfoRepo;
         this.characterClassRepo = characterClassRepo;
         this.dndClassRepo = dndClassRepo;
         this.subClassRepo = subClassRepo;
         this.raceRepo = raceRepo;
         this.backgroundRepo = backgroundRepo;
-        this.userDao = userDao;
+        this.userRepo = userRepo;
     }
 
 
@@ -215,7 +215,7 @@ public class CharacterInfoService {
             
             if(characterInfoOptional.isPresent()) {
                 
-                userDao.deleteCharacter(userUuid, charInfoUuid);
+                userRepo.deleteCharacter(userUuid, charInfoUuid);
                 characterClassRepo.deleteCharacterClasses(charInfoUuid);
                 characterInfoRepo.deleteById(charInfoUuid);
                 

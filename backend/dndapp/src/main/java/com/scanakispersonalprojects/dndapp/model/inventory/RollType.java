@@ -1,4 +1,4 @@
-package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
+package com.scanakispersonalprojects.dndapp.model.inventory;
 
 
 /**

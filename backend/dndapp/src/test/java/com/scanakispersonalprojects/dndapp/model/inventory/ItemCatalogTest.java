@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
-import com.scanakispersonalprojects.dndapp.model.basicCharInfo.RollType;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ClassNameIdPair;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.EquippableType;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;

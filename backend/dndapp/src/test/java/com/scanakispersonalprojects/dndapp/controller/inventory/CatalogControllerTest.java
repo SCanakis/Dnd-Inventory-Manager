@@ -22,12 +22,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
-import com.scanakispersonalprojects.dndapp.model.basicCharInfo.RollType;
+import com.scanakispersonalprojects.dndapp.model.inventory.RollType;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.EquippableType;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.Rarity;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.Skill;
-import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemCatalogJPARepo;
+import com.scanakispersonalprojects.dndapp.persistance.inventory.ItemCatalogRepo;
 
 import jakarta.transaction.Transactional;
 
@@ -44,7 +44,7 @@ public class CatalogControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private ItemCatalogJPARepo itemCatalogRepo;
+    private ItemCatalogRepo itemCatalogRepo;
 
     private UUID testItemUuid;
 

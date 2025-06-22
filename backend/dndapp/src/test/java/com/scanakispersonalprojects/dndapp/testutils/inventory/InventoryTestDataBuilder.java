@@ -3,7 +3,7 @@ package com.scanakispersonalprojects.dndapp.testutils.inventory;
 import java.util.UUID;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
-import com.scanakispersonalprojects.dndapp.model.basicCharInfo.RollType;
+import com.scanakispersonalprojects.dndapp.model.inventory.RollType;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.EquippableType;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.Rarity;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.Skill;

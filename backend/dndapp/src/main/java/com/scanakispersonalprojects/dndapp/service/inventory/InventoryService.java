@@ -15,7 +15,7 @@ import com.scanakispersonalprojects.dndapp.model.inventory.containers.Container;
 import com.scanakispersonalprojects.dndapp.model.inventory.containers.ContainerId;
 import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
 import com.scanakispersonalprojects.dndapp.persistance.inventory.ContainerRepo;
-import com.scanakispersonalprojects.dndapp.persistance.inventory.InventoryJPARepo;
+import com.scanakispersonalprojects.dndapp.persistance.inventory.InventoryRepo;
 
 import jakarta.transaction.Transactional;
 
@@ -31,7 +31,7 @@ import jakarta.transaction.Transactional;
 public class InventoryService {
     
     /** Repository for inventory item operations */
-    private InventoryJPARepo repo;
+    private InventoryRepo repo;
 
     /** Service for item catalog operations */
     private ItemCatalogService itemCatalogService;
@@ -52,7 +52,7 @@ public class InventoryService {
      * @param itemCatalogService service for item catalog operations
      * @param containerRepo repository for container operations
      */
-    public InventoryService(InventoryJPARepo repo, ItemCatalogService itemCatalogService, ContainerRepo containerRepo) {
+    public InventoryService(InventoryRepo repo, ItemCatalogService itemCatalogService, ContainerRepo containerRepo) {
         this.repo = repo;
         this.itemCatalogService = itemCatalogService;
         this.containerRepo = containerRepo;
@@ -119,7 +119,7 @@ public class InventoryService {
                     containerRepo.save(container);
                 }
 
-                List<CharacterHasItemSlot> exisitingSlots = repo.getListAnItemWithDifferntContainers(charUuid, itemUuid);
+                List<CharacterHasItemSlot> exisitingSlots = repo.getSameItemDifferentContainers(charUuid, itemUuid);
 
                 if(!exisitingSlots.isEmpty()) {
                     updateQuantity(charUuid, itemUuid, quantity);
@@ -201,7 +201,7 @@ public class InventoryService {
         }
         
         try {
-            List<CharacterHasItemSlot> slots = repo.getListAnItemWithDifferntContainers(charUuid, itemUuid);
+            List<CharacterHasItemSlot> slots = repo.getSameItemDifferentContainers(charUuid, itemUuid);
             if(slots.isEmpty()) {
                 return false;
             }

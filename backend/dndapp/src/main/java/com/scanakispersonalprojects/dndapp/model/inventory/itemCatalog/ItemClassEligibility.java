@@ -24,7 +24,7 @@ public class ItemClassEligibility {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_uuid",  insertable = false, updatable = false)
-    private DndClass ClassEntity;
+    private DndClass classEntity;
 
     public ItemClassEligibility() {}
     
@@ -40,12 +40,12 @@ public class ItemClassEligibility {
         this.id = id;
     }
 
-    public DndClass getClassEntity() {
-        return ClassEntity;
+    public DndClass getclassEntity() {
+        return classEntity;
     }
 
-    public void setClassEntity(DndClass classEntity) {
-        ClassEntity = classEntity;
+    public void setclassEntity(DndClass classEntity) {
+        this.classEntity = classEntity;
     }
     
     public UUID getItemUuid() { return id != null ? id.getItemUuid() : null; }

@@ -18,7 +18,7 @@ import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.Char
  * including retrieval, searching, and container-specific operations.
  */
 @Repository
-public interface InventoryJPARepo extends JpaRepository<CharacterHasItemSlot, CharacterHasItemSlotId>{
+public interface InventoryRepo extends JpaRepository<CharacterHasItemSlot, CharacterHasItemSlotId>{
 
 
        /**
@@ -86,7 +86,7 @@ public interface InventoryJPARepo extends JpaRepository<CharacterHasItemSlot, Ch
                             "WHERE chis.character_uuid = :charUuid AND " + 
                             "chis.item_uuid = :itemUuid"
                             , nativeQuery = true)
-       List<CharacterHasItemSlot> getListAnItemWithDifferntContainers(@Param("charUuid") UUID charUuid, @Param("itemUuid") UUID itemUuid); 
+       List<CharacterHasItemSlot> getSameItemDifferentContainers(@Param("charUuid") UUID charUuid, @Param("itemUuid") UUID itemUuid); 
        
 
        /**
@@ -114,6 +114,6 @@ public interface InventoryJPARepo extends JpaRepository<CharacterHasItemSlot, Ch
               "AND chis.container_uuid = :containerUuid;" 
               , nativeQuery=true)       
 
-       List<CharacterHasItemProjection> getItemsForAContainer(@Param ("characterUuid") UUID charUuid, @Param("containerUuid") UUID containUuid);
+       List<CharacterHasItemProjection> getItemsForAContainer(@Param ("characterUuid") UUID charUuid, @Param("containerUuid") UUID containerUuid);
 
 }

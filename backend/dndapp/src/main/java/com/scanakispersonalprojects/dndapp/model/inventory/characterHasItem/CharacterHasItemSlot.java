@@ -36,17 +36,17 @@ public class CharacterHasItemSlot {
     private int quantity = 1;
 
     @Column(name = "equipped")
-    private boolean equipped;
+    private Boolean equipped;
 
     @Column(name = "attuned")
-    private boolean attuned;
+    private Boolean attuned;
 
     @Column(name = "in_attack_tab")
     private Boolean inAttackTab;
 
     public CharacterHasItemSlot() {}
 
-    public CharacterHasItemSlot(UUID itemUuid, UUID charUuid, UUID containerUuid, int quantity, boolean equipped, boolean attuned,
+    public CharacterHasItemSlot(UUID itemUuid, UUID charUuid, UUID containerUuid, int quantity, Boolean equipped, Boolean attuned,
             Boolean inAttackTab) {
 
         this.id = new CharacterHasItemSlotId(itemUuid, charUuid, containerUuid);
@@ -72,19 +72,19 @@ public class CharacterHasItemSlot {
         this.quantity = quantity;
     }
 
-    public boolean isEquipped() {
+    public Boolean isEquipped() {
         return equipped;
     }
 
-    public void setEquipped(boolean equipped) {
+    public void setEquipped(Boolean equipped) {
         this.equipped = equipped;
     }
 
-    public boolean isAttuned() {
+    public Boolean isAttuned() {
         return attuned;
     }
 
-    public void setAttuned(boolean attuned) {
+    public void setAttuned(Boolean attuned) {
         this.attuned = attuned;
     }
 

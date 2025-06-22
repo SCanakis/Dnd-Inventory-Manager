@@ -20,7 +20,7 @@ import java.util.List;
  * 
  */
 @Repository
-public interface ItemCatalogJPARepo extends JpaRepository<ItemCatalog, UUID>{
+public interface ItemCatalogRepo extends JpaRepository<ItemCatalog, UUID>{
 
     /**
      * Finds an item catalog entry by its unique identifier.

@@ -17,7 +17,7 @@ import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemClass
  * that are eligible to use them, enforcing class restrictions on equipment.
  */
 @Repository
-public interface ItemClassEligibilityRepository extends JpaRepository<ItemClassEligibility, ItemClassEligibilityId>{
+public interface ItemClassEligibilityRepo extends JpaRepository<ItemClassEligibility, ItemClassEligibilityId>{
     
     /**
      * Retrieves all D&D classes that are eligible to use a specific item.

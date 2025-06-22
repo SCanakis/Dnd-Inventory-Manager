@@ -19,7 +19,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
-import com.scanakispersonalprojects.dndapp.model.basicCharInfo.RollType;
+import com.scanakispersonalprojects.dndapp.model.inventory.RollType;
 
 /**
  * Entity representing an item in the D&D catalog system.

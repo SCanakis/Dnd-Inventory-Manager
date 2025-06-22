@@ -33,7 +33,7 @@ import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserRepo;
 @Service
 public class CustomUserDetailsService implements UserDetailsService{
 
-    private UserRepo userDao;
+    private UserRepo userRepo;
 
     private CharacterInfoService characterService;
 
@@ -41,17 +41,17 @@ public class CustomUserDetailsService implements UserDetailsService{
      * Builds the {@link UserDetails} boject Srping Security needs.
      */
 
-    public CustomUserDetailsService(UserRepo userDaoPSQL, CharacterInfoService characterService) {
+    public CustomUserDetailsService(UserRepo userRepo, CharacterInfoService characterService) {
         this.characterService = characterService;
-        this.userDao = userDaoPSQL;
+        this.userRepo = userRepo;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.findByUsername(username)
+        User user = userRepo.findByUsername(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         
-        List<UUID> charUuids = userDao.findCharacterUuidByUserUuid(user.getUuid());
+        List<UUID> charUuids = userRepo.findCharacterUuidByUserUuid(user.getUuid());
         
         List<CharacterBasicInfoView> characters = new ArrayList<>();
         for(UUID uuid : charUuids) {
@@ -68,7 +68,7 @@ public class CustomUserDetailsService implements UserDetailsService{
      * @throws UsernameNotFoundException        If user is not found
      */
     public UUID getUsersUuid(Authentication authentication) throws UsernameNotFoundException {
-        User user = userDao.findByUsername(authentication.getName())
+        User user = userRepo.findByUsername(authentication.getName())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));;
         return user.getUuid();
     }
@@ -82,11 +82,11 @@ public class CustomUserDetailsService implements UserDetailsService{
      * @return a list of UUID of the characters that belong to that user. 
      */
     public List<UUID> getUsersCharacters(Authentication authentication) {
-        return userDao.findCharacterUuidByUserUuid(getUsersUuid(authentication));
+        return userRepo.findCharacterUuidByUserUuid(getUsersUuid(authentication));
     }
 
     public boolean isAdmin(Authentication authentication) {
-        UserRoleProjection projection = userDao.getAuthoritiesFromUsername(authentication.getName());
+        UserRoleProjection projection = userRepo.getAuthoritiesFromUsername(authentication.getName());
         return projection.getAuthority().equals("ROLE_ADMIN");
 
     }
