@@ -1,0 +1,53 @@
+<p>character-info works!</p>
+<!-- character-info.html -->
+<div *ngIf="loading" class="loading">
+  Loading character data...
+</div>
+
+<div *ngIf="error" class="error">
+  {{ error }}
+</div>
+
+<div *ngIf="data && !loading" class="character-info">
+  <h2>{{ data.name }}</h2>
+  
+  <div class="basic-info">
+    <p><strong>Race:</strong> {{ data.race }}</p>
+    <p><strong>Background:</strong> {{ data.background }}</p>
+    <p><strong>Level:</strong> {{ getTotalLevel() }}</p>
+    <p><strong>Inspiration:</strong> {{ data.inspiration ? 'Yes' : 'No' }}</p>
+  </div>
+
+  <div class="classes">
+    <h3>Classes</h3>
+    <ul>
+      <li *ngFor="let cls of data.classes">
+        {{ cls.className }} (Level {{ cls.level }}) - {{cls.hitDiceRemaining}}/{{cls.level}} - {{cls.hitDiceValue}} 
+      </li>
+    </ul>
+  </div>
+
+  <div class="ability-scores">
+    <h3>Ability Scores</h3>
+    <div class="ability-grid">
+      <div *ngFor="let ability of getAbilityScoreKeys()" class="ability-score">
+        <span class="ability-name">{{ ability }}: </span>
+        <span class="score">{{ getAbilityScore(ability) }} </span>
+        <span class="modifier">{{ getAbilityScorePositive(ability) }}{{ getAbilityModifier(ability) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hp-info">
+    <h3>Hit Points</h3>
+    <p>{{ data.hpHandler.currentHp }} / {{ data.hpHandler.maxHp }}</p>
+    <h5>Temporary Hit Points:</h5>
+    <p>{{data.hpHandler.temporaryHp}}</p>
+  </div>
+
+  <div class="death-saves">
+    <h3>Death Saving Throws</h3>
+    <p>Successes: {{ data.deathSavingThrowsHelper.successes }}</p>
+    <p>Failures: {{ data.deathSavingThrowsHelper.failures }}</p>
+  </div>
+</div>
