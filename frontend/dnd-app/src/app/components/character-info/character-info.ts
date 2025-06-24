@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
-import { AbilityScore, CharacterBasicInfoView } from './character.types';
+import { response } from 'express';
+import { AbilityScore, CharacterBasicInfoView } from '../../../interface/character-info';
+import { CharacterInfoService } from '../../../service/character-info';
 
 @Component({
   selector: 'app-character-info',
@@ -10,54 +12,60 @@ import { AbilityScore, CharacterBasicInfoView } from './character.types';
   templateUrl: './character-info.html',
   styleUrls: ['./character-info.scss']
 })
-export class CharacterInfo implements OnInit {
-	private http = inject(HttpClient)
-	data : CharacterBasicInfoView | null = null;
-	loading = false;
-	error: string | null = null;
+export class CharacterInfo implements OnInit{
+	public character : CharacterBasicInfoView | null = null;
+	
+	private charUuid : string = "6380e09d-f328-41e6-b822-548e008f6822";
+	constructor(private characterService: CharacterInfoService){}
 
-	ngOnInit() {
-		this.loadData();
+	ngOnInit(): void {
+		this.getCharacter();
 	}
 
-	loadData() {
-		this.http.get<CharacterBasicInfoView>("http://localhost:8080/character/6380e09d-f328-41e6-b822-548e008f6822")
-			.subscribe({
-				next: (response) => {
-					this.data = response;
-					console.log("Data loaded:" + response);
-				},
-				error : (error) => {
-					console.log("API Error:", error);
-				}
-			});
+	public getCharacter() : void {
+		this.characterService.getCharacter(this.charUuid).subscribe(
+			(response : CharacterBasicInfoView) => {
+				this.character = response;
+			}, 
+			(error :HttpErrorResponse) => {
+				console.log("Error loading character:", error.message)
+			}
+		);
 	}
 
-	getAbilityScore(ability: AbilityScore): number {
-    return this.data?.abilityScores[ability] || 0;
-  }
+	public getAbilityScoreKeys() : AbilityScore[] {
+		return Object.values(AbilityScore);
+	}
 
-  getAbilityModifier(ability: AbilityScore): number {
-    const score = this.getAbilityScore(ability);
-    return Math.floor((score - 10) / 2);
-  }
+	public getAbilityScore(ability: AbilityScore) : number {
+		return this.character?.abilityScores[ability] || 0;
+	}
 
-  getTotalLevel(): number {
-    return this.data?.classes.reduce((total, cls) => total + cls.level, 0) || 0;
-  }
+	public getAbilityModifier(ability: AbilityScore) : number {
+		let score = this.getAbilityScore(ability);	
+		return Math.floor((score-10/2));
+	}
 
-  getAbilityScoreKeys(): AbilityScore[] {
-  return Object.values(AbilityScore);
-  }
-  getAbilityScorePositive(ability: AbilityScore): string {
-		let value = this.getAbilityScore(ability);
-		if(value > 0) {
+	public getAbilityScorePositive(ability : AbilityScore) : string {
+		let score = this.getAbilityScore(ability);
+
+		if(!score || score == 10) {
+			return " ";
+		} else if(score > 10) {
 			return "+";
-		} 
-		if(value == 0) {
-			return "";
 		} else {
-			return "-"
+			return "-";
 		}
-  }
+	}
+
+	public getTotalLevel() : number {
+		if(!this.character?.classes) {
+			return 0;
+		}
+		return this.character.classes.reduce((total, cls) => total + (cls.level || 0), 0);
+	}
+	
+	
+
 }
+
