@@ -11,6 +11,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
+import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemProjection;
 import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemSlot;
 import com.scanakispersonalprojects.dndapp.model.webSocket.InventoryAddMessage;
 import com.scanakispersonalprojects.dndapp.model.webSocket.InventoryDeleteMessage;
@@ -110,7 +111,7 @@ public class InventoryWebSocketController {
     
     }   
 
-    @MessageMapping("inventory/add")
+    @MessageMapping("inventory/delete")
     public void deleteItemInventory(@Payload InventoryDeleteMessage message, Principal principal) {
         LOG.info("WebSocket add to inventory for character: " + message.getCharUuid());
     
@@ -156,7 +157,21 @@ public class InventoryWebSocketController {
     }
 
     private void broadcastInventoryUpdate(UUID charUuid, WebSocketResponse response) {
-        messagingTemplate.convertAndSend("/topic/character/" + charUuid + "/inventory", response);
+        try {
+            List<CharacterHasItemProjection> currentInventory = inventoryService.getInventoryWithUUID(charUuid);
+            WebSocketResponse broadcastResponse = new WebSocketResponse(
+                response.getType() + "BROADCAST",
+                true,
+                response.getMessage(),
+                currentInventory
+            );
+
+            messagingTemplate.convertAndSend("/topic/character/" + charUuid + "/inventory", broadcastResponse);
+        } catch (Exception e) {
+            LOG.warning("Failed to broadcast inventory update for character: " + charUuid);
+            messagingTemplate.convertAndSend("/topics/character/" + charUuid + "/inventory", response);
+        }
+        
     }
 
 
