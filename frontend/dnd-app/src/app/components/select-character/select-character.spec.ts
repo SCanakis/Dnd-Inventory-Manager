@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CharacterInfo } from './character-info';
+import { SelectCharacter } from './select-character';
 
-describe('CharacterInfo', () => {
-  let component: CharacterInfo;
-  let fixture: ComponentFixture<CharacterInfo>;
+describe('SelectCharacter', () => {
+  let component: SelectCharacter;
+  let fixture: ComponentFixture<SelectCharacter>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CharacterInfo]
+      imports: [SelectCharacter]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CharacterInfo);
+    fixture = TestBed.createComponent(SelectCharacter);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

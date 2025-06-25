@@ -1,0 +1,16 @@
+<div>
+    
+<h1>Characters:</h1>    
+
+    <div *ngIf="characters">
+        <div *ngFor="let character of characters" (click)="handleClick(character.charInfoUUID)">
+            <h3>{{character.name}} - Level {{getTotalLevel(character)}}</h3>
+            <span>
+                <p *ngFor="let cls of character.classes">{{cls.className}} - {{cls.level}}</p>
+            </span>
+            <p>{{character.race}}</p>
+            <p>{{character.background}}</p>
+        </div>
+    </div>
+
+</div>

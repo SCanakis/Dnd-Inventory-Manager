@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
-import { response } from 'express';
-import { AbilityScore, CharacterBasicInfoView } from '../../../interface/character-info';
-import { CharacterInfoService } from '../../../service/character-info';
+import { AbilityScore, CharacterBasicInfoView } from '../../../interface/character-info-interface';
+import { CharacterInfoService } from '../../../service/character-info-service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-character-info',
@@ -14,15 +14,23 @@ import { CharacterInfoService } from '../../../service/character-info';
 })
 export class CharacterInfo implements OnInit{
 	public character : CharacterBasicInfoView | null = null;
-	
-	private charUuid : string = "6380e09d-f328-41e6-b822-548e008f6822";
-	constructor(private characterService: CharacterInfoService){}
+	private charUuid : string | null;
+
+	constructor(private characterService: CharacterInfoService, private router : ActivatedRoute){
+
+		this.charUuid = this.router.snapshot.paramMap.get('charUuid');
+		console.log('Extracted charUuid:', this.charUuid);	}
 
 	ngOnInit(): void {
-		this.getCharacter();
+		this.loadCharacters();
 	}
 
-	public getCharacter() : void {
+	public loadCharacters() : void {
+		if(!this.charUuid) {
+			console.error("Character Uuid no found in route parameter");
+			return;
+		}
+
 		this.characterService.getCharacter(this.charUuid).subscribe(
 			(response : CharacterBasicInfoView) => {
 				this.character = response;
@@ -43,19 +51,16 @@ export class CharacterInfo implements OnInit{
 
 	public getAbilityModifier(ability: AbilityScore) : number {
 		let score = this.getAbilityScore(ability);	
-		return Math.floor((score-10/2));
+		return Math.floor((score-10)/2);
 	}
 
 	public getAbilityScorePositive(ability : AbilityScore) : string {
 		let score = this.getAbilityScore(ability);
 
-		if(!score || score == 10) {
-			return " ";
-		} else if(score > 10) {
+		if(score > 11) {
 			return "+";
-		} else {
-			return "-";
-		}
+		} 
+		return " ";
 	}
 
 	public getTotalLevel() : number {
