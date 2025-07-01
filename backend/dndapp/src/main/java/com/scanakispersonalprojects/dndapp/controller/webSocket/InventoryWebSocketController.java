@@ -38,10 +38,41 @@ public class InventoryWebSocketController {
         this.userService = userService;
     }
 
+    @MessageMapping("inventory/subscribe")
+    public void subscribeToInventory(@Payload String charUuid, Principal principal) {
+    LOG.info("WebSocket inventory subscribe for character: " + charUuid);
+    try {
+        Authentication authentication = (Authentication) principal;
+        List<UUID> characters = userService.getUsersCharacters(authentication);
+        UUID characterUuid = UUID.fromString(charUuid);
+        
+        if(!characters.contains(characterUuid)) {
+            sendErrorToUser(principal.getName(), "UNAUTHORIZED", "You don't own this character");
+            return;
+        }
+        
+        List<CharacterHasItemProjection> currentInventory = inventoryService.getInventoryWithUUID(characterUuid);
+
+        WebSocketResponse response = new WebSocketResponse(
+            "INVENTORY_INITIAL_LOAD",
+            true,
+            "Initial inventory loaded successfully",
+            currentInventory
+        );
+        
+        sendToUser(principal.getName(), response);
+
+        LOG.info("Sent initial inventory with " + currentInventory.size() + " items to user: " + principal.getName());
+
+    } catch (Exception e) {
+        LOG.warning("Failed to load initial inventory: " + e.getMessage());
+        sendErrorToUser(charUuid, "INTERNAL_ERROR", "Failed to load initial inventory");
+    }
+}
     @MessageMapping("inventory/update")
     public void updateInventoryItem(@Payload InventoryUpdateMessage message, Principal principal) {
         LOG.info("WebSocket inventory update for character: " + message.getCharUuid());
-    
+        
         try {
             Authentication authentication = (Authentication) principal;
             List<UUID> characters = userService.getUsersCharacters(authentication);
