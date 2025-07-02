@@ -2,6 +2,7 @@ import { CharacterHasItemProjection } from "./inventory.types";
 
 export interface ContainerView {
     container : Container;
+    name : string;
     items : CharacterHasItemProjection[];
 }
 

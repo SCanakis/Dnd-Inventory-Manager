@@ -28,7 +28,8 @@ public interface ContainerRepo extends JpaRepository<Container, ContainerId>{
      * @return list of containers owned by the character, empty list if none found
      */
     @Query(value = "SELECT * FROM container " + 
-                    "WHERE char_uuid = :charUuid ;"
+                    "WHERE char_uuid = :charUuid " +
+                    "ORDER BY container_uuid ASC ;"
                     , nativeQuery = true)
 
     List<Container> getCharactersContainers(@Param("charUuid") UUID charUuid);

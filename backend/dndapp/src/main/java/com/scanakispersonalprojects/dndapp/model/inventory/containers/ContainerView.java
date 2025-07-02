@@ -19,6 +19,8 @@ public class ContainerView {
 
     private Container container;
     
+    private String name = "Inventory";
+
     private List<CharacterHasItemProjection> items;
 
     public ContainerView() {
@@ -43,6 +45,14 @@ public class ContainerView {
 
     public void setItems(List<CharacterHasItemProjection> items) {
         this.items = items;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     

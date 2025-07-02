@@ -6,6 +6,7 @@
     <ul>
       <li *ngFor="let containerView of currentContainer">
         <span>containerId: {{containerView.container.id.containerUuid}}</span> -
+        <span>name: {{containerView.name}}</span> -
         <span>maxCapacity: {{containerView.container.maxCapacity}}</span> -
         <span>currentCapacity: {{containerView.container.currentCapacity}}</span>
       </li>

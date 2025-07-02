@@ -34,7 +34,6 @@ export class Inventory implements OnInit, OnDestroy {
     private webSocketService: WebSocketService,
     private containerService: ContainerService,
     private route: ActivatedRoute, 
-    private router: Router
   ) {
     this.charUuid = this.route.snapshot.paramMap.get('charUuid');
   

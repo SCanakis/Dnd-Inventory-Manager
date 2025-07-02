@@ -34,6 +34,7 @@ public class ContainerService {
     /** Repository for inventory item operations */
     private InventoryRepo inventoryRepo;
 
+    private ItemCatalogService itemCatalogService;
     /** 
      * Special UUID representing the default inventory container.
      * This container cannot be deleted or modified and serves as the
@@ -47,9 +48,10 @@ public class ContainerService {
      * @param containerRepo repository for container operations
      * @param inventoryRepo repository for inventory item operations
      */
-    public ContainerService(ContainerRepo containerRepo, InventoryRepo inventoryRepo) {
+    public ContainerService(ContainerRepo containerRepo, InventoryRepo inventoryRepo, ItemCatalogService itemCatalogService) {
         this.containerRepo = containerRepo;
         this.inventoryRepo = inventoryRepo;
+        this.itemCatalogService = itemCatalogService;
     }
 
     /**
@@ -73,6 +75,11 @@ public class ContainerService {
             for(Container container: list) {
                 ContainerView view = new ContainerView();
                 view.setContainer(container);
+
+                if(container.getItemUuid() != null && container.getItemUuid() != inventoryContainerUuid) {
+                    view.setName(itemCatalogService.getItemWithUUID(container.getItemUuid()).getItemName());
+                }
+
                 List<CharacterHasItemProjection> items = inventoryRepo.getItemsForAContainer(charUuid, container.getContainerUuid());
 
                 if(!items.isEmpty()) {
