@@ -1,1 +1,36 @@
-<p>inventory works!</p>
+<app-basic-character-info-component></app-basic-character-info-component>
+
+
+  <h2>Character Containers</h2>
+  <div *ngIf="currentContainer.length > 0">
+    <ul>
+      <li *ngFor="let containerView of currentContainer">
+        <span>containerId: {{containerView.container.id.containerUuid}}</span> -
+        <span>maxCapacity: {{containerView.container.maxCapacity}}</span> -
+        <span>currentCapacity: {{containerView.container.currentCapacity}}</span>
+      </li>
+
+    </ul>
+
+
+  </div>
+
+  <h2>Character Inventory</h2>
+
+  <div *ngIf="currentInventory.length > 0">
+    <p>Found {{ currentInventory.length }} item(s):</p>
+    <ul>
+      <li *ngFor="let item of currentInventory; let i = index" style="margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 3px;">
+        {{ i + 1 }}.
+        <span>Name: {{ item.itemName || 'Unknown' }}</span> - 
+        <span>Equipped: {{ item.equipped ? 'Yes' : 'No' }}</span> - 
+        <span>Attuned: {{ item.attuned ? 'Yes' : 'No' }}</span> - 
+        <span>Rarity: {{ item.itemRarity || 'Unknown' }}</span> - 
+        <span>Quantity: {{ item.quantity || 0 }}</span> - 
+        <span>Value: {{ item.itemValue || 0 }}</span> - 
+        <span>Weight: {{ item.itemWeight || 0 }}</span>
+      </li>
+    </ul>
+  </div>
+
+

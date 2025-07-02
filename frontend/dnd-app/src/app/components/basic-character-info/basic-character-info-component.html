@@ -1,0 +1,21 @@
+<div *ngIf="character" class="basic-character-info">
+<div>
+    <h3>Name: {{character.name}}</h3>
+
+    <h5>Race: {{character.race}}</h5>
+
+    <h5>Background: {{character.background}}</h5>
+</div>
+
+
+<div *ngIf="character.classes">
+    <h4>Class:</h4>
+    <ul>
+        <li *ngFor="let cls of character.classes">
+            {{cls.className}} - {{cls.level}} <span *ngIf="cls.subClassName">({{cls.subClassName}})</span>
+        </li>
+    </ul>
+</div>
+
+
+</div>

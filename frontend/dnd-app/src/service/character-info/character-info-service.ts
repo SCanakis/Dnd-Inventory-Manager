@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CharacterBasicInfoView } from '../interface/character-info-interface';
-import { environment } from '../environments/environment.development';
+import { environment } from '../../environments/environment.development';
+import { CharacterBasicInfoView } from '../../interface/character-info-interface';
+
 
 
 @Injectable({

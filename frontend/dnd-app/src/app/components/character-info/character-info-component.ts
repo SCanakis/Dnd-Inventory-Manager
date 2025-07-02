@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { AbilityScore, CharacterBasicInfoView } from '../../../interface/character-info-interface';
-import { CharacterInfoService } from '../../../service/character-info-service';
+import { CharacterInfoService } from '../../../service/character-info/character-info-service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -17,9 +17,8 @@ export class CharacterInfo implements OnInit{
 	private charUuid : string | null;
 
 	constructor(private characterService: CharacterInfoService, private router : ActivatedRoute){
-
 		this.charUuid = this.router.snapshot.paramMap.get('charUuid');
-		console.log('Extracted charUuid:', this.charUuid);	}
+	}
 
 	ngOnInit(): void {
 		this.loadCharacters();

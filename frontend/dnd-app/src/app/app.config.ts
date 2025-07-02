@@ -5,7 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS, provideHttpClient, withFetch } fro
 import { FormsModule } from '@angular/forms';
 
 import { routes } from './app.routes'; // or wherever your routes are defined
-import { AuthInterceptor } from '../service/auth-interceptor-service';
+import { AuthInterceptor } from '../service/auth/auth-interceptor-service';
 
 
 export const appConfig: ApplicationConfig = {

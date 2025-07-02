@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CharacterBasicInfoView } from '../../../interface/character-info-interface';
-import { AuthService } from '../../../service/auth-service';
+import { AuthService } from '../../../service/auth/auth-service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -57,13 +57,7 @@ export class SelectCharacter implements OnInit{
 		return character.classes.reduce((total, cls) => total + (cls.level || 0), 0);
 	}
   handleClick(charUuid : string) : void {
-    console.log('=== NAVIGATION DEBUG ===');
-    console.log('Received charUuid:', charUuid);
-    console.log('Type of charUuid:', typeof charUuid);
-    console.log('Is charUuid truthy?', !!charUuid);
-    console.log('Navigating to:', ['/character', charUuid]);
-    this.router.navigate(['/character', charUuid]);
-    this.router.navigate(['/character', charUuid]);
+    this.router.navigate(['/character', charUuid, 'inventory']);
   }
 	
 

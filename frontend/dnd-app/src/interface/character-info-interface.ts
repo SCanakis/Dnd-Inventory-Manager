@@ -34,6 +34,7 @@ export interface CharacterClassDetail {
     className: string;
     hitDiceValue: hitDiceValue, 
     subClassUuid: string,
+    subClassName: string,
     level: number;
     hitDiceRemaining: number
 }
