@@ -8,14 +8,13 @@ import { WebSocketService } from '../../../service/websocket/websocket-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContainerService } from '../../../service/container/container';
 import { ContainerView } from '../../../interface/container-interface';
-import { error } from 'console';
 import { HttpErrorResponse } from '@angular/common/http';
-// REMOVED: import { connected } from 'process'; - This was breaking things
+import { NavComponent } from '../nav/nav-component';
 
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [CommonModule, BasicCharacterInfoComponent],
+  imports: [CommonModule, BasicCharacterInfoComponent, NavComponent],
   templateUrl: './inventory.html',
   styleUrl: './inventory.scss'
 })

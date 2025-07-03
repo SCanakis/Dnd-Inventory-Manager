@@ -1,9 +1,10 @@
 <app-basic-character-info-component></app-basic-character-info-component>
-
+<app-nav-component></app-nav-component>
 
   <h2>Character Containers</h2>
   <div *ngIf="currentContainer.length > 0">
     <ul>
+      <li>All Items</li>
       <li *ngFor="let containerView of currentContainer">
         <span>containerId: {{containerView.container.id.containerUuid}}</span> -
         <span>name: {{containerView.name}}</span> -
