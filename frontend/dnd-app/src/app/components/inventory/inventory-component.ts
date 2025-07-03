@@ -10,11 +10,12 @@ import { ContainerService } from '../../../service/container/container';
 import { ContainerView } from '../../../interface/container-interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NavComponent } from '../nav/nav-component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [CommonModule, BasicCharacterInfoComponent, NavComponent],
+  imports: [CommonModule, FormsModule, BasicCharacterInfoComponent, NavComponent],
   templateUrl: './inventory.html',
   styleUrl: './inventory.scss'
 })
@@ -27,7 +28,9 @@ export class Inventory implements OnInit, OnDestroy {
   currentInventory: CharacterHasItemProjection[] = [];
   lastMessage: WebSocketResponse | null = null;
 
+  searchTerm : string = '';
   charUuid: string | null = '';
+  containerUuid: string | null = '';
   
   constructor(
     private webSocketService: WebSocketService,
@@ -90,5 +93,42 @@ export class Inventory implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
+
+  onSearchTerm() {
+    if(this.charUuid) {
+      if(this.containerUuid) {
+        this.webSocketService.requestInventory(this.charUuid, this.containerUuid, this.searchTerm);
+      }
+      this.webSocketService.requestInventory(this.charUuid, undefined, this.searchTerm);
+    }
+  }
+
+  getContainerItems(containerUuid: string) {
+    if(this.charUuid) {
+      this.containerUuid = containerUuid;
+      if(this.searchTerm) {
+        this.webSocketService.requestInventory(this.charUuid, this.containerUuid, this.searchTerm)
+      } else {
+        this.webSocketService.requestInventory(this.charUuid, this.containerUuid);
+      }
+    } else {
+      console.error('Cannot request container items - no character UUID available');
+    }
+  }
+
+  getAllItems() {
+    
+    if(this.charUuid) {
+      this.containerUuid = ''
+      if(this.searchTerm) {
+        this.webSocketService.requestInventory(this.charUuid, this.containerUuid, this.searchTerm);
+      } else {
+        this.webSocketService.requestInventory(this.charUuid);
+      }
+    } else {
+      console.error('Cannot request container items - no character UUID available');
+    }
+  }
+
 
 }

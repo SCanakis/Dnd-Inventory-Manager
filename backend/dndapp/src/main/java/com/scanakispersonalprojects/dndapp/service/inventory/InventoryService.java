@@ -90,6 +90,20 @@ public class InventoryService {
         return this.repo.getInventoyUsingFZF(charUuid, searchTerm);
     }
 
+    public List<CharacterHasItemProjection> getContainerItemsUsingFZF(UUID charUuid, UUID containerUuid, String searchTerm) {
+        if(charUuid == null || containerUuid == null || searchTerm == null) {
+            return null;
+        }
+        return this.repo.getItemsInContainerUsingFZF(charUuid, containerUuid, searchTerm);
+    }
+
+    public List<CharacterHasItemProjection> getItemsInContainer(UUID charUuid, UUID containerUuid) {
+        if(charUuid == null || containerUuid == null) {
+            return null;
+        }
+        return this.repo.getItemsForAContainer(charUuid, containerUuid);
+    }
+
 
     /**
      * Adds an item to a character's inventory.

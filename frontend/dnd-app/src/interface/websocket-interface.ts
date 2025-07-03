@@ -28,6 +28,11 @@ export interface InventoryDeleteMessage extends WebSocketMessage {
   containerUuid?: string;
 }
 
+export interface InventoryRequestMessage extends WebSocketMessage{
+  containerUuid?: string;
+  searchTerm?: string;
+}
+
 export interface CharacterHasItemProjection {
   itemUuid: string;
   charUuid: string;
@@ -42,3 +47,4 @@ export interface CharacterHasItemUpdate {
   inAttackTab: boolean;
   conatinerUuid: string;
 }
+

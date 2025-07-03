@@ -15,6 +15,7 @@ import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.Char
 import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemSlot;
 import com.scanakispersonalprojects.dndapp.model.webSocket.InventoryAddMessage;
 import com.scanakispersonalprojects.dndapp.model.webSocket.InventoryDeleteMessage;
+import com.scanakispersonalprojects.dndapp.model.webSocket.InventoryRequestMessage;
 import com.scanakispersonalprojects.dndapp.model.webSocket.InventoryUpdateMessage;
 import com.scanakispersonalprojects.dndapp.model.webSocket.WebSocketResponse;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
@@ -39,19 +40,31 @@ public class InventoryWebSocketController {
     }
 
     @MessageMapping("inventory/subscribe")
-    public void subscribeToInventory(@Payload String charUuid, Principal principal) {
-    LOG.info("WebSocket inventory subscribe for character: " + charUuid);
+    public void subscribeToInventory(@Payload InventoryRequestMessage message, Principal principal) {
+    LOG.info("WebSocket inventory subscribe for character: " + message.getCharUuid());
     try {
         Authentication authentication = (Authentication) principal;
         List<UUID> characters = userService.getUsersCharacters(authentication);
-        UUID characterUuid = UUID.fromString(charUuid);
+        UUID characterUuid = message.getCharUuid();
         
         if(!characters.contains(characterUuid)) {
             sendErrorToUser(principal.getName(), "UNAUTHORIZED", "You don't own this character");
             return;
         }
         
-        List<CharacterHasItemProjection> currentInventory = inventoryService.getInventoryWithUUID(characterUuid);
+        UUID containerUuid = message.getContainerUuid();
+        String searchTerm = message.getSearchTerm();
+
+        List<CharacterHasItemProjection> currentInventory = null;
+        if(containerUuid != null && searchTerm != null) {
+            currentInventory = inventoryService.getContainerItemsUsingFZF(characterUuid, containerUuid, searchTerm);
+        } else if(message.getContainerUuid() != null && message.getSearchTerm() == null) {
+            currentInventory = inventoryService.getItemsInContainer(characterUuid, containerUuid);
+        } else if(message.getContainerUuid() == null && message.getSearchTerm() != null) {
+            currentInventory = inventoryService.getInventoryUsingFZF(characterUuid, searchTerm);
+        } else {
+            currentInventory = inventoryService.getInventoryWithUUID(characterUuid);
+        }
 
         WebSocketResponse response = new WebSocketResponse(
             "INVENTORY_INITIAL_LOAD",
@@ -66,7 +79,7 @@ public class InventoryWebSocketController {
 
     } catch (Exception e) {
         LOG.warning("Failed to load initial inventory: " + e.getMessage());
-        sendErrorToUser(charUuid, "INTERNAL_ERROR", "Failed to load initial inventory");
+        sendErrorToUser(message.getCharUuid().toString(), "INTERNAL_ERROR", "Failed to load initial inventory");
     }
 }
     @MessageMapping("inventory/update")

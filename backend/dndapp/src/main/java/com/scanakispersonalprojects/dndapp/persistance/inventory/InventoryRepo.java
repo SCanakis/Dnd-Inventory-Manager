@@ -72,6 +72,34 @@ public interface InventoryRepo extends JpaRepository<CharacterHasItemSlot, Chara
               "ORDER BY SIMILARITY(ic.item_name, :searchTerm) DESC", nativeQuery = true)
        List<CharacterHasItemProjection> getInventoyUsingFZF(@Param("characterUuid") UUID charUuid, @Param("searchTerm") String searchTerm);
 
+       /**
+        * Searches a character's inventory using fuzzy string matching.
+        * Uses PostgreSQL's SIMILARITY function to find items with names similar
+        * to the search term, with a minimum similarity threshold of 0.06.
+        * Results are ordered by similarity score (most similar first).
+        *
+        * @param charUuid the unique identifier of the character
+        * @param containerUuid the unque identifier within a container
+        * @param searchTerm the text to search for in item names
+        * @return list of matching inventory items ordered by similarity, empty list if no matches
+        */
+       @Query(value =  "SELECT ic.item_uuid as itemUuid, " +
+              "ic.item_name as itemName, " +
+              "ic.item_weight as itemWeight, " +
+              "ic.item_value as itemValue, " +
+              "ic.item_rarity as itemRarity, " +
+              "chis.quantity as quantity, " +
+              "chis.equipped as equipped, " +
+              "chis.attuned as attuned, " +
+              "chis.in_attack_tab as inAttackTab, " +
+              "chis.container_uuid as containerUuid " +
+              "FROM character_has_item_slot chis " +
+              "JOIN item_catalog ic ON chis.item_uuid = ic.item_uuid " +
+              "WHERE chis.character_uuid = :characterUuid AND SIMILARITY(ic.item_name, :searchTerm) > 0.06 " + 
+              "AND chis.container_uuid = :containerUuid " + 
+              "ORDER BY SIMILARITY(ic.item_name, :searchTerm) DESC", nativeQuery = true)
+
+       List<CharacterHasItemProjection> getItemsInContainerUsingFZF(@Param("characterUuid") UUID charUuid, @Param ("containerUuid") UUID containeUuid, @Param("searchTerm") String searchTerm); 
 
        /**
         * Retrieves all instances of a specific item owned by a character.

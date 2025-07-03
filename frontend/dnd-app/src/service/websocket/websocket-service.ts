@@ -5,6 +5,7 @@ import { CharacterHasItemProjection } from '../../interface/inventory.types';
 import { CharacterHasItemUpdate, WebSocketResponse } from '../../interface/websocket-interface';
 import { environment } from '../../environments/environment.development';
 import { env } from 'process';
+import { serialize } from 'v8';
 
 
 @Injectable({
@@ -161,12 +162,38 @@ export class WebSocketService {
     }
   }
 
-  // Request initial inventory when subscribing
-  requestInitialInventory(charUuid: string): void {
+  requestInitialInventory(charUuid: string, containerUuid? : string, searchTerm? : string): void {
     if (this.client.connected) {
+
+      const message = {
+        type : 'INVENTORY_SEARCH_REQUEST',
+        charUuid,
+        containerUuid : containerUuid || null,
+        searchTerm: searchTerm || null
+      };
+
       this.client.publish({
         destination: '/app/inventory/subscribe',
-        body: charUuid
+        body: JSON.stringify(message)
+      });
+    } else {
+      console.error('Cannot request initial inventory - WebSocket not connected');
+    }
+  }
+
+  requestInventory(charUuid: string, containerUuid? : string, searchTerm? : string): void {
+    if (this.client.connected) {
+      const message = {
+        type : 'INVENTORY_SEARCH_REQUEST',
+        charUuid,
+        containerUuid : containerUuid || null,
+        searchTerm: searchTerm || null
+      };
+
+      console.log('Request inventory with filters:' , message);
+      this.client.publish({
+        destination: '/app/inventory/subscribe',
+        body: JSON.stringify(message)
       });
     } else {
       console.error('Cannot request initial inventory - WebSocket not connected');

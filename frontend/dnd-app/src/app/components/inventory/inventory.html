@@ -4,8 +4,8 @@
   <h2>Character Containers</h2>
   <div *ngIf="currentContainer.length > 0">
     <ul>
-      <li>All Items</li>
-      <li *ngFor="let containerView of currentContainer">
+      <li (click)="getAllItems()">All Items</li>
+      <li *ngFor="let containerView of currentContainer" (click)="getContainerItems(containerView.container.id.containerUuid)">
         <span>containerId: {{containerView.container.id.containerUuid}}</span> -
         <span>name: {{containerView.name}}</span> -
         <span>maxCapacity: {{containerView.container.maxCapacity}}</span> -
@@ -16,6 +16,16 @@
 
 
   </div>
+
+  <div style="margin-bottom: 20px;">
+  <input 
+    type="text" 
+    [(ngModel)]="searchTerm" 
+    (input)="onSearchTerm()"
+    placeholder="Search items by name"
+    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
+  >
+</div>
 
   <h2>Character Inventory</h2>
 
