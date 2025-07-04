@@ -24,4 +24,10 @@ export class NavComponent implements OnInit{
     }
   }
 
+  navigateToItemCatalog() {
+    if(this.charUuid) {
+      this.router.navigate(['/character', this.charUuid, 'itemCatalog']);
+    }
+  }
+
 }

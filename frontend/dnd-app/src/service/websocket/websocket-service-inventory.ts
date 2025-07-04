@@ -11,7 +11,7 @@ import { serialize } from 'v8';
 @Injectable({
   providedIn: 'root'
 })
-export class WebSocketService {
+export class WebSocketServiceInventory {
   private client!: Client; // Use definite assignment assertion
   private connected = new BehaviorSubject<boolean>(false);
   private inventoryUpdates = new BehaviorSubject<WebSocketResponse | null>(null);
@@ -123,7 +123,7 @@ export class WebSocketService {
         body: JSON.stringify(message)
       });
     } else {
-      console.error('❌ Cannot send message - WebSocket not connected');
+      console.error('Cannot send message - WebSocket not connected');
     }
   }
 

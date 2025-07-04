@@ -4,7 +4,7 @@ import { BasicCharacterInfoComponent } from '../basic-character-info/basic-chara
 import { Subscription } from 'rxjs';
 import { CharacterHasItemProjection } from '../../../interface/inventory.types';
 import { WebSocketResponse } from '../../../interface/websocket-interface';
-import { WebSocketService } from '../../../service/websocket/websocket-service';
+import { WebSocketServiceInventory } from '../../../service/websocket/websocket-service-inventory';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContainerService } from '../../../service/container/container';
 import { ContainerView } from '../../../interface/container-interface';
@@ -33,7 +33,7 @@ export class Inventory implements OnInit, OnDestroy {
   containerUuid: string | null = '';
   
   constructor(
-    private webSocketService: WebSocketService,
+    private webSocketService: WebSocketServiceInventory,
     private containerService: ContainerService,
     private route: ActivatedRoute, 
   ) {
