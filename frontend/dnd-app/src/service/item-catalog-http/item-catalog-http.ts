@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ItemCatalogInterface } from '../../interface/item-catalog-interface';
@@ -18,4 +18,17 @@ export class ItemCatalogHttp {
       withCredentials: true
     });
   }
+  addItem(itemUuid : string, charUuid : string, quantity : number) : Observable<Boolean> {
+    const params = new HttpParams().set('quantity', quantity);
+    
+    return this.http.post<Boolean>(
+        `${this.apiUrl}/itemCatalog/id=${itemUuid}/charId=${charUuid}`,
+        null, 
+        {
+            withCredentials: true,
+            params: params
+        }
+    );
+  } 
+
 }

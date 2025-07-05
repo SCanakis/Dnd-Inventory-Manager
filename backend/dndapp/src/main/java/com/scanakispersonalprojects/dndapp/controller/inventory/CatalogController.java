@@ -152,6 +152,12 @@ public class CatalogController {
         LOG.info(POST_PATH + "id=" + itemUuid + "/charId=" + charUuid);
         List<UUID> characters = userService.getUsersCharacters(authentication);
         
+        LOG.info("=== ADD ITEM REQUEST ===");
+        LOG.info("Item UUID: " + itemUuid.toString());
+        LOG.info("Character UUID: " + charUuid.toString());
+        LOG.info("Quantity received: " + quantity);
+        LOG.info("========================");
+
         if(!characters.contains(charUuid)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }

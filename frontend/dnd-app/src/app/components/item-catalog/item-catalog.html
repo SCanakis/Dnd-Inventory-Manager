@@ -99,14 +99,12 @@
                     </div>
                 </div>
 
-                <!-- Container Properties -->
                 <div class="info-section" *ngIf="selectedItem.isContainer">
                     <h4>Container Properties</h4>
                     <p><strong>Is Container:</strong> {{selectedItem.isContainer}}</p>
                     <p *ngIf="selectedItem.capacity"><strong>Capacity:</strong> {{selectedItem.capacity}}</p>
                 </div>
 
-                <!-- Class Requirements -->
                 <div class="info-section" *ngIf="selectedItem.classNameIdPair && selectedItem.classNameIdPair.length > 0">
                     <h4>Class Requirements</h4>
                     <ul>
@@ -118,8 +116,23 @@
             </div>
         </div>
         <div class="modal-footer">
+
+            <div class="add-item-section">
+                <label for="quantity">Quantity</label>
+                <input 
+                    type="number"
+                    id="quantity"
+                    [(ngModel)]="quantity"
+                    min="1"
+                    value="1"
+                    class="quantity-input">
+                <button (click)="addItem()"
+                [disabled]="!quantity || quantity < 1">
+                Add Item</button>
+            </div>
+                
+
             <button class="btn btn-secondary" (click)="closeItemModal()">Close</button>
-            <!-- Add action buttons here if needed -->
         </div>
     </div>
 </div>

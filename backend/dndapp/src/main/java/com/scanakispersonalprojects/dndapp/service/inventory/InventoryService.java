@@ -139,6 +139,18 @@ public class InventoryService {
                     updateQuantity(charUuid, itemUuid, quantity);
                 }
 
+                Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(emptyContainerUuid, charUuid));
+                
+                if(optionalContainer.isPresent() && item != null) {
+                    Container container = optionalContainer.get();
+                    int sum = quantity * item.getItemWeight() + container.getCurrentCapacity();
+                    if(sum <= container.getMaxCapacity()) {
+                        containerRepo.updateCurrentCapacity(charUuid, emptyContainerUuid, sum);
+                    }
+                } else {
+                    return false;
+                }
+
                 CharacterHasItemSlotId id = new CharacterHasItemSlotId(itemUuid, charUuid, emptyContainerUuid);        
                 CharacterHasItemSlot slot = new CharacterHasItemSlot();
                 slot.setId(id);
@@ -152,6 +164,8 @@ public class InventoryService {
                 if(item.isAttackable()) {
                     slot.setInAttackTab(false);
                 }
+
+                slot.setQuantity(quantity);
 
 
                 repo.save(slot);

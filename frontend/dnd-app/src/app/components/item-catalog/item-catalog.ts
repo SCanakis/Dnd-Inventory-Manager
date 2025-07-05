@@ -32,6 +32,7 @@ export class ItemCatalog implements OnInit, OnDestroy{
 
     searchTerm : string = '';
     charUuid : string | null = null;
+    quantity : number = 1;
     
     constructor(
         private route: ActivatedRoute,
@@ -89,6 +90,7 @@ export class ItemCatalog implements OnInit, OnDestroy{
         this.itemCatalogService.getItem(item.itemUuid).subscribe(
             (response : ItemCatalogInterface) => {
                 this.selectedItem = response;
+                this.quantity = 1;
             },
             (error : HttpErrorResponse) => {
                 console.log("Error loading item:", error.message)
@@ -99,6 +101,7 @@ export class ItemCatalog implements OnInit, OnDestroy{
 
     closeItemModal() : void {
         this.selectedItem = null;
+        this.quantity = 1;
         document.body.style.overflow = 'auto';
     }
 
@@ -106,6 +109,29 @@ export class ItemCatalog implements OnInit, OnDestroy{
         if (!map) return [];
         return Array.from(map.entries()).map(([key, value]) => ({ key, value }));
     }
+
+    addItem() {
+    if(this.selectedItem && this.quantity > 0 && this.charUuid) {
+        // Add this debug logging
+        console.log('Adding item with quantity:', this.quantity);
+        console.log('Type of quantity:', typeof this.quantity);
+        
+        this.itemCatalogService.addItem(this.selectedItem.itemUuid, this.charUuid, this.quantity).subscribe(
+            (response) => {
+                console.log("Item added successfully: ", response);
+                this.closeItemModal();
+            },
+            (error : HttpErrorResponse) => {
+                console.log("Error adding item: ", error);
+            }
+        );
+    } else {
+        console.log("Missing requirement to add item");
+        console.log('selectedItem:', this.selectedItem);
+        console.log('quantity:', this.quantity);
+        console.log('charUuid:', this.charUuid);
+    }
+}
 
 
 
