@@ -164,6 +164,13 @@ li {
     }
 }
 
+
+.delete-item-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 // Responsive design
 @media (max-width: 768px) {
     .modal-content {
@@ -177,3 +184,4 @@ li {
         padding: 16px;
     }
 }
+

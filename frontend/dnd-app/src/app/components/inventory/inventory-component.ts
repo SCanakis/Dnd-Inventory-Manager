@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BasicCharacterInfoComponent } from '../basic-character-info/basic-character-info-component';
-import { Subscription } from 'rxjs';
+import { retry, Subscription } from 'rxjs';
 import { CharacterHasItemProjection } from '../../../interface/inventory.types';
 import { WebSocketResponse } from '../../../interface/websocket-interface';
 import { WebSocketServiceInventory } from '../../../service/websocket/websocket-service-inventory';
@@ -11,6 +11,9 @@ import { ContainerView } from '../../../interface/container-interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NavComponent } from '../nav/nav-component';
 import { FormsModule } from '@angular/forms';
+import { ItemCatalogInterface } from '../../../interface/item-catalog-interface';
+import { ItemCatalogHttp } from '../../../service/item-catalog-http/item-catalog-http';
+
 
 @Component({
   selector: 'app-inventory',
@@ -28,13 +31,18 @@ export class Inventory implements OnInit, OnDestroy {
   currentInventory: CharacterHasItemProjection[] = [];
   lastMessage: WebSocketResponse | null = null;
 
+  selectedItem: ItemCatalogInterface | null = null;
+  selectedProject : CharacterHasItemProjection | null = null;
   searchTerm : string = '';
   charUuid: string | null = '';
   containerUuid: string | null = '';
-  
+  quantity : number = 1;
+
+
   constructor(
     private webSocketService: WebSocketServiceInventory,
     private containerService: ContainerService,
+    private itemCatalogService : ItemCatalogHttp,
     private route: ActivatedRoute, 
   ) {
     this.charUuid = this.route.snapshot.paramMap.get('charUuid');
@@ -129,6 +137,42 @@ export class Inventory implements OnInit, OnDestroy {
       console.error('Cannot request container items - no character UUID available');
     }
   }
+
+  openItemModal(item : CharacterHasItemProjection) : void {
+    this.itemCatalogService.getItem(item.itemUuid).subscribe(
+      (response : ItemCatalogInterface) => {
+        this.selectedItem = response;
+        this.selectedProject = item;
+        this.quantity = 1;
+      },
+      (error : HttpErrorResponse) => {
+        console.log("Error loading item: ", error.message);
+      }
+    );
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeItemModal(): void {
+    this.selectedItem = null;
+    this.selectedProject = null;
+    this.quantity = 1;
+    document.body.style.overflow = 'auto'
+  }
+
+  getMapEntries(map: Map<any, any> ) : Array<{key : any, value : any}> {
+    if(!map) return [];
+    return Array.from(map.entries()).map(([key, value]) => ({key,value}));
+  }
+
+  deleteItem() {
+    if(this.charUuid && this.selectedItem) {
+      this.webSocketService.deleteInventoryItem(this.charUuid, this.selectedItem?.itemUuid, this.selectedProject?.containerUuid);
+      this.closeItemModal();
+    } else {
+      console.log("Missing requirments to delete item");
+    }
+  }
+
 
 
 }

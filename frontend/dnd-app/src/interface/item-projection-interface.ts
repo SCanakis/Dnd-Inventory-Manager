@@ -6,4 +6,5 @@ export interface ItemProjection {
     itemWeight : number;
     itemValue : number;
     itemRarity : Rarity;
+    containerUuid : string;
 }

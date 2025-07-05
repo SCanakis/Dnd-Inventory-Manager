@@ -112,7 +112,6 @@ export class ItemCatalog implements OnInit, OnDestroy{
 
     addItem() {
     if(this.selectedItem && this.quantity > 0 && this.charUuid) {
-        // Add this debug logging
         console.log('Adding item with quantity:', this.quantity);
         console.log('Type of quantity:', typeof this.quantity);
         
@@ -127,9 +126,6 @@ export class ItemCatalog implements OnInit, OnDestroy{
         );
     } else {
         console.log("Missing requirement to add item");
-        console.log('selectedItem:', this.selectedItem);
-        console.log('quantity:', this.quantity);
-        console.log('charUuid:', this.charUuid);
     }
 }
 

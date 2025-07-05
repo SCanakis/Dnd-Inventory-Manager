@@ -32,7 +32,7 @@
   <div *ngIf="currentInventory.length > 0">
     <p>Found {{ currentInventory.length }} item(s):</p>
     <ul>
-      <li *ngFor="let item of currentInventory; let i = index" style="margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 3px;">
+      <li *ngFor="let item of currentInventory; let i = index" style="margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 3px;" (click)="openItemModal(item)">
         {{ i + 1 }}.
         <span>Name: {{ item.itemName || 'Unknown' }}</span> - 
         <span>Equipped: {{ item.equipped ? 'Yes' : 'No' }}</span> - 
@@ -46,3 +46,106 @@
   </div>
 
 
+<div *ngIf="selectedItem" class="modal-overlay" (click)="closeItemModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>{{selectedItem.itemName}}</h3>
+            <button class="close-button" (click)="closeItemModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="item-detail">
+                <!-- Basic Info -->
+                <div class="info-section">
+                    <h4>Basic Information</h4>
+                    <p><strong>Name:</strong> {{selectedItem.itemName}}</p>
+                    <p *ngIf="selectedItem.itemDescription"><strong>Description:</strong> {{selectedItem.itemDescription}}</p>
+                    <p *ngIf="selectedItem.itemWeight"><strong>Weight:</strong> {{selectedItem.itemWeight}}</p>
+                    <p *ngIf="selectedItem.itemValue"><strong>Value:</strong> {{selectedItem.itemValue}}</p>
+                    <p *ngIf="selectedItem.itemRarity"><strong>Rarity:</strong> {{selectedItem.itemRarity}}</p>
+                </div>
+
+                <!-- Combat Properties -->
+                <div class="info-section" *ngIf="selectedItem.attackable || selectedItem.acBonus">
+                    <h4>Combat Properties</h4>
+                    <p *ngIf="selectedItem.attackable"><strong>Attackable:</strong> {{selectedItem.attackable}}</p>
+                    <p *ngIf="selectedItem.acBonus"><strong>AC Bonus:</strong> {{selectedItem.acBonus}}</p>
+                    <div *ngIf="selectedItem.addToAc && selectedItem.addToAc.size > 0">
+                        <p><strong>Add to AC:</strong></p>
+                        <ul>
+                            <li *ngFor="let entry of getMapEntries(selectedItem.addToAc)">
+                                {{entry.key}}: {{entry.value}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Equipment Properties -->
+                <div class="info-section" *ngIf="selectedItem.equippable || selectedItem.attunable || selectedItem.itemEquippableTypes">
+                    <h4>Equipment Properties</h4>
+                    <p *ngIf="selectedItem.equippable"><strong>Equippable:</strong> {{selectedItem.equippable}}</p>
+                    <p *ngIf="selectedItem.attunable"><strong>Requires Attunement:</strong> {{selectedItem.attunable}}</p>
+                    <div *ngIf="selectedItem.itemEquippableTypes && selectedItem.itemEquippableTypes.length > 0">
+                        <p><strong>Equipment Types:</strong></p>
+                        <ul>
+                            <li *ngFor="let type of selectedItem.itemEquippableTypes">{{type}}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Ability Requirements -->
+                <div class="info-section" *ngIf="selectedItem.abilityRequirement && selectedItem.abilityRequirement.size > 0">
+                    <h4>Ability Requirements</h4>
+                    <ul>
+                        <li *ngFor="let entry of getMapEntries(selectedItem.abilityRequirement)">
+                            {{entry.key}}: {{entry.value}}
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Skill Modifiers -->
+                <div class="info-section" *ngIf="(selectedItem.skillAlteredRollType && selectedItem.skillAlteredRollType.size > 0) || (selectedItem.skillAlteredBonus && selectedItem.skillAlteredBonus.size > 0)">
+                    <h4>Skill Modifiers</h4>
+                    <div *ngIf="selectedItem.skillAlteredRollType && selectedItem.skillAlteredRollType.size > 0">
+                        <p><strong>Roll Type Alterations:</strong></p>
+                        <ul>
+                            <li *ngFor="let entry of getMapEntries(selectedItem.skillAlteredRollType)">
+                                {{entry.key}}: {{entry.value}}
+                            </li>
+                        </ul>
+                    </div>
+                    <div *ngIf="selectedItem.skillAlteredBonus && selectedItem.skillAlteredBonus.size > 0">
+                        <p><strong>Skill Bonuses:</strong></p>
+                        <ul>
+                            <li *ngFor="let entry of getMapEntries(selectedItem.skillAlteredBonus)">
+                                {{entry.key}}: +{{entry.value}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-section" *ngIf="selectedItem.isContainer">
+                    <h4>Container Properties</h4>
+                    <p><strong>Is Container:</strong> {{selectedItem.isContainer}}</p>
+                    <p *ngIf="selectedItem.capacity"><strong>Capacity:</strong> {{selectedItem.capacity}}</p>
+                </div>
+
+                <div class="info-section" *ngIf="selectedItem.classNameIdPair && selectedItem.classNameIdPair.length > 0">
+                    <h4>Class Requirements</h4>
+                    <ul>
+                        <li *ngFor="let classPair of selectedItem.classNameIdPair">
+                            {{classPair.className}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+              
+            <div class="delete-item-section">
+              <button (click)="deleteItem()">Delete</button>
+            </div>
+
+            <button class="btn btn-secondary" (click)="closeItemModal()">Close</button>
+        </div>
+    </div>
+</div>

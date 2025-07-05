@@ -202,7 +202,24 @@ public class InventoryService {
             CharacterHasItemSlotId slotId = new CharacterHasItemSlotId(itemUuid, charUuid, containerUuid);
 
             if(repo.existsById(slotId)) {
+                CharacterHasItemSlot slot = repo.getReferenceById(slotId);
                 repo.deleteById(new CharacterHasItemSlotId(itemUuid, charUuid, containerUuid));
+
+                Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(containerUuid, charUuid));
+                
+                ItemCatalog item = itemCatalogService.getItemWithUUID(itemUuid);
+
+                if(optionalContainer.isPresent() && item != null) {
+                    Container container = optionalContainer.get();
+                    int sum = container.getCurrentCapacity() - slot.getQuantity() * item.getItemWeight();
+                    if(sum >= 0) {
+                        containerRepo.updateCurrentCapacity(charUuid, containerUuid, sum);
+                    }
+                } else {
+                    return false;
+                }
+
+
                 return true;
             }
             return null;
