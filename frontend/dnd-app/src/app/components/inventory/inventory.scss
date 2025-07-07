@@ -15,69 +15,14 @@ $text-muted: hsl(0, 0%, 55%);
 
 $accent-primary: hsl(0, 0%, 35%);
 $accent-danger: hsl(0, 65%, 55%);
-$accent-success: hsl(140, 65%, 45%);
-$accent-warning: hsl(45, 100%, 60%);
-$accent-info: hsl(0, 0%, 40%);
 
 $border-color: hsl(0, 0%, 20%);
 $border-light: hsl(0, 0%, 25%);
-$border-lighter: hsl(0, 0%, 30%);
 $border-hover: hsl(0, 0%, 35%);
 $border-selected: hsl(0, 0%, 40%);
 
 $shadow-color: rgba(0, 0, 0, 0.5);
 $shadow-light: rgba(0, 0, 0, 0.3);
-
-
-html, body {
-  height: 100%;          /* let the page be 100 % tall */
-  overflow: hidden;      /* optional: prevent full-page scroll */
-  margin: 0;
-}
-
-app-root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;      /* fill the viewport */
-  overflow: hidden;      /* keep everything inside */
-  padding: 20px;         /* same gap you had before */
-}
-
-// ========================================
-// ONLY THESE CLASSES GET SCROLLBARS
-// ========================================
-.inventory-scroll,
-.container-list-scroll {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  
-  &::-webkit-scrollbar {
-    width: 6px !important;
-    display: block !important;
-    background: transparent !important;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: transparent !important;
-    display: block !important;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: $border-color !important;
-    border-radius: 3px !important;
-    display: block !important;
-    
-    &:hover {
-      background: $border-light !important;
-    }
-  }
-  
-  scrollbar-width: thin !important;
-  -ms-overflow-style: auto !important;
-}
 
 // ========================================
 // Mixins
@@ -119,119 +64,134 @@ app-root {
   }
 }
 
+@mixin scrollbar-style {
+  scrollbar-width: thin !important;
+  scrollbar-color: $border-light $bg-light !important;
+  -ms-overflow-style: auto !important;
+  
+  &::-webkit-scrollbar {
+    width: 12px !important;
+    height: 12px !important;
+    display: block !important;
+    background: $bg-light !important;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: $bg-light !important;
+    border-radius: 6px !important;
+    display: block !important;
+    margin: 2px !important;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: $border-light !important;
+    border-radius: 6px !important;
+    display: block !important;
+    border: 2px solid $bg-light !important;
+    
+    &:hover {
+      background: $border-hover !important;
+    }
+    
+    &:active {
+      background: $border-selected !important;
+    }
+  }
+  
+  &::-webkit-scrollbar-corner {
+    background: $bg-light !important;
+  }
+}
+
 // ========================================
-// Global Styles
+// Global Layout - DESKTOP (NO PAGE SCROLL)
 // ========================================
+html, body {
+  height: 100vh !important;
+  overflow: hidden !important; // No page scroll on desktop
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  background-color: $bg-dark !important;
-  color: $text-primary !important;
+  background-color: $bg-dark;
+  color: $text-primary;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
-// app-root {
-//   background-color: $bg-dark !important;
-//   display: block;
-//   height: 100vh;
-//   padding: 20px;
-//   box-sizing: border-box;
-// }
-
-// ========================================
-// SCROLLBAR CONTROL - HIDE ALL BY DEFAULT
-// ========================================
-// Hide scrollbars on ALL elements by default
-* {
-  &::-webkit-scrollbar {
-    width: 0 !important;
-    height: 0 !important;
-    display: none !important;
-    background: transparent !important;
-  }
-  &::-webkit-scrollbar-track {
-    display: none !important;
-  }
-  &::-webkit-scrollbar-thumb {
-    display: none !important;
-  }
-  &::-webkit-scrollbar-corner {
-    display: none !important;
-  }
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
-}
-
-// Force no overflow on common containers
-// div, section, main, article, aside, nav, header, footer, ul, li {
-//   overflow: hidden !important;
-// }
-
-// ========================================
-// Layout Structure - FIXED POSITIONING WITH PROPER SPACING
-// ========================================
-.inventory-container {
-  flex: 1 1 auto;        /* fill what’s left under the nav      */
+app-root {
   display: flex;
   flex-direction: column;
-  padding: 0 20px 20px;  /* breathing room at the bottom        */
-  overflow: hidden;      /* keeps children tidy                 */
+  height: 100vh !important; // Fixed height on desktop
+  overflow: hidden !important; // No page scroll on desktop
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+// ========================================
+// Hide scrollbars globally except where specified
+// ========================================
+*:not(.inventory-scroll):not(.container-list-scroll):not(.modal-body) {
+  &::-webkit-scrollbar {
+    width: 0;
+    display: none;
+  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+// ========================================
+// Layout Structure
+// ========================================
+.inventory-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 220px);
+  min-height: 400px;
+  max-height: calc(100vh - 220px);
+  overflow: hidden;
+  padding: 0 20px 24px;
 }
 
 app-basic-character-info-component,
 app-nav-component {
   flex-shrink: 0;
   margin-bottom: 1rem;
-  position: relative;
-  z-index: 1;
-}
-
-.search-section {
-  flex-shrink: 0;
-  width: 100%;
-  margin-bottom: 2rem;
-  background-color: transparent !important;
-  position: relative;
-  z-index: 1;
 }
 
 .content-layout {
   flex: 1 1 auto;
-  height: 100%;
-  min-height: 0;         /* absolutely essential for flex+grid */
+  min-height: 0;
+  max-height: 100%;
   display: grid;
   grid-template-columns: 350px 1fr;
   gap: 2rem;
+  overflow: hidden;
 }
 
 .containers-sidebar {
-  background-color: transparent !important;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 20px); // Account for bottom margin
-  max-height: calc(100% - 20px);
+  height: 100%;
   min-height: 0;
-  position: relative;
-  align-self: start;
-  
+  max-height: 100%;
+  overflow: hidden;
+  margin-right: 10px;
 }
 
 .inventory-main {
-  background: transparent;
   display: flex;
   flex-direction: column;
-
-  /* let flexbox decide the height ------------------- */
-  height: auto;          /* or omit entirely                        */
-  max-height: 70%;
+  height: 100%;
   min-height: 0;
-
-  position: relative;
-  align-self: start;
-
-  @media (max-width: 1024px) { order: 2; }
+  max-height: 100%;
+  overflow: hidden;
+  margin-left: 10px;
 }
+
 // ========================================
 // Headers
 // ========================================
@@ -239,10 +199,11 @@ h2 {
   color: $text-primary;
   font-size: 1.8rem;
   font-weight: 700;
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 1rem 0;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid $border-color;
   letter-spacing: -0.02em;
+  flex-shrink: 0;
   
   .containers-sidebar & {
     font-size: 1.4rem;
@@ -253,40 +214,45 @@ h2 {
 // ========================================
 // Search Input
 // ========================================
-.search-container {
-  width: 100%;
+.search-section {
+  flex-shrink: 0;
+  margin-bottom: 1rem;
   
-  input[type="text"] {
+  .search-container {
     width: 100%;
-    padding: 12px 16px;
-    border: 1px solid $border-color;
-    border-radius: 8px;
-    font-size: 14px;
-    background: $bg-light;
-    color: $text-primary;
-    transition: all 0.2s ease;
-    box-sizing: border-box;
     
-    &::placeholder {
-      color: $text-muted;
-    }
-    
-    &:focus {
-      outline: none;
-      border-color: $border-hover;
-      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
-      background: $bg-hover;
-    }
-    
-    &:hover {
-      border-color: $border-light;
-      background: $bg-hover;
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      font-size: 14px;
+      background: $bg-light;
+      color: $text-primary;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+      
+      &::placeholder {
+        color: $text-muted;
+      }
+      
+      &:focus {
+        outline: none;
+        border-color: $border-hover;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+        background: $bg-hover;
+      }
+      
+      &:hover {
+        border-color: $border-light;
+        background: $bg-hover;
+      }
     }
   }
 }
 
 // ========================================
-// Container Section (Sidebar) - WITH PROPER SPACING
+// Container Section
 // ========================================
 .container-section {
   @include card-base;
@@ -295,24 +261,24 @@ h2 {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
   min-height: 0;
-  margin-right: 10px; // Add right margin for breathing room
+  max-height: 450px;
+  overflow: hidden;
   
   h2 {
     flex-shrink: 0;
-  }
-  
-  > div {
-    flex: 1;
-    min-height: 0;
+    margin-bottom: 1rem;
   }
 }
 
 .container-list-scroll {
-  height: 100%;
-  padding-right: 8px; // Space for scrollbar
-  margin-right: -8px; // Hide scrollbar from layout
+  @include scrollbar-style; // Always has scrollbar
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 350px;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 4px;
   
   ul {
     list-style: none;
@@ -321,54 +287,35 @@ h2 {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding-bottom: 20px; // Bottom padding so last item isn't cut off
+    padding-bottom: 20px;
   }
 }
 
 // ========================================
-// Inventory Section - WITH PROPER SPACING
+// Inventory Section (ALWAYS HAS SCROLLBAR)
 // ========================================
 .inventory-section {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   height: 100%;
   min-height: 0;
-  margin-left: 10px; // Add left margin for breathing room
+  max-height: 100%;
+  overflow: hidden;
   
   h2 {
     flex-shrink: 0;
-  }
-  
-  .item-count {
-    flex-shrink: 0;
-    color: $text-secondary;
-    font-size: 0.95rem;
     margin-bottom: 1rem;
-    font-weight: 500;
-    padding: 12px 16px;
-    background: $bg-light;
-    border-radius: 8px;
-    border: 1px solid $border-color;
-    
-    strong {
-      color: $accent-primary;
-    }
-  }
-  
-  > div {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
   }
 }
 
 .inventory-scroll {
-  flex: 1;
+  @include scrollbar-style; // Always has scrollbar
+  flex: 1 1 auto;
   min-height: 0;
-  padding-right: 8px; // Space for scrollbar
-  margin-right: -8px; // Hide scrollbar from layout
+  max-height: 450px;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 4px;
   
   ul {
     list-style: none;
@@ -377,7 +324,7 @@ h2 {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding-bottom: 20px; // Bottom padding so last item isn't cut off
+    padding-bottom: 20px;
   }
 }
 
@@ -391,7 +338,6 @@ h2 {
   padding: 16px 20px;
   cursor: pointer;
   color: $text-primary;
-  position: relative;
   flex-shrink: 0;
   
   &:hover {
@@ -450,14 +396,6 @@ h2 {
         margin-bottom: 4px;
       }
     }
-    
-    span:first-of-type {
-      display: none;
-      
-      @media (max-width: 1024px) {
-        display: block;
-      }
-    }
   }
 }
 
@@ -487,7 +425,6 @@ h2 {
   width: 90%;
   max-width: 600px;
   max-height: 90vh;
-  position: relative;
   animation: slideIn 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -538,28 +475,11 @@ h2 {
 }
 
 .modal-body {
+  @include scrollbar-style;
   padding: 28px;
   flex: 1;
   min-height: 0;
   overflow-y: auto !important;
-  
-  &::-webkit-scrollbar {
-    width: 8px !important;
-    display: block !important;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: $bg !important;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: $border-color !important;
-    border-radius: 4px !important;
-    
-    &:hover {
-      background: $border-light !important;
-    }
-  }
 }
 
 .modal-footer {
@@ -705,15 +625,100 @@ h2 {
 }
 
 // ========================================
+// MOBILE: ENABLE PAGE SCROLLING FOR STACKED LAYOUT
+// ========================================
+@media (max-width: 768px) {
+  // Enable page scrolling on mobile
+  html, body {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important; // Allow page scroll on mobile
+  }
+  
+  body {
+    // Show main page scrollbar on mobile
+    &::-webkit-scrollbar {
+      width: 8px !important;
+      display: block !important;
+      background: $bg-dark !important;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $bg-dark !important;
+      border-radius: 4px !important;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $border-color !important;
+      border-radius: 4px !important;
+      
+      &:hover {
+        background: $border-light !important;
+      }
+    }
+  }
+  
+  app-root {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: visible !important; // Allow content to flow on mobile
+    padding: 16px;
+  }
+  
+  .inventory-container {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  
+  .content-layout {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    gap: 1rem;
+    grid-template-columns: 1fr; // Single column = stacked
+  }
+  
+  .containers-sidebar,
+  .inventory-main {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin: 0;
+  }
+  
+  // Container section on mobile
+  .container-section {
+    height: auto !important;
+    max-height: 400px; // Still limit internal height
+    margin-bottom: 2rem; // Space between sections when stacked
+  }
+  
+  .container-list-scroll {
+    max-height: 300px; // Keep internal scrolling
+  }
+  
+  // Inventory section on mobile
+  .inventory-section {
+    height: auto !important;
+    max-height: none !important;
+  }
+  
+  .inventory-scroll {
+    max-height: 400px; // Keep internal scrolling
+  }
+}
+
+// ========================================
 // Responsive Design
 // ========================================
 @media (max-width: 1024px) {
   .content-layout {
     gap: 1.5rem;
-  }
-  
-  .container-section {
-    margin-bottom: 0;
   }
   
   .container-item {
@@ -730,14 +735,6 @@ h2 {
 }
 
 @media (max-width: 768px) {
-  app-root {
-    padding: 16px;
-  }
-  
-  .content-layout {
-    gap: 1rem;
-  }
-  
   h2 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
@@ -792,12 +789,8 @@ h2 {
 // Animations
 // ========================================
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideIn {
@@ -809,55 +802,4 @@ h2 {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
-}
-
-/* --- 1  let flexbox calculate the height --- */
-.content-layout,
-.containers-sidebar,
-.container-list-scroll,
-.inventory-scroll {            /* let flex do the math     */
-  flex: 1 1 auto !important;
-  min-height: 0 !important;
-  height: auto !important;     /* cancels earlier 100 %    */
-}
-
-/* NEW – the last stubborn box ----------------------------------- */
-.inventory-section {           /* wraps the search bar + list  */
-  flex: 1 1 auto !important;   /* may grow *or* shrink          */
-  min-height: 0 !important;    /* allows children to shrink     */
-  height: auto !important;     /* overrides the old 100 % rule  */
-}
-
-/* ── FINAL OVERRIDES – place after everything else ─────────────── */
-
-/* 1 ▸ the two column wrappers must be allowed to shrink */
-.containers-sidebar {
-  flex: 1 1 auto !important;   /* take all free space, but no more   */
-  min-height: 0 !important;    /* <— critical so they CAN shrink     */
-  height: auto !important;     /* wipes out the calc(100% - 20px)    */
-}
-
-/* 2 ▸ same for the cards inside them */
-.container-section,
-.inventory-section {
-  flex: 1 1 auto !important;
-  min-height: 0 !important;
-  height: auto !important;
-}
-
-/* 3 ▸ and for the scrolling lists themselves */
-.container-list-scroll,
-.inventory-scroll {
-  flex: 1 1 auto !important;
-  min-height: 0 !important;
-  overflow-y: auto !important;     /* internal scroll                 */
-}
-
-/* 4 ▸ add the breathing room just once, here                         */
-.inventory-container {               /* outer flex column             */
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding: 0 20px 24px;  /* ← bottom gap here, nothing else needs it */
 }

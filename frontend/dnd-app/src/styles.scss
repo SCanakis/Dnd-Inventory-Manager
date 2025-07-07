@@ -59,8 +59,8 @@
 }
 
 html, body {
-  overflow: hidden !important;
-//   height: 100% !important;
+    //   height: 100% !important;
+  overflow-x: hidden !important;
   width: 100vw !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -463,25 +463,25 @@ input, textarea, select {
 // ========================================
 // Scrollbar Styling
 // ========================================
-* {
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
+// * {
+//   &::-webkit-scrollbar {
+//     width: 8px;
+//     height: 8px;
+//   }
   
-  &::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
-  }
+//   &::-webkit-scrollbar-track {
+//     background: var(--bg-secondary);
+//   }
   
-  &::-webkit-scrollbar-thumb {
-    background: var(--border-secondary);
-    border-radius: 4px;
+//   &::-webkit-scrollbar-thumb {
+//     background: var(--border-secondary);
+//     border-radius: 4px;
     
-    &:hover {
-      background: var(--border-tertiary);
-    }
-  }
-}
+//     &:hover {
+//       background: var(--border-tertiary);
+//     }
+//   }
+// }
 
 // ========================================
 // Animation System

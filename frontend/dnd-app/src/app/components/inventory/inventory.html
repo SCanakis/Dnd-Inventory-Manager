@@ -2,8 +2,6 @@
 <app-nav-component></app-nav-component>
 
 <div class="inventory-container">
-  
-
   <div class="content-layout">
     
     <div class="containers-sidebar">
@@ -16,9 +14,7 @@
               <li *ngFor="let containerView of currentContainer" 
                   (click)="getContainerItems(containerView.container.id.containerUuid)" 
                   class="container-item">
-                <span>containerId: {{containerView.container.id.containerUuid}}</span>
                 <span><strong>{{containerView.name}}</strong> - {{containerView.container.currentCapacity}}/{{containerView.container.maxCapacity}}</span> 
-        
               </li>
             </ul>
           </div>
@@ -29,17 +25,21 @@
     <div class="inventory-main">
       <div class="inventory-section">
         <h2>Character Inventory</h2>
-        <div *ngIf="currentInventory.length > 0">
+        
+        <!-- Move search section inside inventory-section -->
         <div class="search-section">
-            <div class="search-container">
+          <div class="search-container">
             <input 
-                type="text" 
-                [(ngModel)]="searchTerm" 
-                (input)="onSearchTerm()" 
-                placeholder="Search items by name"
+              type="text" 
+              [(ngModel)]="searchTerm" 
+              (input)="onSearchTerm()" 
+              placeholder="Search items by name"
             >
-            </div>
-        </div>          <!-- KEEP THIS WRAPPER BUT MAKE SURE IT HAS THE RIGHT CLASS -->
+          </div>
+        </div>
+        
+        <div *ngIf="currentInventory.length > 0">
+          <!-- Remove the wrapper div that was causing issues -->
           <div class="inventory-scroll">
             <ul>
               <li *ngFor="let item of currentInventory; let i = index" 
@@ -55,7 +55,6 @@
               </li>
             </ul>
           </div>
-          <!-- END WRAPPER -->
         </div>
       </div>
     </div>
