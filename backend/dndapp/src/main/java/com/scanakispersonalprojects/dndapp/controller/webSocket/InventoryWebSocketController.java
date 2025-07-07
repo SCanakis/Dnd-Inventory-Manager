@@ -24,7 +24,6 @@ import com.scanakispersonalprojects.dndapp.service.inventory.InventoryService;
 @Controller
 public class InventoryWebSocketController {
 
-    private final ContainerController containerController_1;
     
     private final static Logger LOG = Logger.getLogger(InventoryWebSocketController.class.getName());
 
@@ -42,7 +41,6 @@ public class InventoryWebSocketController {
         this.inventoryService = inventoryService;
         this.userService = userService;
         this.containerController = containerController;
-        this.containerController_1 = containerController_1;
     }
 
     @MessageMapping("inventory/subscribe")
@@ -91,7 +89,6 @@ public class InventoryWebSocketController {
     @MessageMapping("inventory/update")
     public void updateInventoryItem(@Payload InventoryUpdateMessage message, Principal principal) {
         LOG.info("WebSocket inventory update for character: " + message.getCharUuid());
-        
         try {
             Authentication authentication = (Authentication) principal;
             List<UUID> characters = userService.getUsersCharacters(authentication);
@@ -116,7 +113,7 @@ public class InventoryWebSocketController {
                 sendToUser(principal.getName(), response);
 
                 broadcastInventoryUpdate(message.getCharUuid(), response);
-                this.containerController.broadcastContainers(null, response);
+                this.containerController.broadcastContainers(message.getCharUuid(), response);
             } else {
                 sendErrorToUser(principal.getName(), "NOT_FOUND", "Item or container not found");
             }

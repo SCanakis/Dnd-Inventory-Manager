@@ -13,16 +13,22 @@ $text-primary: hsl(0, 0%, 95%);
 $text-secondary: hsl(0, 0%, 75%);
 $text-muted: hsl(0, 0%, 55%);
 
-$accent-primary: hsl(0, 0%, 35%);
 $accent-danger: hsl(0, 65%, 55%);
-
+$accent-success: hsl(120, 50%, 50%);
+$accent-warning: hsl(45, 85%, 55%);
 $border-color: hsl(0, 0%, 20%);
 $border-light: hsl(0, 0%, 25%);
 $border-hover: hsl(0, 0%, 35%);
 $border-selected: hsl(0, 0%, 40%);
 
-$shadow-color: rgba(0, 0, 0, 0.5);
 $shadow-light: rgba(0, 0, 0, 0.3);
+
+// Drag and drop colors - enhanced visibility
+$drag-over-bg: hsla(120, 50%, 50%, 0.15);
+$drag-over-border: hsl(120, 50%, 60%);
+$cannot-drop-bg: hsla(0, 65%, 55%, 0.15);
+$cannot-drop-border: hsl(0, 65%, 65%);
+$dragging-opacity: 0.6;
 
 // ========================================
 // Mixins
@@ -50,70 +56,39 @@ $shadow-light: rgba(0, 0, 0, 0.3);
   }
 }
 
-@mixin card-base {
-  background: $bg-light;
-  border: 1px solid $border-color;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-}
-
-@mixin hover-lift {
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px $shadow-light;
-  }
-}
-
 @mixin scrollbar-style {
-  scrollbar-width: thin !important;
-  scrollbar-color: $border-light $bg-light !important;
-  -ms-overflow-style: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: $border-light $bg-light;
   
   &::-webkit-scrollbar {
-    width: 12px !important;
-    height: 12px !important;
-    display: block !important;
-    background: $bg-light !important;
+    width: 12px;
+    background: $bg-light;
   }
   
   &::-webkit-scrollbar-track {
-    background: $bg-light !important;
-    border-radius: 6px !important;
-    display: block !important;
-    margin: 2px !important;
+    background: $bg-light;
+    border-radius: 6px;
+    margin: 2px;
   }
   
   &::-webkit-scrollbar-thumb {
-    background: $border-light !important;
-    border-radius: 6px !important;
-    display: block !important;
-    border: 2px solid $bg-light !important;
+    background: $border-light;
+    border-radius: 6px;
+    border: 2px solid $bg-light;
     
-    &:hover {
-      background: $border-hover !important;
-    }
-    
-    &:active {
-      background: $border-selected !important;
-    }
-  }
-  
-  &::-webkit-scrollbar-corner {
-    background: $bg-light !important;
+    &:hover { background: $border-hover; }
+    &:active { background: $border-selected; }
   }
 }
 
 // ========================================
-// Global Layout - DESKTOP (NO PAGE SCROLL)
+// Base Layout
 // ========================================
 html, body {
-  height: 100vh !important;
-  overflow: hidden !important; // No page scroll on desktop
+  height: 100vh;
+  overflow: hidden;
   margin: 0;
   padding: 0;
-}
-
-body {
   background-color: $bg-dark;
   color: $text-primary;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -124,34 +99,31 @@ body {
 app-root {
   display: flex;
   flex-direction: column;
-  height: 100vh !important; // Fixed height on desktop
-  overflow: hidden !important; // No page scroll on desktop
+  height: 100vh;
+  overflow: hidden;
   padding: 20px;
   box-sizing: border-box;
 }
 
-// ========================================
-// Hide scrollbars globally except where specified
-// ========================================
-*:not(.inventory-scroll):not(.container-list-scroll):not(.modal-body) {
-  &::-webkit-scrollbar {
-    width: 0;
-    display: none;
-  }
+// Hide scrollbars globally except where needed
+* {
+  &::-webkit-scrollbar { display: none; }
   scrollbar-width: none;
-  -ms-overflow-style: none;
+}
+
+// Enable scrollbars only for specific elements
+.inventory-scroll, .container-list-scroll, .modal-body {
+  @include scrollbar-style;
 }
 
 // ========================================
 // Layout Structure
 // ========================================
 .inventory-container {
-  flex: 1 1 auto;
+  flex: 1;
   display: flex;
   flex-direction: column;
   height: calc(100vh - 220px);
-  min-height: 400px;
-  max-height: calc(100vh - 220px);
   overflow: hidden;
   padding: 0 20px 24px;
 }
@@ -163,34 +135,23 @@ app-nav-component {
 }
 
 .content-layout {
-  flex: 1 1 auto;
-  min-height: 0;
-  max-height: 100%;
+  flex: 1;
   display: grid;
   grid-template-columns: 350px 1fr;
   gap: 2rem;
   overflow: hidden;
 }
 
-.containers-sidebar {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  max-height: 100%;
-  overflow: hidden;
-  margin-right: 10px;
-}
-
+.containers-sidebar,
 .inventory-main {
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 0;
-  max-height: 100%;
   overflow: hidden;
-  margin-left: 10px;
 }
+
+.containers-sidebar { margin-right: 10px; }
+.inventory-main { margin-left: 10px; }
 
 // ========================================
 // Headers
@@ -202,12 +163,10 @@ h2 {
   margin: 0 0 1rem 0;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid $border-color;
-  letter-spacing: -0.02em;
   flex-shrink: 0;
   
   .containers-sidebar & {
     font-size: 1.4rem;
-    margin-bottom: 1rem;
   }
 }
 
@@ -218,132 +177,191 @@ h2 {
   flex-shrink: 0;
   margin-bottom: 1rem;
   
-  .search-container {
+  input[type="text"] {
     width: 100%;
+    padding: 12px 16px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    font-size: 14px;
+    background: $bg-light;
+    color: $text-primary;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
     
-    input[type="text"] {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid $border-color;
-      border-radius: 8px;
-      font-size: 14px;
-      background: $bg-light;
-      color: $text-primary;
-      transition: all 0.2s ease;
-      box-sizing: border-box;
-      
-      &::placeholder {
-        color: $text-muted;
-      }
-      
-      &:focus {
-        outline: none;
-        border-color: $border-hover;
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
-        background: $bg-hover;
-      }
-      
-      &:hover {
-        border-color: $border-light;
-        background: $bg-hover;
-      }
+    &::placeholder { color: $text-muted; }
+    
+    &:focus {
+      outline: none;
+      border-color: $border-hover;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+      background: $bg-hover;
+    }
+    
+    &:hover {
+      border-color: $border-light;
+      background: $bg-hover;
     }
   }
 }
 
 // ========================================
-// Container Section
+// Container & Inventory Sections
 // ========================================
 .container-section {
-  @include card-base;
-  padding: 20px;
+  background: $bg-light;
+  border: 1px solid $border-color;
   border-radius: 12px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 0;
   max-height: 450px;
   overflow: hidden;
   
-  h2 {
-    flex-shrink: 0;
-    margin-bottom: 1rem;
-  }
+  h2 { margin-bottom: 1rem; }
 }
 
 .container-list-scroll {
-  @include scrollbar-style; // Always has scrollbar
-  flex: 1 1 auto;
-  min-height: 0;
+  flex: 1;
   max-height: 350px;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 4px;
-  
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding-bottom: 20px;
-  }
 }
 
-// ========================================
-// Inventory Section (ALWAYS HAS SCROLLBAR)
-// ========================================
 .inventory-section {
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 0;
-  max-height: 100%;
   overflow: hidden;
   
-  h2 {
-    flex-shrink: 0;
-    margin-bottom: 1rem;
-  }
+  h2 { margin-bottom: 1rem; }
 }
 
 .inventory-scroll {
-  @include scrollbar-style; // Always has scrollbar
-  flex: 1 1 auto;
-  min-height: 0;
+  flex: 1;
   max-height: 450px;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 4px;
-  
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding-bottom: 20px;
-  }
+}
+
+// Shared list styling
+.container-list-scroll ul,
+.inventory-scroll ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 20px;
 }
 
 // ========================================
-// Items
+// Drag and Drop Styles - Enhanced
 // ========================================
-.inventory-item,
-.container-item {
-  @include card-base;
-  @include hover-lift;
+.inventory-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: $bg-light;
+  border: 1px solid $border-color;
+  border-radius: 8px;
   padding: 16px 20px;
-  cursor: pointer;
+  cursor: grab;
   color: $text-primary;
-  flex-shrink: 0;
+  transition: all 0.2s ease;
   
   &:hover {
     background: $bg-hover;
     border-color: $border-hover;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px $shadow-light;
+  }
+  
+  &:active {
+    cursor: grabbing;
+  }
+  
+  &.dragging {
+    opacity: $dragging-opacity;
+    transform: rotate(2deg) scale(0.98);
+    cursor: grabbing;
+    z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    border-color: $accent-warning;
+  }
+  
+  .drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 100%;
+    color: $text-muted;
+    cursor: grab;
+    user-select: none;
+    
+    .drag-icon {
+      font-size: 16px;
+      line-height: 1;
+      transform: rotate(90deg);
+    }
+    
+    &:hover {
+      color: $text-primary;
+    }
+  }
+  
+  .item-content {
+    flex: 1;
+    
+    span {
+      display: inline-block;
+      margin-right: 16px;
+      font-size: 0.9rem;
+      
+      &:last-child { margin-right: 0; }
+    }
+  }
+}
+
+// Enhanced container drop zones - much more forgiving
+.container-item {
+  background: $bg-light;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  padding: 20px 24px; // Increased padding for larger drop zone
+  cursor: pointer;
+  color: $text-primary;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 80px; // Increased minimum height
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  // Add invisible expanded drop zone
+  &::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    pointer-events: none;
+    border-radius: 12px;
+    z-index: -1;
+  }
+  
+  &:hover {
+    background: $bg-hover;
+    border-color: $border-hover;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px $shadow-light;
   }
   
   &:active {
@@ -352,37 +370,110 @@ h2 {
     border-color: $border-selected;
   }
   
-  span {
-    display: inline-block;
-    margin-right: 16px;
-    font-size: 0.9rem;
+  // Enhanced drag over states with better visibility
+  &.drag-over {
+    transform: translateY(-1px) scale(1.02);
     
-    &:last-child {
-      margin-right: 0;
+    &.can-drop {
+      background: $drag-over-bg;
+      border-color: $drag-over-border;
+      border-width: 3px; // Thicker border for better visibility
+      box-shadow: 0 0 25px rgba(120, 255, 120, 0.3), 
+                  0 4px 15px rgba(0, 0, 0, 0.2);
+      animation: pulse-green 1.2s infinite;
+      
+      &::before {
+        background: rgba(120, 255, 120, 0.1);
+        border: 2px solid $drag-over-border;
+        pointer-events: auto;
+      }
+    }
+    
+    &.cannot-drop {
+      background: $cannot-drop-bg;
+      border-color: $cannot-drop-border;
+      border-width: 3px;
+      box-shadow: 0 0 25px rgba(255, 120, 120, 0.3),
+                  0 4px 15px rgba(0, 0, 0, 0.2);
+      animation: pulse-red 1.2s infinite;
+      
+      &::before {
+        background: rgba(255, 120, 120, 0.1);
+        border: 2px solid $cannot-drop-border;
+        pointer-events: auto;
+      }
     }
   }
-}
-
-.container-item {
-  &:first-child {
+  
+  // All items container special styling - enhanced
+  &.all-items-container {
     background: $bg-selected;
-    color: $text-primary;
     font-weight: 600;
     border-color: $border-selected;
+    min-height: 90px; // Larger drop zone for main inventory
+    padding: 24px;
+    border-width: 2px;
     
     &:hover {
       background: $bg-lightest;
       border-color: $border-hover;
+      transform: translateY(-3px);
+    }
+    
+    &.drag-over {
+      background: $drag-over-bg;
+      border-color: $drag-over-border;
+      border-width: 4px; // Extra thick for main inventory
+      animation: pulse-green 1s infinite;
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 0 30px rgba(120, 255, 120, 0.4);
+      
+      &::before {
+        background: rgba(120, 255, 120, 0.15);
+        border: 3px solid $drag-over-border;
+        pointer-events: auto;
+      }
     }
   }
   
-  .container-section & {
-    padding: 12px 16px;
+  span {
+    display: inline-block;
+    margin-right: 16px;
     font-size: 0.9rem;
+    z-index: 1;
+    position: relative;
+    
+    &:last-child { margin-right: 0; }
+    
+    &.drop-hint {
+      color: $accent-success;
+      font-weight: 700;
+      font-size: 0.9rem;
+      animation: fade-in 0.3s ease;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    &.drop-hint-no {
+      color: $accent-danger;
+      font-weight: 700;
+      font-size: 0.9rem;
+      animation: fade-in 0.3s ease;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+// Container items in sidebar get special treatment
+.container-item {
+  .container-section & {
+    padding: 16px 20px;
+    font-size: 0.9rem;
+    min-height: 70px;
     
     &:first-child {
       font-size: 1rem;
       margin-bottom: 8px;
+      min-height: 80px;
     }
     
     span {
@@ -395,12 +486,40 @@ h2 {
         color: $text-primary;
         margin-bottom: 4px;
       }
+      
+      &.drop-hint,
+      &.drop-hint-no {
+        display: block;
+        margin: 0;
+        text-align: center;
+        font-size: 0.85rem;
+      }
     }
   }
 }
 
 // ========================================
-// Modal Styles
+// Drag Instructions
+// ========================================
+.drag-instructions {
+  margin-top: 1rem;
+  padding: 12px 16px;
+  background: $bg-lighter;
+  border: 1px solid $border-light;
+  border-radius: 8px;
+  border-left: 4px solid $accent-warning;
+  animation: slide-down 0.3s ease;
+  
+  p {
+    margin: 0;
+    color: $text-secondary;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+}
+
+// ========================================
+// Modal (unchanged from original)
 // ========================================
 .modal-overlay {
   position: fixed;
@@ -418,21 +537,16 @@ h2 {
 }
 
 .modal-content {
-  @include card-base;
   background: $bg;
+  border: 1px solid $border-color;
   border-radius: 12px;
-  box-shadow: 0 20px 40px $shadow-color;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
   width: 90%;
   max-width: 600px;
   max-height: 90vh;
   animation: slideIn 0.3s ease;
   display: flex;
   flex-direction: column;
-  
-  @media (max-width: 768px) {
-    width: 95%;
-    max-height: 95vh;
-  }
 }
 
 .modal-header {
@@ -442,14 +556,12 @@ h2 {
   padding: 24px 28px 20px;
   border-bottom: 1px solid $border-color;
   background: $bg-light;
-  flex-shrink: 0;
   
   h3 {
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
     color: $text-primary;
-    letter-spacing: -0.02em;
   }
 }
 
@@ -468,18 +580,12 @@ h2 {
     color: $text-primary;
     transform: scale(1.1);
   }
-  
-  &:active {
-    transform: scale(0.95);
-  }
 }
 
 .modal-body {
-  @include scrollbar-style;
   padding: 28px;
   flex: 1;
-  min-height: 0;
-  overflow-y: auto !important;
+  overflow-y: auto;
 }
 
 .modal-footer {
@@ -490,28 +596,21 @@ h2 {
   padding: 16px 28px;
   border-top: 1px solid $border-color;
   background: $bg-light;
-  flex-shrink: 0;
 }
 
 // ========================================
 // Modal Content
 // ========================================
-.item-detail {
-  color: $text-primary;
+.item-detail p {
+  margin: 0 0 16px 0;
+  line-height: 1.5;
   
-  p {
-    margin: 0 0 16px 0;
-    line-height: 1.5;
-    
-    strong {
-      color: $text-primary;
-      font-weight: 600;
-    }
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
+  strong {
+    color: $text-primary;
+    font-weight: 600;
   }
+  
+  &:last-child { margin-bottom: 0; }
 }
 
 .item-has {
@@ -533,9 +632,7 @@ h2 {
 .info-section {
   margin-bottom: 32px;
   
-  &:last-child {
-    margin-bottom: 0;
-  }
+  &:last-child { margin-bottom: 0; }
   
   h4 {
     margin: 0 0 16px 0;
@@ -544,7 +641,6 @@ h2 {
     font-weight: 600;
     border-bottom: 2px solid $border-color;
     padding-bottom: 8px;
-    letter-spacing: -0.01em;
   }
   
   ul {
@@ -556,9 +652,7 @@ h2 {
       color: $text-secondary;
       line-height: 1.4;
       
-      &:hover {
-        color: $text-primary;
-      }
+      &:hover { color: $text-primary; }
     }
   }
 }
@@ -580,7 +674,6 @@ h2 {
     
     &:hover {
       background-color: $bg-hover;
-      color: $text-primary;
       border-color: $border-hover;
       transform: translateY(-1px);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -593,200 +686,32 @@ h2 {
   }
 }
 
-.delete-item-section {
-  display: flex;
-  align-items: center;
+.delete-item-section button {
+  @include button-base;
+  background-color: $accent-danger;
+  color: white;
+  font-weight: 600;
+  min-width: 60px;
+  padding: 6px 12px;
+  font-size: 13px;
+  border: 1px solid darken($accent-danger, 10%);
   
-  button {
-    @include button-base;
-    background-color: $accent-danger;
-    color: white;
-    font-weight: 600;
-    min-width: 60px;
-    padding: 6px 12px;
-    font-size: 13px;
-    border: 1px solid darken($accent-danger, 10%);
-    
-    &:hover {
-      background-color: darken($accent-danger, 8%);
-      border-color: darken($accent-danger, 15%);
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
-    }
-    
-    &:active {
-      transform: translateY(0);
-    }
-    
-    &:focus {
-      box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.4);
-    }
+  &:hover {
+    background-color: darken($accent-danger, 8%);
+    border-color: darken($accent-danger, 15%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+  }
+  
+  &:active { transform: translateY(0); }
+  
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.4);
   }
 }
 
 // ========================================
-// MOBILE: ENABLE PAGE SCROLLING FOR STACKED LAYOUT
-// ========================================
-@media (max-width: 768px) {
-  // Enable page scrolling on mobile
-  html, body {
-    height: auto !important;
-    min-height: 100vh !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important; // Allow page scroll on mobile
-  }
-  
-  body {
-    // Show main page scrollbar on mobile
-    &::-webkit-scrollbar {
-      width: 8px !important;
-      display: block !important;
-      background: $bg-dark !important;
-    }
-    
-    &::-webkit-scrollbar-track {
-      background: $bg-dark !important;
-      border-radius: 4px !important;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      background: $border-color !important;
-      border-radius: 4px !important;
-      
-      &:hover {
-        background: $border-light !important;
-      }
-    }
-  }
-  
-  app-root {
-    height: auto !important;
-    min-height: 100vh !important;
-    overflow: visible !important; // Allow content to flow on mobile
-    padding: 16px;
-  }
-  
-  .inventory-container {
-    height: auto !important;
-    min-height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-  
-  .content-layout {
-    height: auto !important;
-    min-height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
-    gap: 1rem;
-    grid-template-columns: 1fr; // Single column = stacked
-  }
-  
-  .containers-sidebar,
-  .inventory-main {
-    height: auto !important;
-    min-height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
-    margin: 0;
-  }
-  
-  // Container section on mobile
-  .container-section {
-    height: auto !important;
-    max-height: 400px; // Still limit internal height
-    margin-bottom: 2rem; // Space between sections when stacked
-  }
-  
-  .container-list-scroll {
-    max-height: 300px; // Keep internal scrolling
-  }
-  
-  // Inventory section on mobile
-  .inventory-section {
-    height: auto !important;
-    max-height: none !important;
-  }
-  
-  .inventory-scroll {
-    max-height: 400px; // Keep internal scrolling
-  }
-}
-
-// ========================================
-// Responsive Design
-// ========================================
-@media (max-width: 1024px) {
-  .content-layout {
-    gap: 1.5rem;
-  }
-  
-  .container-item {
-    span {
-      display: inline-block;
-      margin-right: 16px;
-      font-size: 0.9rem;
-      
-      &:last-child {
-        margin-right: 0;
-      }
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    
-    .containers-sidebar & {
-      font-size: 1.3rem;
-    }
-  }
-  
-  .container-section {
-    padding: 16px;
-  }
-  
-  .inventory-item,
-  .container-item {
-    padding: 12px 16px;
-    
-    span {
-      display: block;
-      margin: 4px 0;
-      font-size: 0.85rem;
-    }
-  }
-  
-  .modal-header {
-    padding: 20px 24px 16px;
-    
-    h3 {
-      font-size: 1.3rem;
-    }
-  }
-  
-  .modal-body {
-    padding: 20px;
-  }
-  
-  .modal-footer {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 16px 24px;
-    justify-content: center;
-    
-    @media (max-width: 480px) {
-      flex-direction: column;
-      gap: 12px;
-    }
-  }
-}
-
-// ========================================
-// Animations
+// Animations - Enhanced
 // ========================================
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -801,5 +726,179 @@ h2 {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-green {
+  0%, 100% { 
+    box-shadow: 0 0 25px rgba(120, 255, 120, 0.2);
+  }
+  50% { 
+    box-shadow: 0 0 35px rgba(120, 255, 120, 0.5);
+  }
+}
+
+@keyframes pulse-red {
+  0%, 100% { 
+    box-shadow: 0 0 25px rgba(255, 120, 120, 0.2);
+  }
+  50% { 
+    box-shadow: 0 0 35px rgba(255, 120, 120, 0.5);
+  }
+}
+
+// ========================================
+// Mobile Responsive
+// ========================================
+@media (max-width: 768px) {
+  // Enable page scrolling on mobile
+  html, body {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar {
+      width: 8px;
+      background: $bg-dark;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $bg-dark;
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $border-color;
+      border-radius: 4px;
+      
+      &:hover { background: $border-light; }
+    }
+  }
+  
+  app-root {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    padding: 16px;
+  }
+  
+  .inventory-container {
+    height: auto;
+    overflow: visible;
+  }
+  
+  .content-layout {
+    height: auto;
+    overflow: visible;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+  
+  .containers-sidebar,
+  .inventory-main {
+    height: auto;
+    overflow: visible;
+    margin: 0;
+  }
+  
+  .container-section {
+    height: auto;
+    max-height: 400px;
+    margin-bottom: 2rem;
+    padding: 16px;
+  }
+  
+  .container-list-scroll {
+    max-height: 300px;
+  }
+  
+  .inventory-section {
+    height: auto;
+  }
+  
+  .inventory-scroll {
+    max-height: 400px;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    
+    .containers-sidebar & {
+      font-size: 1.3rem;
+    }
+  }
+  
+  .inventory-item,
+  .container-item {
+    padding: 16px 20px; // Maintain larger padding on mobile for easier touch targets
+    min-height: 70px;   // Maintain larger touch targets
+    
+    span {
+      display: block;
+      margin: 4px 0;
+      font-size: 0.85rem;
+    }
+  }
+  
+  // Mobile drag and drop adjustments - maintain forgiving zones
+  .inventory-item {
+    .drag-handle {
+      width: 20px; // Keep larger for easier touch
+      
+      .drag-icon {
+        font-size: 16px;
+      }
+    }
+    
+    .item-content span {
+      font-size: 0.8rem;
+      margin-right: 8px;
+    }
+  }
+  
+  .drag-instructions {
+    font-size: 0.85rem;
+    padding: 12px 16px;
+  }
+  
+  .modal-content {
+    width: 95%;
+    max-height: 95vh;
+  }
+  
+  .modal-header {
+    padding: 20px 24px 16px;
+    
+    h3 { font-size: 1.3rem; }
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .modal-footer {
+    padding: 16px 24px;
+    justify-content: center;
+    
+    @media (max-width: 480px) {
+      flex-direction: column;
+      gap: 12px;
+    }
   }
 }

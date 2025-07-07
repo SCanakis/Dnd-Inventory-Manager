@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { ItemCatalogInterface } from '../../../interface/item-catalog-interface';
 import { ItemCatalogHttp } from '../../../service/item-catalog-http/item-catalog-http';
 import { WebsocketServiceContainer } from '../../../service/websocket/websocket-service-container';
-
+import { CharacterHasItemUpdate } from '../../../interface/websocket-interface';
 
 @Component({
   selector: 'app-inventory',
@@ -40,6 +40,11 @@ export class Inventory implements OnInit, OnDestroy {
   charUuid: string | null = '';
   containerUuid: string | null = '';
   quantity : number = 1;
+
+  draggedItem: CharacterHasItemProjection | null = null;
+  dragOverContainer: string | null = null;
+
+  private dragOverTimeout: any = null;
 
 
   constructor(
@@ -191,7 +196,7 @@ export class Inventory implements OnInit, OnDestroy {
       (response : ItemCatalogInterface) => {
         this.selectedItem = response;
         this.selectedProject = item;
-        this.quantity = 1;
+        this.quantity = item.quantity;
       },
       (error : HttpErrorResponse) => {
         console.log("Error loading item: ", error.message);
@@ -221,6 +226,148 @@ export class Inventory implements OnInit, OnDestroy {
     }
   }
 
+  updateQuantity() {
+    if(this.charUuid && this.selectedItem && this.selectedItem?.itemUuid && this.selectedProject && this.selectedProject.containerUuid) {
+      
+      const update : CharacterHasItemUpdate = {
+        itemUuid : null,
+        quantity : this.quantity,
+        equipped : null,
+        attuned : null,
+        inAttackTab : null,
+        containerUuid : null
+      };
 
+      this.inventoryWebSocketService.updateInventoryItem(this.charUuid, this.selectedItem?.itemUuid, this.selectedProject.containerUuid , update);
+    } 
+  }
+
+  onDragEnter(event : DragEvent, containerUuid : string) : void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (this.draggedItem) {
+      if (this.dragOverTimeout) {
+        clearTimeout(this.dragOverTimeout);
+      }
+      
+      this.dragOverContainer = containerUuid;
+      const target = event.currentTarget as HTMLElement;
+      target.classList.add('drag-over');
+    }
+  }
+
+  onDragStart(event: DragEvent, item : CharacterHasItemProjection) : void {
+    this.draggedItem = item;
+
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', item.itemUuid);
+    }
+
+    const target = event.target as HTMLElement;
+    target.classList.add('dragging');
+    console.log('Started dragging item:', item.itemName);
+  }
+
+  onDragEnd(event: DragEvent): void {
+    this.draggedItem = null;
+    this.dragOverContainer = null;
+
+    const target = event.target as HTMLElement;
+    target.classList.remove('dragging');
+
+    document.querySelectorAll('.container-item').forEach(el => {
+      el.classList.remove('drag-over');
+    });
+    
+    if (this.dragOverTimeout) {
+      clearTimeout(this.dragOverTimeout);
+      this.dragOverTimeout = null;
+    }
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (this.dragOverTimeout) {
+      clearTimeout(this.dragOverTimeout);
+    }
+  }
+
+  onDragLeave(event : DragEvent) : void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    this.dragOverTimeout = setTimeout(() => {
+      const target = event.currentTarget as HTMLElement;
+      target.classList.remove('drag-over');
+      
+      if (this.dragOverContainer) {
+        this.dragOverContainer = null;
+      }
+    }, 100);
+  }
+  
+  onDrop(event: DragEvent, targetContainerUuid: string): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    console.log('Drop attempt on container:', targetContainerUuid);
+    console.log('Dragged item:', this.draggedItem?.itemName);
+
+    if (!this.draggedItem || !this.charUuid) {
+      console.log('Cannot drop - missing draggedItem or charUuid');
+      this.onDragEnd(event);
+      return;
+    }
+
+    if (this.draggedItem.containerUuid === targetContainerUuid) {
+      console.log('Item is already in this container');
+      this.onDragEnd(event);
+      return;
+    }
+
+    if (!this.canDropOnContainer(targetContainerUuid)) {
+      console.log('Cannot drop on this container - capacity or other restriction');
+      this.onDragEnd(event);
+      return;
+    }
+
+    console.log('Proceeding with container update...');
+    this.updateContainer(this.draggedItem, targetContainerUuid);
+    this.onDragEnd(event);
+  }
+
+  updateContainer(item : CharacterHasItemProjection, containerUuid : string | null) {
+    if(this.charUuid && item && containerUuid) {
+      const update : CharacterHasItemUpdate = {
+        itemUuid : null,
+        quantity : item.quantity,
+        equipped : null,
+        attuned : null,
+        inAttackTab : null,
+        containerUuid : containerUuid
+      }
+
+      this.inventoryWebSocketService.updateInventoryItem(this.charUuid, item.itemUuid, item.containerUuid, update);
+    }
+  }
+
+  canDropOnContainer(containerUuid : string) : boolean {
+    if(!this.draggedItem) return false;
+
+    const targetcontainer = this.currentContainer.find(c => c.container.id.containerUuid === containerUuid);
+
+    if(!targetcontainer) return false;
+
+    const hasSpace = targetcontainer.container.currentCapacity < targetcontainer.container.maxCapacity;
+
+    const isDifferntContainer = this.draggedItem.containerUuid !== containerUuid;
+
+    return hasSpace && isDifferntContainer;
+
+  }
 
 }

@@ -40,11 +40,11 @@ export interface CharacterHasItemProjection {
 }
 
 export interface CharacterHasItemUpdate {
-  itemUuid: string;
-  quantity: number;
-  equipped: boolean;
-  attuned: boolean
-  inAttackTab: boolean;
-  conatinerUuid: string;
+  itemUuid: string | null;
+  quantity: number | null;
+  equipped: boolean | null;
+  attuned: boolean | null,
+  inAttackTab: boolean | null;
+  containerUuid: string | null;
 }
 

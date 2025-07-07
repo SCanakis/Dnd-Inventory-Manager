@@ -2,6 +2,7 @@ package com.scanakispersonalprojects.dndapp.service.inventory;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -280,9 +281,13 @@ public class InventoryService {
         if(charUuid == null || itemUuid == null || update == null) {
             return null;
         }
+        CharacterHasItemSlotId id;
+        if(containerUuid != null) {
+            id = new CharacterHasItemSlotId(itemUuid, charUuid, containerUuid);
+        } else {
+            id = new CharacterHasItemSlotId(itemUuid, charUuid, emptyContainerUuid);
+        }
 
-
-        CharacterHasItemSlotId id = new CharacterHasItemSlotId(itemUuid, charUuid, containerUuid);
         Optional<CharacterHasItemSlot> slotOptional = repo.findById(id);
         
         update.setItemUuid(itemUuid);
@@ -294,7 +299,8 @@ public class InventoryService {
         CharacterHasItemSlot slot = slotOptional.get();
         
 
-        if(update.getQuantity() != null && update.getContainerUuid() != null && update.getContainerUuid() != containerUuid) {
+        if(update.getQuantity() != null && update.getContainerUuid() != null && !Objects.equals(update.getContainerUuid(), containerUuid)) {
+            
             if(slot.getQuantity() < update.getQuantity() || update.getQuantity() < 0) {
                 return null;
             }
@@ -314,6 +320,13 @@ public class InventoryService {
                 slot.setAttuned(update.isAttuned());
             }
             if (update.getQuantity() != null) {
+                if(update.getQuantity() < 0) {
+                    return null;
+                }
+                if(!updateContainerCurrentCapacity(charUuid, itemUuid, containerUuid, update, slot)) {
+                    return null;
+                }
+
                 slot.setQuantity(update.getQuantity());
             }
             if(update.getInAttackTab() != null && slot.isInAttackTab() != null) {
@@ -322,6 +335,27 @@ public class InventoryService {
             
             return repo.save(slot);
         }
+    }
+
+    @Transactional
+    private boolean updateContainerCurrentCapacity(UUID charUuid, UUID itemUuid, UUID containerUuid, CharacterHasItemUpdate update, CharacterHasItemSlot slot) {
+
+        Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(containerUuid, charUuid));        
+        ItemCatalog item = itemCatalogService.getItemWithUUID(itemUuid);
+
+        if(optionalContainer.isPresent() && item != null) {
+            Container container = optionalContainer.get();
+            
+            int quantityDiff = update.getQuantity() - slot.getQuantity();
+            int weightDiff = quantityDiff * item.getItemWeight();
+            int newCapacity = container.getCurrentCapacity() + weightDiff;
+
+            if(newCapacity >= 0 && newCapacity <= container.getMaxCapacity()) {
+                containerRepo.updateCurrentCapacity(charUuid, containerUuid, newCapacity);
+                return true;
+            }
+        } 
+        return false;
     }
 
     /**

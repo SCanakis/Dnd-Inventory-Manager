@@ -10,11 +10,33 @@
         <div *ngIf="currentContainer.length > 0">
           <div class="container-list-scroll">
             <ul>
-              <li (click)="getAllItems()" class="container-item">All Items</li>
+              <!-- All Items button - no longer a drop zone, just clickable -->
+              <li (click)="getAllItems()" 
+                  class="container-item all-items-container">
+                <span>All Items</span>
+              </li>
+
+              <!-- Container drop zones -->
               <li *ngFor="let containerView of currentContainer" 
                   (click)="getContainerItems(containerView.container.id.containerUuid)" 
-                  class="container-item">
-                <span><strong>{{containerView.name}}</strong> - {{containerView.container.currentCapacity}}/{{containerView.container.maxCapacity}}</span> 
+                  class="container-item"
+                  (dragover)="onDragOver($event)"
+                  (dragenter)="onDragEnter($event, containerView.container.id.containerUuid)"
+                  (dragleave)="onDragLeave($event)"
+                  (drop)="onDrop($event, containerView.container.id.containerUuid)"
+                  [class.drag-over]="dragOverContainer === containerView.container.id.containerUuid"
+                  [class.can-drop]="canDropOnContainer(containerView.container.id.containerUuid)"
+                  [class.cannot-drop]="draggedItem && !canDropOnContainer(containerView.container.id.containerUuid)">
+                
+                <span class="drop-hint" *ngIf="draggedItem && canDropOnContainer(containerView.container.id.containerUuid)">
+                  Drop here to add to {{containerView.name}}
+                </span>
+                <span class="drop-hint-no" *ngIf="draggedItem && !canDropOnContainer(containerView.container.id.containerUuid)">
+                  Cannot drop here (full or same container)
+                </span>
+                <span *ngIf="!draggedItem">
+                  <strong>{{containerView.name}}</strong> - {{containerView.container.currentCapacity}}/{{containerView.container.maxCapacity}}
+                </span>
               </li>
             </ul>
           </div>
@@ -44,17 +66,33 @@
             <ul>
               <li *ngFor="let item of currentInventory; let i = index" 
                   class="inventory-item" 
-                  (click)="openItemModal(item)">
-                <span>Name: {{ item.itemName || 'Unknown' }}</span> - 
-                <span>Equipped: {{ item.equipped ? 'Yes' : 'No' }}</span> - 
-                <span>Attuned: {{ item.attuned ? 'Yes' : 'No' }}</span> - 
-                <span>Rarity: {{ item.itemRarity || 'Unknown' }}</span> - 
-                <span>Quantity: {{ item.quantity || 0 }}</span> - 
-                <span>Value: {{ item.itemValue || 0 }}</span> - 
-                <span>Weight: {{ item.itemWeight || 0 }}</span>
+                  draggable="true"
+                  (dragstart)="onDragStart($event, item)"
+                  (dragend)="onDragEnd($event)"
+                  (click)="openItemModal(item)"
+                  [class.dragging]="draggedItem === item">
+                
+                <div class="drag-handle" *ngIf="!draggedItem">
+                  <span class="drag-icon">⋮⋮</span>
+                </div>
+                
+                <div class="item-content">
+                  <span>Name: {{ item.itemName || 'Unknown' }}</span> - 
+                  <span>Equipped: {{ item.equipped ? 'Yes' : 'No' }}</span> - 
+                  <span>Attuned: {{ item.attuned ? 'Yes' : 'No' }}</span> - 
+                  <span>Rarity: {{ item.itemRarity || 'Unknown' }}</span> - 
+                  <span>Quantity: {{ item.quantity || 0 }}</span> - 
+                  <span>Value: {{ item.itemValue || 0 }}</span> - 
+                  <span>Weight: {{ item.itemWeight || 0 }}</span>
+                </div>
               </li>
             </ul>
           </div>
+        </div>
+
+        <!-- Updated drag instructions -->
+        <div class="drag-instructions" *ngIf="draggedItem">
+          <p>💡 Drag the item to a container on the left to move it there.</p>
         </div>
       </div>
     </div>
@@ -71,7 +109,14 @@
         <div class="modal-body">
             <div class="item-detail">
                 <div class="item-has" *ngIf="selectedProject">
-                    <span><strong>Quantity:</strong> {{selectedProject.quantity}}</span>
+                    <span><strong>Quantity:</strong> 
+                    <input 
+                    type="text" 
+                    [(ngModel)]="quantity" 
+                    (input)="updateQuantity()" 
+                    placeholder="{{quantity}}"
+                    >
+                </span>
                     <span><strong>Weight:</strong> {{selectedProject.itemWeight}}</span>
                 </div>
 
