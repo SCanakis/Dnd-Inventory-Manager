@@ -74,7 +74,6 @@ export class WebSocketServiceInventory {
     
   }
 
-  // Subscribe to character-specific inventory broadcasts
   subscribeToCharacterInventory(charUuid: string): void {
     if (this.client.connected) {
       this.client.subscribe(`/topic/character/${charUuid}/inventory`, (message) => {
@@ -92,7 +91,6 @@ export class WebSocketServiceInventory {
     }
   }
 
-  // Connect to WebSocket
   connect(): void {
     if (!this.client.connected) {
       console.log('Starting connection...');
@@ -100,14 +98,12 @@ export class WebSocketServiceInventory {
     }
   }
 
-  // Disconnect from WebSocket
   disconnect(): void {
     if (this.client.connected) {
       this.client.deactivate();
     }
   }
 
-  // Send inventory update message
   updateInventoryItem(charUuid: string, itemUuid: string, containerUuid: string | undefined, update: CharacterHasItemUpdate): void {
     if (this.client.connected) {
       const message = {
@@ -127,7 +123,6 @@ export class WebSocketServiceInventory {
     }
   }
 
-  // Send inventory add message
   addInventoryItem(charUuid: string, itemUuid: string, quantity: number): void {
     if (this.client.connected) {
       const message = {

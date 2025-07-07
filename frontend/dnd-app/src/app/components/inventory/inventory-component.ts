@@ -13,6 +13,7 @@ import { NavComponent } from '../nav/nav-component';
 import { FormsModule } from '@angular/forms';
 import { ItemCatalogInterface } from '../../../interface/item-catalog-interface';
 import { ItemCatalogHttp } from '../../../service/item-catalog-http/item-catalog-http';
+import { WebsocketServiceContainer } from '../../../service/websocket/websocket-service-container';
 
 
 @Component({
@@ -24,9 +25,11 @@ import { ItemCatalogHttp } from '../../../service/item-catalog-http/item-catalog
 })
 export class Inventory implements OnInit, OnDestroy {
 
-  private subscriptions: Subscription[] = [];
+  private subscriptionsInventory: Subscription[] = [];
+  private subscriptionsContainer: Subscription[] = [];
   
-  isConnected = false;
+  isConnectedInventory = false;
+  isConnectedContainer = false;
   currentContainer: ContainerView[] = [];
   currentInventory: CharacterHasItemProjection[] = [];
   lastMessage: WebSocketResponse | null = null;
@@ -40,7 +43,8 @@ export class Inventory implements OnInit, OnDestroy {
 
 
   constructor(
-    private webSocketService: WebSocketServiceInventory,
+    private inventoryWebSocketService: WebSocketServiceInventory,
+    private containerWebSocketService: WebsocketServiceContainer,
     private containerService: ContainerService,
     private itemCatalogService : ItemCatalogHttp,
     private route: ActivatedRoute, 
@@ -54,29 +58,67 @@ export class Inventory implements OnInit, OnDestroy {
       console.error('No character UUID provided in route');
       return;
     }
-    this.containerService.getContainers(this.charUuid).subscribe(
-      (response : ContainerView[]) => {
-        this.currentContainer = response;
-      },
-      (error : HttpErrorResponse) => {
-        console.log("Error loading container", error.message);
-      }
-    )
+    
+    this.initializeContainerWebSocket();
+    this.initializeInventoryWebSocket();
+  }
 
-    this.webSocketService.init(this.charUuid);
-    this.webSocketService.connect();
+  private initializeContainerWebSocket(): void {
+    if (!this.charUuid) return;
 
-    this.subscriptions.push(
-      this.webSocketService.isConnected$.subscribe(connected => {
-        this.isConnected = connected;
+    this.containerWebSocketService.init(this.charUuid);
+    this.containerWebSocketService.connect();
+
+    this.subscriptionsContainer.push(
+      this.containerWebSocketService.isConnected$.subscribe(connected => {
+        this.isConnectedContainer = connected;
         if (connected && this.charUuid) {
-          this.webSocketService.subscribeToCharacterInventory(this.charUuid);
+          this.containerWebSocketService.subscribeToCharacterContainers(this.charUuid);
+        } 
+      })
+    );
+
+    this.subscriptionsContainer.push(
+      this.containerWebSocketService.containerUpdates$.subscribe(response => {
+        if (response) {
+          this.lastMessage = response;
+          
+          if (response.type === 'CONTAINER_REQUEST_RESPONSE' && response.data) {
+            this.currentContainer = response.data;
+          }
+        } else {
+          console.log('🔄 Container response is null/undefined');
         }
       })
     );
 
-    this.subscriptions.push(
-      this.webSocketService.inventoryUpdates$.subscribe(response => {
+    this.subscriptionsContainer.push(
+      this.containerWebSocketService.containerBroadcast$.subscribe(response => {
+        if (response && response.data) {
+          console.log('Container broadcast received:', response);
+          this.currentContainer = response.data;
+        }
+      })
+    );
+  }
+
+  private initializeInventoryWebSocket(): void {
+    if (!this.charUuid) return;
+
+    this.inventoryWebSocketService.init(this.charUuid);
+    this.inventoryWebSocketService.connect();
+
+    this.subscriptionsInventory.push(
+      this.inventoryWebSocketService.isConnected$.subscribe(connected => {
+        this.isConnectedInventory = connected;
+        if (connected && this.charUuid) {
+          this.inventoryWebSocketService.subscribeToCharacterInventory(this.charUuid);
+        }
+      })
+    );
+
+    this.subscriptionsInventory.push(
+      this.inventoryWebSocketService.inventoryUpdates$.subscribe(response => {
         if (response) {
           this.lastMessage = response;
           
@@ -84,13 +126,13 @@ export class Inventory implements OnInit, OnDestroy {
             this.currentInventory = response.data;
           }
         } else {
-          console.log('🔄 Response is null/undefined');
+          console.log('Inventory response is null/undefined');
         }
       })
     );
 
-    this.subscriptions.push(
-      this.webSocketService.inventoryBroadcasts$.subscribe(response => {
+    this.subscriptionsInventory.push(
+      this.inventoryWebSocketService.inventoryBroadcasts$.subscribe(response => {
         if (response && response.data) {
           this.currentInventory = response.data;
         }
@@ -99,15 +141,21 @@ export class Inventory implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptionsInventory.forEach(sub => sub.unsubscribe());
+    this.subscriptionsContainer.forEach(sub => sub.unsubscribe());
+    
+    // Clean up WebSocket connections
+    this.inventoryWebSocketService.disconnect();
+    this.containerWebSocketService.disconnect();
   }
 
   onSearchTerm() {
     if(this.charUuid) {
       if(this.containerUuid) {
-        this.webSocketService.requestInventory(this.charUuid, this.containerUuid, this.searchTerm);
+        this.inventoryWebSocketService.requestInventory(this.charUuid, this.containerUuid, this.searchTerm);
+      } else {
+        this.inventoryWebSocketService.requestInventory(this.charUuid, undefined, this.searchTerm);
       }
-      this.webSocketService.requestInventory(this.charUuid, undefined, this.searchTerm);
     }
   }
 
@@ -115,9 +163,9 @@ export class Inventory implements OnInit, OnDestroy {
     if(this.charUuid) {
       this.containerUuid = containerUuid;
       if(this.searchTerm) {
-        this.webSocketService.requestInventory(this.charUuid, this.containerUuid, this.searchTerm)
+        this.inventoryWebSocketService.requestInventory(this.charUuid, this.containerUuid, this.searchTerm)
       } else {
-        this.webSocketService.requestInventory(this.charUuid, this.containerUuid);
+        this.inventoryWebSocketService.requestInventory(this.charUuid, this.containerUuid);
       }
     } else {
       console.error('Cannot request container items - no character UUID available');
@@ -127,11 +175,11 @@ export class Inventory implements OnInit, OnDestroy {
   getAllItems() {
     
     if(this.charUuid) {
-      this.containerUuid = ''
+      this.containerUuid = '';
       if(this.searchTerm) {
-        this.webSocketService.requestInventory(this.charUuid, this.containerUuid, this.searchTerm);
+        this.inventoryWebSocketService.requestInventory(this.charUuid, this.containerUuid, this.searchTerm);
       } else {
-        this.webSocketService.requestInventory(this.charUuid);
+        this.inventoryWebSocketService.requestInventory(this.charUuid);
       }
     } else {
       console.error('Cannot request container items - no character UUID available');
@@ -166,7 +214,7 @@ export class Inventory implements OnInit, OnDestroy {
 
   deleteItem() {
     if(this.charUuid && this.selectedItem) {
-      this.webSocketService.deleteInventoryItem(this.charUuid, this.selectedItem?.itemUuid, this.selectedProject?.containerUuid);
+      this.inventoryWebSocketService.deleteInventoryItem(this.charUuid, this.selectedItem?.itemUuid, this.selectedProject?.containerUuid);
       this.closeItemModal();
     } else {
       console.log("Missing requirments to delete item");

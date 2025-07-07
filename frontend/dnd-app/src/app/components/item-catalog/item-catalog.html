@@ -14,7 +14,7 @@
 </div>
 
 <ul>
-    <li *ngFor="let item of items" (click)="openItemModal(item)">
+    <li *ngFor="let item of items" (click)="openItemModal(item)" class="item-catalog-list">
         <span>{{item.itemName}}</span> - 
         <span>{{item.itemWeight}}</span> - 
         <span>{{item.itemValue}}</span> - 

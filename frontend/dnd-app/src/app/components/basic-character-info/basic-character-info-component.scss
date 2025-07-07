@@ -1,0 +1,96 @@
+// ========================================
+// COMPACT CHARACTER INFO
+// ========================================
+
+.character-info-container {
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.character-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  
+  .character-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  
+  .character-classes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .character-class {
+    background-color: var(--bg-secondary);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    
+    // Different colors for multiple classes
+    // &:nth-child(1) { background-color: var(--accent-primary); }
+    // &:nth-child(2) { background-color: var(--accent-success); }
+    // &:nth-child(3) { background-color: var(--accent-warning); }
+    // &:nth-child(4) { background-color: var(--accent-danger); }
+    // &:nth-child(5) { background-color: var(--accent-info); }
+  }
+}
+
+.character-details {
+  display: flex;
+  gap: 20px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    .label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    
+    .value {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+  }
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .character-info-container {
+    flex-direction: column;
+    align-items: flex-start;
+    
+    .character-main {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .character-details {
+      width: 100%;
+      justify-content: space-around;
+    }
+  }
+}

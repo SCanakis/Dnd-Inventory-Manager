@@ -1,1 +1,518 @@
-/* You can add global styles to this file, and also import other style files */
+// ========================================
+// GLOBAL DARK THEME - src/styles.scss
+// ========================================
+// Import this as your main global stylesheet
+
+// ========================================
+// Color System
+// ========================================
+:root {
+  // Background Colors
+  --bg-primary: hsl(0, 0%, 3%);     // Main dark background
+  --bg-secondary: hsl(0, 0%, 8%);   // Secondary backgrounds
+  --bg-tertiary: hsl(0, 0%, 12%);   // Card backgrounds
+  --bg-hover: hsl(0, 0%, 16%);      // Hover states
+  --bg-active: hsl(0, 0%, 20%);     // Active states
+  
+  // Text Colors
+  --text-primary: hsl(0, 0%, 95%);  // Main text
+  --text-secondary: hsl(0, 0%, 75%); // Secondary text
+  --text-muted: hsl(0, 0%, 55%);    // Muted text
+  --text-inverse: hsl(0, 0%, 10%);  // Text on light backgrounds
+  
+  // Accent Colors
+  --accent-primary: hsl(210, 100%, 50%);    // Blue - primary actions
+  --accent-success: hsl(140, 65%, 45%);     // Green - success states
+  --accent-warning: hsl(45, 100%, 60%);     // Yellow - warnings
+  --accent-danger: hsl(0, 65%, 55%);        // Red - danger/delete
+  --accent-info: hsl(200, 100%, 60%);       // Light blue - info
+  
+  // D&D Specific Colors
+  --rarity-common: hsl(0, 0%, 70%);         // Gray
+  --rarity-uncommon: hsl(140, 50%, 60%);    // Green
+  --rarity-rare: hsl(210, 100%, 65%);       // Blue
+  --rarity-epic: hsl(280, 70%, 65%);        // Purple
+  --rarity-legendary: hsl(45, 100%, 65%);   // Gold
+  --rarity-artifact: hsl(15, 100%, 65%);    // Orange
+  
+  // Status Colors
+  --status-equipped: hsl(140, 60%, 50%);
+  --status-attuned: hsl(260, 60%, 60%);
+  --status-cursed: hsl(0, 60%, 60%);
+  
+  // Border Colors
+  --border-primary: hsl(0, 0%, 20%);
+  --border-secondary: hsl(0, 0%, 25%);
+  --border-tertiary: hsl(0, 0%, 30%);
+  
+  // Shadow Colors
+  --shadow-light: rgba(0, 0, 0, 0.2);
+  --shadow-medium: rgba(0, 0, 0, 0.4);
+  --shadow-heavy: rgba(0, 0, 0, 0.6);
+}
+
+// ========================================
+// Global Reset & Base Styles
+// ========================================
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow: hidden !important;
+//   height: 100% !important;
+  width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+//   position: fixed !important; // Force positioning
+  top: 0 !important;
+  left: 0 !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  line-height: 1.6;
+//   min-height: 100vh;
+}
+
+// ========================================
+// Angular Root Component
+// ========================================
+app-root {
+  display: block;
+  min-height: 100%;
+  background-color: var(--bg-primary) !important;
+}
+
+// ========================================
+// Typography
+// ========================================
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  border-bottom: 3px solid var(--accent-primary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+h2 {
+  font-size: 2rem;
+  border-bottom: 2px solid var(--border-secondary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+p {
+  color: var(--text-secondary);
+  margin: 0 0 1rem 0;
+  line-height: 1.6;
+}
+
+// ========================================
+// Form Elements
+// ========================================
+input, textarea, select {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  
+  &::placeholder {
+    color: var(--text-muted);
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px hsla(210, 100%, 50%, 0.1);
+    background-color: var(--bg-hover);
+  }
+  
+  &:hover {
+    border-color: var(--border-secondary);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// ========================================
+// Button System
+// ========================================
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  gap: 8px;
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  // Primary Button
+  &.btn-primary {
+    background-color: var(--accent-primary);
+    color: white;
+    
+    &:hover {
+      background-color: hsl(210, 100%, 45%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--shadow-medium);
+    }
+  }
+  
+  // Secondary Button
+  &.btn-secondary {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+    border: 1px solid var(--border-secondary);
+    
+    &:hover {
+      background-color: var(--bg-active);
+      border-color: var(--border-tertiary);
+      transform: translateY(-1px);
+    }
+  }
+  
+  // Success Button
+  &.btn-success {
+    background-color: var(--accent-success);
+    color: white;
+    
+    &:hover {
+      background-color: hsl(140, 65%, 40%);
+      transform: translateY(-1px);
+    }
+  }
+  
+  // Danger Button
+  &.btn-danger {
+    background-color: var(--accent-danger);
+    color: white;
+    
+    &:hover {
+      background-color: hsl(0, 65%, 50%);
+      transform: translateY(-1px);
+    }
+  }
+  
+  // Small Button
+  &.btn-sm {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  
+  // Large Button
+  &.btn-lg {
+    padding: 16px 24px;
+    font-size: 16px;
+  }
+}
+
+// ========================================
+// Card System
+// ========================================
+.card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: var(--border-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--shadow-light);
+  }
+  
+  .card-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-primary);
+    
+    h3 {
+      margin: 0;
+      color: var(--text-primary);
+    }
+  }
+  
+  .card-body {
+    margin-bottom: 20px;
+  }
+  
+  .card-footer {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-primary);
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+}
+
+// ========================================
+// Navigation Styles
+// ========================================
+.nav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  
+  .nav-link {
+    padding: 12px 20px;
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid var(--border-primary);
+    transition: all 0.2s ease;
+    font-weight: 600;
+    
+    &:hover {
+      background-color: var(--bg-hover);
+      border-color: var(--border-secondary);
+      transform: translateY(-1px);
+    }
+    
+    &.active {
+      background-color: var(--accent-primary);
+      color: white;
+      border-color: var(--accent-primary);
+    }
+  }
+}
+
+// ========================================
+// Table Styles
+// ========================================
+.table {
+  width: 100%;
+  background-color: var(--bg-tertiary);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-primary);
+  
+  th, td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-primary);
+  }
+  
+  th {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  
+  td {
+    color: var(--text-secondary);
+  }
+  
+  tr {
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+    
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+// ========================================
+// List Styles
+// ========================================
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  
+  .list-item {
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: var(--bg-hover);
+      border-color: var(--border-secondary);
+      transform: translateY(-1px);
+    }
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// ========================================
+// Badge System
+// ========================================
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  &.badge-rarity-common { background: var(--rarity-common); color: var(--text-inverse); }
+  &.badge-rarity-uncommon { background: var(--rarity-uncommon); color: white; }
+  &.badge-rarity-rare { background: var(--rarity-rare); color: white; }
+  &.badge-rarity-epic { background: var(--rarity-epic); color: white; }
+  &.badge-rarity-legendary { background: var(--rarity-legendary); color: var(--text-inverse); }
+  &.badge-rarity-artifact { background: var(--rarity-artifact); color: white; }
+  
+  &.badge-equipped { background: var(--status-equipped); color: white; }
+  &.badge-attuned { background: var(--status-attuned); color: white; }
+  &.badge-cursed { background: var(--status-cursed); color: white; }
+}
+
+// ========================================
+// Utility Classes
+// ========================================
+.text-primary { color: var(--text-primary) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-muted { color: var(--text-muted) !important; }
+.text-success { color: var(--accent-success) !important; }
+.text-warning { color: var(--accent-warning) !important; }
+.text-danger { color: var(--accent-danger) !important; }
+
+.bg-primary { background-color: var(--bg-primary) !important; }
+.bg-secondary { background-color: var(--bg-secondary) !important; }
+.bg-tertiary { background-color: var(--bg-tertiary) !important; }
+
+.border-radius { border-radius: 8px; }
+.border-radius-lg { border-radius: 12px; }
+.border-radius-sm { border-radius: 4px; }
+
+.shadow-sm { box-shadow: 0 2px 4px var(--shadow-light); }
+.shadow-md { box-shadow: 0 4px 12px var(--shadow-light); }
+.shadow-lg { box-shadow: 0 8px 24px var(--shadow-medium); }
+
+// ========================================
+// Responsive Utilities
+// ========================================
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+  
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+  
+  .btn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  
+  .card {
+    padding: 20px 16px;
+  }
+  
+  .nav {
+    flex-direction: column;
+    
+    .nav-link {
+      text-align: center;
+    }
+  }
+}
+
+// ========================================
+// Scrollbar Styling
+// ========================================
+* {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-secondary);
+    border-radius: 4px;
+    
+    &:hover {
+      background: var(--border-tertiary);
+    }
+  }
+}
+
+// ========================================
+// Animation System
+// ========================================
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from { 
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in { animation: fadeIn 0.3s ease; }
+.animate-slide-up { animation: slideInUp 0.3s ease; }
+.animate-slide-left { animation: slideInLeft 0.3s ease; }

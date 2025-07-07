@@ -1,173 +1,863 @@
+// ========================================
+// Color Palette
+// ========================================
+$bg-dark: hsl(0, 0%, 3%);
+$bg: hsl(0, 0%, 8%);
+$bg-light: hsl(0, 0%, 12%);
+$bg-lighter: hsl(0, 0%, 16%);
+$bg-lightest: hsl(0, 0%, 20%);
+$bg-selected: hsl(0, 0%, 25%);
+$bg-hover: hsl(0, 0%, 18%);
 
-// Modal styles
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
+$text-primary: hsl(0, 0%, 95%);
+$text-secondary: hsl(0, 0%, 75%);
+$text-muted: hsl(0, 0%, 55%);
+
+$accent-primary: hsl(0, 0%, 35%);
+$accent-danger: hsl(0, 65%, 55%);
+$accent-success: hsl(140, 65%, 45%);
+$accent-warning: hsl(45, 100%, 60%);
+$accent-info: hsl(0, 0%, 40%);
+
+$border-color: hsl(0, 0%, 20%);
+$border-light: hsl(0, 0%, 25%);
+$border-lighter: hsl(0, 0%, 30%);
+$border-hover: hsl(0, 0%, 35%);
+$border-selected: hsl(0, 0%, 40%);
+
+$shadow-color: rgba(0, 0, 0, 0.5);
+$shadow-light: rgba(0, 0, 0, 0.3);
+
+
+html, body {
+  height: 100%;          /* let the page be 100 % tall */
+  overflow: hidden;      /* optional: prevent full-page scroll */
+  margin: 0;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;      /* fill the viewport */
+  overflow: hidden;      /* keep everything inside */
+  padding: 20px;         /* same gap you had before */
+}
+
+// ========================================
+// ONLY THESE CLASSES GET SCROLLBARS
+// ========================================
+.inventory-scroll,
+.container-list-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  
+  &::-webkit-scrollbar {
+    width: 6px !important;
+    display: block !important;
+    background: transparent !important;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent !important;
+    display: block !important;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: $border-color !important;
+    border-radius: 3px !important;
+    display: block !important;
+    
+    &:hover {
+      background: $border-light !important;
+    }
+  }
+  
+  scrollbar-width: thin !important;
+  -ms-overflow-style: auto !important;
+}
+
+// ========================================
+// Mixins
+// ========================================
+@mixin button-base {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@mixin card-base {
+  background: $bg-light;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+@mixin hover-lift {
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px $shadow-light;
+  }
+}
+
+// ========================================
+// Global Styles
+// ========================================
+body {
+  background-color: $bg-dark !important;
+  color: $text-primary !important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+// app-root {
+//   background-color: $bg-dark !important;
+//   display: block;
+//   height: 100vh;
+//   padding: 20px;
+//   box-sizing: border-box;
+// }
+
+// ========================================
+// SCROLLBAR CONTROL - HIDE ALL BY DEFAULT
+// ========================================
+// Hide scrollbars on ALL elements by default
+* {
+  &::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+    background: transparent !important;
+  }
+  &::-webkit-scrollbar-track {
+    display: none !important;
+  }
+  &::-webkit-scrollbar-thumb {
+    display: none !important;
+  }
+  &::-webkit-scrollbar-corner {
+    display: none !important;
+  }
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+// Force no overflow on common containers
+// div, section, main, article, aside, nav, header, footer, ul, li {
+//   overflow: hidden !important;
+// }
+
+// ========================================
+// Layout Structure - FIXED POSITIONING WITH PROPER SPACING
+// ========================================
+.inventory-container {
+  flex: 1 1 auto;        /* fill what’s left under the nav      */
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px 20px;  /* breathing room at the bottom        */
+  overflow: hidden;      /* keeps children tidy                 */
+}
+
+app-basic-character-info-component,
+app-nav-component {
+  flex-shrink: 0;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.search-section {
+  flex-shrink: 0;
+  width: 100%;
+  margin-bottom: 2rem;
+  background-color: transparent !important;
+  position: relative;
+  z-index: 1;
+}
+
+.content-layout {
+  flex: 1 1 auto;
+  height: 100%;
+  min-height: 0;         /* absolutely essential for flex+grid */
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 2rem;
+}
+
+.containers-sidebar {
+  background-color: transparent !important;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 20px); // Account for bottom margin
+  max-height: calc(100% - 20px);
+  min-height: 0;
+  position: relative;
+  align-self: start;
+  
+}
+
+.inventory-main {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+
+  /* let flexbox decide the height ------------------- */
+  height: auto;          /* or omit entirely                        */
+  max-height: 70%;
+  min-height: 0;
+
+  position: relative;
+  align-self: start;
+
+  @media (max-width: 1024px) { order: 2; }
+}
+// ========================================
+// Headers
+// ========================================
+h2 {
+  color: $text-primary;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid $border-color;
+  letter-spacing: -0.02em;
+  
+  .containers-sidebar & {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+}
+
+// ========================================
+// Search Input
+// ========================================
+.search-container {
+  width: 100%;
+  
+  input[type="text"] {
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    padding: 12px 16px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    font-size: 14px;
+    background: $bg-light;
+    color: $text-primary;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    
+    &::placeholder {
+      color: $text-muted;
+    }
+    
+    &:focus {
+      outline: none;
+      border-color: $border-hover;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+      background: $bg-hover;
+    }
+    
+    &:hover {
+      border-color: $border-light;
+      background: $bg-hover;
+    }
+  }
+}
+
+// ========================================
+// Container Section (Sidebar) - WITH PROPER SPACING
+// ========================================
+.container-section {
+  @include card-base;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  min-height: 0;
+  margin-right: 10px; // Add right margin for breathing room
+  
+  h2 {
+    flex-shrink: 0;
+  }
+  
+  > div {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.container-list-scroll {
+  height: 100%;
+  padding-right: 8px; // Space for scrollbar
+  margin-right: -8px; // Hide scrollbar from layout
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 20px; // Bottom padding so last item isn't cut off
+  }
+}
+
+// ========================================
+// Inventory Section - WITH PROPER SPACING
+// ========================================
+.inventory-section {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+  min-height: 0;
+  margin-left: 10px; // Add left margin for breathing room
+  
+  h2 {
+    flex-shrink: 0;
+  }
+  
+  .item-count {
+    flex-shrink: 0;
+    color: $text-secondary;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    padding: 12px 16px;
+    background: $bg-light;
+    border-radius: 8px;
+    border: 1px solid $border-color;
+    
+    strong {
+      color: $accent-primary;
+    }
+  }
+  
+  > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+}
+
+.inventory-scroll {
+  flex: 1;
+  min-height: 0;
+  padding-right: 8px; // Space for scrollbar
+  margin-right: -8px; // Hide scrollbar from layout
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 20px; // Bottom padding so last item isn't cut off
+  }
+}
+
+// ========================================
+// Items
+// ========================================
+.inventory-item,
+.container-item {
+  @include card-base;
+  @include hover-lift;
+  padding: 16px 20px;
+  cursor: pointer;
+  color: $text-primary;
+  position: relative;
+  flex-shrink: 0;
+  
+  &:hover {
+    background: $bg-hover;
+    border-color: $border-hover;
+    transform: translateY(-2px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    background: $bg-selected;
+    border-color: $border-selected;
+  }
+  
+  span {
+    display: inline-block;
+    margin-right: 16px;
+    font-size: 0.9rem;
+    
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.container-item {
+  &:first-child {
+    background: $bg-selected;
+    color: $text-primary;
+    font-weight: 600;
+    border-color: $border-selected;
+    
+    &:hover {
+      background: $bg-lightest;
+      border-color: $border-hover;
+    }
+  }
+  
+  .container-section & {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    
+    &:first-child {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    
+    span {
+      display: block;
+      margin: 2px 0;
+      font-size: 0.85rem;
+      
+      &:first-child {
+        font-weight: 600;
+        color: $text-primary;
+        margin-bottom: 4px;
+      }
+    }
+    
+    span:first-of-type {
+      display: none;
+      
+      @media (max-width: 1024px) {
+        display: block;
+      }
+    }
+  }
+}
+
+// ========================================
+// Modal Styles
+// ========================================
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
 }
 
 .modal-content {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 500px;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
+  @include card-base;
+  background: $bg;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px $shadow-color;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  position: relative;
+  animation: slideIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  
+  @media (max-width: 768px) {
+    width: 95%;
+    max-height: 95vh;
+  }
 }
 
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 24px 16px;
-    border-bottom: 1px solid #e5e5e5;
-    
-    h3 {
-        margin: 0;
-        font-size: 1.5rem;
-        color: #333;
-    }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid $border-color;
+  background: $bg-light;
+  flex-shrink: 0;
+  
+  h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $text-primary;
+    letter-spacing: -0.02em;
+  }
 }
 
 .close-button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #666;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    transition: all 0.2s;
-    
-    &:hover {
-        background-color: #f0f0f0;
-        color: #333;
-    }
+  @include button-base;
+  background: transparent;
+  color: $text-muted;
+  font-size: 1.5rem;
+  padding: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  
+  &:hover {
+    background-color: $bg-hover;
+    color: $text-primary;
+    transform: scale(1.1);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
 .modal-body {
-    padding: 24px;
-}
-
-.item-detail {
-    p {
-        margin: 0 0 12px 0;
-        
-        strong {
-            color: #333;
-            font-weight: 600;
-        }
-    }
+  padding: 28px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto !important;
+  
+  &::-webkit-scrollbar {
+    width: 8px !important;
+    display: block !important;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: $bg !important;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: $border-color !important;
+    border-radius: 4px !important;
     
-    p:last-child {
-        margin-bottom: 0;
+    &:hover {
+      background: $border-light !important;
     }
-    
-    .info-section {
-        margin-bottom: 24px;
-        
-        &:last-child {
-            margin-bottom: 0;
-        }
-        
-        h4 {
-            margin: 0 0 12px 0;
-            color: #4a5568;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 4px;
-        }
-        
-        ul {
-            margin: 8px 0;
-            padding-left: 20px;
-            
-            li {
-                margin: 4px 0;
-                border: none;
-                padding: 0;
-                cursor: default;
-                
-                &:hover {
-                    background-color: transparent;
-                }
-            }
-        }
-    }
+  }
 }
 
 .modal-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    padding: 15px;
-    border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 28px;
+  border-top: 1px solid $border-color;
+  background: $bg-light;
+  flex-shrink: 0;
 }
 
-.add-item-section {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+// ========================================
+// Modal Content
+// ========================================
+.item-detail {
+  color: $text-primary;
+  
+  p {
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+    
+    strong {
+      color: $text-primary;
+      font-weight: 600;
+    }
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }
 
-.quantity-input {
-    width: 60px;
-    padding: 4px 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    text-align: center;
+.item-has {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 16px;
+  background: $bg-lighter;
+  border-radius: 8px;
+  border: 1px solid $border-color;
+  
+  span {
+    font-weight: 600;
+    color: $text-primary;
+    font-size: 0.95rem;
+  }
 }
 
-.quantity-input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+.info-section {
+  margin-bottom: 32px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  h4 {
+    margin: 0 0 16px 0;
+    color: $text-primary;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-bottom: 2px solid $border-color;
+    padding-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  
+  ul {
+    margin: 12px 0;
+    padding-left: 20px;
+    
+    li {
+      margin: 8px 0;
+      color: $text-secondary;
+      line-height: 1.4;
+      
+      &:hover {
+        color: $text-primary;
+      }
+    }
+  }
 }
 
+// ========================================
+// Buttons
+// ========================================
 .btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s;
+  @include button-base;
+  padding: 6px 12px;
+  font-size: 13px;
+  
+  &.btn-secondary {
+    background-color: $bg-lighter;
+    color: $text-primary;
+    border: 1px solid $border-light;
+    min-width: 60px;
+    font-weight: 600;
     
-    &.btn-secondary {
-        background-color: #6c757d;
-        color: white;
-        
-        &:hover {
-            background-color: #5a6268;
-        }
+    &:hover {
+      background-color: $bg-hover;
+      color: $text-primary;
+      border-color: $border-hover;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
+    
+    &:active {
+      transform: translateY(0);
+      background-color: $bg-selected;
+    }
+  }
 }
 
-// Responsive design
-@media (max-width: 768px) {
-    .modal-content {
-        width: 95%;
-        margin: 20px;
+.delete-item-section {
+  display: flex;
+  align-items: center;
+  
+  button {
+    @include button-base;
+    background-color: $accent-danger;
+    color: white;
+    font-weight: 600;
+    min-width: 60px;
+    padding: 6px 12px;
+    font-size: 13px;
+    border: 1px solid darken($accent-danger, 10%);
+    
+    &:hover {
+      background-color: darken($accent-danger, 8%);
+      border-color: darken($accent-danger, 15%);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
     }
     
-    .modal-header,
-    .modal-body,
-    .modal-footer {
-        padding: 16px;
+    &:active {
+      transform: translateY(0);
     }
+    
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.4);
+    }
+  }
+}
+
+// ========================================
+// Responsive Design
+// ========================================
+@media (max-width: 1024px) {
+  .content-layout {
+    gap: 1.5rem;
+  }
+  
+  .container-section {
+    margin-bottom: 0;
+  }
+  
+  .container-item {
+    span {
+      display: inline-block;
+      margin-right: 16px;
+      font-size: 0.9rem;
+      
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  app-root {
+    padding: 16px;
+  }
+  
+  .content-layout {
+    gap: 1rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    
+    .containers-sidebar & {
+      font-size: 1.3rem;
+    }
+  }
+  
+  .container-section {
+    padding: 16px;
+  }
+  
+  .inventory-item,
+  .container-item {
+    padding: 12px 16px;
+    
+    span {
+      display: block;
+      margin: 4px 0;
+      font-size: 0.85rem;
+    }
+  }
+  
+  .modal-header {
+    padding: 20px 24px 16px;
+    
+    h3 {
+      font-size: 1.3rem;
+    }
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .modal-footer {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px 24px;
+    justify-content: center;
+    
+    @media (max-width: 480px) {
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+}
+
+// ========================================
+// Animations
+// ========================================
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- 1  let flexbox calculate the height --- */
+.content-layout,
+.containers-sidebar,
+.container-list-scroll,
+.inventory-scroll {            /* let flex do the math     */
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;     /* cancels earlier 100 %    */
+}
+
+/* NEW – the last stubborn box ----------------------------------- */
+.inventory-section {           /* wraps the search bar + list  */
+  flex: 1 1 auto !important;   /* may grow *or* shrink          */
+  min-height: 0 !important;    /* allows children to shrink     */
+  height: auto !important;     /* overrides the old 100 % rule  */
+}
+
+/* ── FINAL OVERRIDES – place after everything else ─────────────── */
+
+/* 1 ▸ the two column wrappers must be allowed to shrink */
+.containers-sidebar {
+  flex: 1 1 auto !important;   /* take all free space, but no more   */
+  min-height: 0 !important;    /* <— critical so they CAN shrink     */
+  height: auto !important;     /* wipes out the calc(100% - 20px)    */
+}
+
+/* 2 ▸ same for the cards inside them */
+.container-section,
+.inventory-section {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* 3 ▸ and for the scrolling lists themselves */
+.container-list-scroll,
+.inventory-scroll {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;     /* internal scroll                 */
+}
+
+/* 4 ▸ add the breathing room just once, here                         */
+.inventory-container {               /* outer flex column             */
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0 20px 24px;  /* ← bottom gap here, nothing else needs it */
 }

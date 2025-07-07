@@ -1,6 +1,8 @@
-<nav>
-    <span (click)="navigateToInventory()" >Inventory</span>
-    <span (click)="navigateToItemCatalog()">Item Catalog</span>
-    <span>Character Stats</span>
-    <span>Sign Out</span>
-</nav>
+<div class="nav-container">
+  <div class="nav-buttons">
+    <button class="nav-button inventory-btn active"  (click)="navigateToInventory()">Inventory</button>
+    <button class="nav-button catalog-btn" (click)="navigateToItemCatalog()">Item Catalog</button>
+    <button class="nav-button">Character Stats</button>
+    <button class="nav-button">Sign Out</button>
+  </div>
+</div>

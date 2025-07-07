@@ -1,21 +1,22 @@
-<div *ngIf="character" class="basic-character-info">
-<div>
-    <h3>Name: {{character.name}}</h3>
-
-    <h5>Race: {{character.race}}</h5>
-
-    <h5>Background: {{character.background}}</h5>
-</div>
-
-
-<div *ngIf="character.classes">
-    <h4>Class:</h4>
-    <ul>
-        <li *ngFor="let cls of character.classes">
-            {{cls.className}} - {{cls.level}} <span *ngIf="cls.subClassName">({{cls.subClassName}})</span>
-        </li>
-    </ul>
-</div>
-
-
+<div *ngIf="character" class="character-info-container">
+  <div class="character-main">
+    <h2 class="character-name">{{character.name}}</h2>
+    <div class="character-classes" *ngIf="character.classes && character.classes.length > 0">
+      <div class="character-class" *ngFor="let cls of character.classes">
+        {{cls.className}} - {{cls.level}}
+        <span *ngIf="cls.subClassName">({{cls.subClassName}})</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="character-details">
+    <div class="detail-item">
+      <div class="label">Race</div>
+      <div class="value">{{character.race}}</div>
+    </div>
+    <div class="detail-item">
+      <div class="label">Background</div>
+      <div class="value">{{character.background}}</div>
+    </div>
+  </div>
 </div>

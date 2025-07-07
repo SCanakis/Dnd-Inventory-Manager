@@ -1,50 +1,67 @@
 <app-basic-character-info-component></app-basic-character-info-component>
 <app-nav-component></app-nav-component>
 
-  <h2>Character Containers</h2>
-  <div *ngIf="currentContainer.length > 0">
-    <ul>
-      <li (click)="getAllItems()">All Items</li>
-      <li *ngFor="let containerView of currentContainer" (click)="getContainerItems(containerView.container.id.containerUuid)">
-        <span>containerId: {{containerView.container.id.containerUuid}}</span> -
-        <span>name: {{containerView.name}}</span> -
-        <span>maxCapacity: {{containerView.container.maxCapacity}}</span> -
-        <span>currentCapacity: {{containerView.container.currentCapacity}}</span>
-      </li>
+<div class="inventory-container">
+  
 
-    </ul>
+  <div class="content-layout">
+    
+    <div class="containers-sidebar">
+      <div class="container-section">
+        <h2>Character Containers</h2>
+        <div *ngIf="currentContainer.length > 0">
+          <div class="container-list-scroll">
+            <ul>
+              <li (click)="getAllItems()" class="container-item">All Items</li>
+              <li *ngFor="let containerView of currentContainer" 
+                  (click)="getContainerItems(containerView.container.id.containerUuid)" 
+                  class="container-item">
+                <span>containerId: {{containerView.container.id.containerUuid}}</span>
+                <span><strong>{{containerView.name}}</strong> - {{containerView.container.currentCapacity}}/{{containerView.container.maxCapacity}}</span> 
+        
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 
-
+    <div class="inventory-main">
+      <div class="inventory-section">
+        <h2>Character Inventory</h2>
+        <div *ngIf="currentInventory.length > 0">
+        <div class="search-section">
+            <div class="search-container">
+            <input 
+                type="text" 
+                [(ngModel)]="searchTerm" 
+                (input)="onSearchTerm()" 
+                placeholder="Search items by name"
+            >
+            </div>
+        </div>          <!-- KEEP THIS WRAPPER BUT MAKE SURE IT HAS THE RIGHT CLASS -->
+          <div class="inventory-scroll">
+            <ul>
+              <li *ngFor="let item of currentInventory; let i = index" 
+                  class="inventory-item" 
+                  (click)="openItemModal(item)">
+                <span>Name: {{ item.itemName || 'Unknown' }}</span> - 
+                <span>Equipped: {{ item.equipped ? 'Yes' : 'No' }}</span> - 
+                <span>Attuned: {{ item.attuned ? 'Yes' : 'No' }}</span> - 
+                <span>Rarity: {{ item.itemRarity || 'Unknown' }}</span> - 
+                <span>Quantity: {{ item.quantity || 0 }}</span> - 
+                <span>Value: {{ item.itemValue || 0 }}</span> - 
+                <span>Weight: {{ item.itemWeight || 0 }}</span>
+              </li>
+            </ul>
+          </div>
+          <!-- END WRAPPER -->
+        </div>
+      </div>
+    </div>
+    
   </div>
-
-  <div style="margin-bottom: 20px;">
-  <input 
-    type="text" 
-    [(ngModel)]="searchTerm" 
-    (input)="onSearchTerm()"
-    placeholder="Search items by name"
-    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
-  >
 </div>
-
-  <h2>Character Inventory</h2>
-
-  <div *ngIf="currentInventory.length > 0">
-    <p>Found {{ currentInventory.length }} item(s):</p>
-    <ul>
-      <li *ngFor="let item of currentInventory; let i = index" style="margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 3px;" (click)="openItemModal(item)">
-        {{ i + 1 }}.
-        <span>Name: {{ item.itemName || 'Unknown' }}</span> - 
-        <span>Equipped: {{ item.equipped ? 'Yes' : 'No' }}</span> - 
-        <span>Attuned: {{ item.attuned ? 'Yes' : 'No' }}</span> - 
-        <span>Rarity: {{ item.itemRarity || 'Unknown' }}</span> - 
-        <span>Quantity: {{ item.quantity || 0 }}</span> - 
-        <span>Value: {{ item.itemValue || 0 }}</span> - 
-        <span>Weight: {{ item.itemWeight || 0 }}</span>
-      </li>
-    </ul>
-  </div>
-
 
 <div *ngIf="selectedItem" class="modal-overlay" (click)="closeItemModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
@@ -54,7 +71,11 @@
         </div>
         <div class="modal-body">
             <div class="item-detail">
-                <!-- Basic Info -->
+                <div class="item-has" *ngIf="selectedProject">
+                    <span><strong>Quantity:</strong> {{selectedProject.quantity}}</span>
+                    <span><strong>Weight:</strong> {{selectedProject.itemWeight}}</span>
+                </div>
+
                 <div class="info-section">
                     <h4>Basic Information</h4>
                     <p><strong>Name:</strong> {{selectedItem.itemName}}</p>
@@ -64,7 +85,6 @@
                     <p *ngIf="selectedItem.itemRarity"><strong>Rarity:</strong> {{selectedItem.itemRarity}}</p>
                 </div>
 
-                <!-- Combat Properties -->
                 <div class="info-section" *ngIf="selectedItem.attackable || selectedItem.acBonus">
                     <h4>Combat Properties</h4>
                     <p *ngIf="selectedItem.attackable"><strong>Attackable:</strong> {{selectedItem.attackable}}</p>
@@ -79,7 +99,6 @@
                     </div>
                 </div>
 
-                <!-- Equipment Properties -->
                 <div class="info-section" *ngIf="selectedItem.equippable || selectedItem.attunable || selectedItem.itemEquippableTypes">
                     <h4>Equipment Properties</h4>
                     <p *ngIf="selectedItem.equippable"><strong>Equippable:</strong> {{selectedItem.equippable}}</p>
@@ -92,7 +111,6 @@
                     </div>
                 </div>
 
-                <!-- Ability Requirements -->
                 <div class="info-section" *ngIf="selectedItem.abilityRequirement && selectedItem.abilityRequirement.size > 0">
                     <h4>Ability Requirements</h4>
                     <ul>
@@ -102,7 +120,6 @@
                     </ul>
                 </div>
 
-                <!-- Skill Modifiers -->
                 <div class="info-section" *ngIf="(selectedItem.skillAlteredRollType && selectedItem.skillAlteredRollType.size > 0) || (selectedItem.skillAlteredBonus && selectedItem.skillAlteredBonus.size > 0)">
                     <h4>Skill Modifiers</h4>
                     <div *ngIf="selectedItem.skillAlteredRollType && selectedItem.skillAlteredRollType.size > 0">
