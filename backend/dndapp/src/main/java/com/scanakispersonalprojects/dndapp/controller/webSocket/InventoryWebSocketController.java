@@ -10,7 +10,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-
+import com.scanakispersonalprojects.dndapp.controller.inventory.ContainerController;
 import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemProjection;
 import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.CharacterHasItemSlot;
 import com.scanakispersonalprojects.dndapp.model.webSocket.InventoryAddMessage;
@@ -23,6 +23,8 @@ import com.scanakispersonalprojects.dndapp.service.inventory.InventoryService;
 
 @Controller
 public class InventoryWebSocketController {
+
+    private final ContainerController containerController_1;
     
     private final static Logger LOG = Logger.getLogger(InventoryWebSocketController.class.getName());
 
@@ -33,10 +35,14 @@ public class InventoryWebSocketController {
 
     private final CustomUserDetailsService userService;
 
-    public InventoryWebSocketController(SimpMessagingTemplate messagingTemplate, InventoryService inventoryService, CustomUserDetailsService userService) {
+    private final ContainerWebSocketController containerController;
+
+    public InventoryWebSocketController(SimpMessagingTemplate messagingTemplate, InventoryService inventoryService, CustomUserDetailsService userService, ContainerWebSocketController containerController, ContainerController containerController_1) {
         this.messagingTemplate = messagingTemplate;
         this.inventoryService = inventoryService;
         this.userService = userService;
+        this.containerController = containerController;
+        this.containerController_1 = containerController_1;
     }
 
     @MessageMapping("inventory/subscribe")
@@ -110,6 +116,7 @@ public class InventoryWebSocketController {
                 sendToUser(principal.getName(), response);
 
                 broadcastInventoryUpdate(message.getCharUuid(), response);
+                this.containerController.broadcastContainers(null, response);
             } else {
                 sendErrorToUser(principal.getName(), "NOT_FOUND", "Item or container not found");
             }
@@ -179,6 +186,7 @@ public class InventoryWebSocketController {
                 sendToUser(principal.getName(), response);
 
                 broadcastInventoryUpdate(message.getCharUuid(), response);
+                containerController.broadcastContainers(message.getCharUuid(), response);
 
             } else {
                 sendErrorToUser(principal.getName(), "NOT_FOUND", "Item or container not found");
