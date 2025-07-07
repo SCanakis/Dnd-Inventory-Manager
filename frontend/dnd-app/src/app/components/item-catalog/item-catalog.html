@@ -1,138 +1,139 @@
-<app-basic-character-info-component></app-basic-character-info-component>
-<app-nav-component></app-nav-component>
+<div class="item-catalog-container">
+  <app-basic-character-info-component></app-basic-character-info-component>
+  <app-nav-component></app-nav-component>
 
-<h2>Item Catalog:</h2>
+  <div class="catalog-header">
+    <h2>Item Catalog:</h2>
+  </div>
 
-<div style="margin-bottom: 20px;">
+  <div class="catalog-search">
     <input 
-    type="text" 
-    [(ngModel)]="searchTerm" 
-    (input)="onSearchTerm()"
-    placeholder="Search items by name"
-    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"
-    >
+      type="text" 
+      [(ngModel)]="searchTerm" 
+      (input)="onSearchTerm()"
+      placeholder="Search items by name">
+  </div>
+
+  <div class="catalog-items">
+    <ul>
+      <li *ngFor="let item of items" (click)="openItemModal(item)" class="item-catalog-list">
+        <span class="item-name">{{item.itemName}}</span>
+        <span class="item-weight">{{item.itemWeight}}</span>
+        <span class="item-value">{{item.itemValue}}</span>
+        <span class="item-rarity" [attr.data-rarity]="item.itemRarity">{{item.itemRarity}}</span>
+      </li>
+    </ul>
+  </div>
 </div>
 
-<ul>
-    <li *ngFor="let item of items" (click)="openItemModal(item)" class="item-catalog-list">
-        <span>{{item.itemName}}</span> - 
-        <span>{{item.itemWeight}}</span> - 
-        <span>{{item.itemValue}}</span> - 
-        <span>{{item.itemRarity}}</span>
-    </li>
-</ul>
-
 <div *ngIf="selectedItem" class="modal-overlay" (click)="closeItemModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-            <h3>{{selectedItem.itemName}}</h3>
-            <button class="close-button" (click)="closeItemModal()">&times;</button>
-        </div>
-        <div class="modal-body">
-            <div class="item-detail">
-                <!-- Basic Info -->
-                <div class="info-section">
-                    <h4>Basic Information</h4>
-                    <p><strong>Name:</strong> {{selectedItem.itemName}}</p>
-                    <p *ngIf="selectedItem.itemDescription"><strong>Description:</strong> {{selectedItem.itemDescription}}</p>
-                    <p *ngIf="selectedItem.itemWeight"><strong>Weight:</strong> {{selectedItem.itemWeight}}</p>
-                    <p *ngIf="selectedItem.itemValue"><strong>Value:</strong> {{selectedItem.itemValue}}</p>
-                    <p *ngIf="selectedItem.itemRarity"><strong>Rarity:</strong> {{selectedItem.itemRarity}}</p>
-                </div>
-
-                <!-- Combat Properties -->
-                <div class="info-section" *ngIf="selectedItem.attackable || selectedItem.acBonus">
-                    <h4>Combat Properties</h4>
-                    <p *ngIf="selectedItem.attackable"><strong>Attackable:</strong> {{selectedItem.attackable}}</p>
-                    <p *ngIf="selectedItem.acBonus"><strong>AC Bonus:</strong> {{selectedItem.acBonus}}</p>
-                    <div *ngIf="selectedItem.addToAc && selectedItem.addToAc.size > 0">
-                        <p><strong>Add to AC:</strong></p>
-                        <ul>
-                            <li *ngFor="let entry of getMapEntries(selectedItem.addToAc)">
-                                {{entry.key}}: {{entry.value}}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Equipment Properties -->
-                <div class="info-section" *ngIf="selectedItem.equippable || selectedItem.attunable || selectedItem.itemEquippableTypes">
-                    <h4>Equipment Properties</h4>
-                    <p *ngIf="selectedItem.equippable"><strong>Equippable:</strong> {{selectedItem.equippable}}</p>
-                    <p *ngIf="selectedItem.attunable"><strong>Requires Attunement:</strong> {{selectedItem.attunable}}</p>
-                    <div *ngIf="selectedItem.itemEquippableTypes && selectedItem.itemEquippableTypes.length > 0">
-                        <p><strong>Equipment Types:</strong></p>
-                        <ul>
-                            <li *ngFor="let type of selectedItem.itemEquippableTypes">{{type}}</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Ability Requirements -->
-                <div class="info-section" *ngIf="selectedItem.abilityRequirement && selectedItem.abilityRequirement.size > 0">
-                    <h4>Ability Requirements</h4>
-                    <ul>
-                        <li *ngFor="let entry of getMapEntries(selectedItem.abilityRequirement)">
-                            {{entry.key}}: {{entry.value}}
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Skill Modifiers -->
-                <div class="info-section" *ngIf="(selectedItem.skillAlteredRollType && selectedItem.skillAlteredRollType.size > 0) || (selectedItem.skillAlteredBonus && selectedItem.skillAlteredBonus.size > 0)">
-                    <h4>Skill Modifiers</h4>
-                    <div *ngIf="selectedItem.skillAlteredRollType && selectedItem.skillAlteredRollType.size > 0">
-                        <p><strong>Roll Type Alterations:</strong></p>
-                        <ul>
-                            <li *ngFor="let entry of getMapEntries(selectedItem.skillAlteredRollType)">
-                                {{entry.key}}: {{entry.value}}
-                            </li>
-                        </ul>
-                    </div>
-                    <div *ngIf="selectedItem.skillAlteredBonus && selectedItem.skillAlteredBonus.size > 0">
-                        <p><strong>Skill Bonuses:</strong></p>
-                        <ul>
-                            <li *ngFor="let entry of getMapEntries(selectedItem.skillAlteredBonus)">
-                                {{entry.key}}: +{{entry.value}}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="info-section" *ngIf="selectedItem.isContainer">
-                    <h4>Container Properties</h4>
-                    <p><strong>Is Container:</strong> {{selectedItem.isContainer}}</p>
-                    <p *ngIf="selectedItem.capacity"><strong>Capacity:</strong> {{selectedItem.capacity}}</p>
-                </div>
-
-                <div class="info-section" *ngIf="selectedItem.classNameIdPair && selectedItem.classNameIdPair.length > 0">
-                    <h4>Class Requirements</h4>
-                    <ul>
-                        <li *ngFor="let classPair of selectedItem.classNameIdPair">
-                            {{classPair.className}}
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-
-            <div class="add-item-section">
-                <label for="quantity">Quantity</label>
-                <input 
-                    type="number"
-                    id="quantity"
-                    [(ngModel)]="quantity"
-                    min="1"
-                    value="1"
-                    class="quantity-input">
-                <button (click)="addItem()"
-                [disabled]="!quantity || quantity < 1">
-                Add Item</button>
-            </div>
-                
-
-            <button class="btn btn-secondary" (click)="closeItemModal()">Close</button>
-        </div>
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{selectedItem.itemName}}</h3>
+      <button class="close-button" (click)="closeItemModal()">&times;</button>
     </div>
+    <div class="modal-body">
+      <div class="item-detail">
+        <!-- Basic Info -->
+        <div class="info-section">
+          <h4>Basic Information</h4>
+          <p><strong>Name:</strong> {{selectedItem.itemName}}</p>
+          <p *ngIf="selectedItem.itemDescription"><strong>Description:</strong> {{selectedItem.itemDescription}}</p>
+          <p *ngIf="selectedItem.itemWeight"><strong>Weight:</strong> {{selectedItem.itemWeight}}</p>
+          <p *ngIf="selectedItem.itemValue"><strong>Value:</strong> {{selectedItem.itemValue}}</p>
+          <p *ngIf="selectedItem.itemRarity"><strong>Rarity:</strong> {{selectedItem.itemRarity}}</p>
+        </div>
+
+        <!-- Combat Properties -->
+        <div class="info-section" *ngIf="selectedItem.attackable || selectedItem.acBonus">
+          <h4>Combat Properties</h4>
+          <p *ngIf="selectedItem.attackable"><strong>Attackable:</strong> {{selectedItem.attackable}}</p>
+          <p *ngIf="selectedItem.acBonus"><strong>AC Bonus:</strong> {{selectedItem.acBonus}}</p>
+          <div *ngIf="selectedItem.addToAc && selectedItem.addToAc.size > 0">
+            <p><strong>Add to AC:</strong></p>
+            <ul>
+              <li *ngFor="let entry of getMapEntries(selectedItem.addToAc)">
+                {{entry.key}}: {{entry.value}}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Equipment Properties -->
+        <div class="info-section" *ngIf="selectedItem.equippable || selectedItem.attunable || selectedItem.itemEquippableTypes">
+          <h4>Equipment Properties</h4>
+          <p *ngIf="selectedItem.equippable"><strong>Equippable:</strong> {{selectedItem.equippable}}</p>
+          <p *ngIf="selectedItem.attunable"><strong>Requires Attunement:</strong> {{selectedItem.attunable}}</p>
+          <div *ngIf="selectedItem.itemEquippableTypes && selectedItem.itemEquippableTypes.length > 0">
+            <p><strong>Equipment Types:</strong></p>
+            <ul>
+              <li *ngFor="let type of selectedItem.itemEquippableTypes">{{type}}</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Ability Requirements -->
+        <div class="info-section" *ngIf="selectedItem.abilityRequirement && selectedItem.abilityRequirement.size > 0">
+          <h4>Ability Requirements</h4>
+          <ul>
+            <li *ngFor="let entry of getMapEntries(selectedItem.abilityRequirement)">
+              {{entry.key}}: {{entry.value}}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Skill Modifiers -->
+        <div class="info-section" *ngIf="(selectedItem.skillAlteredRollType && selectedItem.skillAlteredRollType.size > 0) || (selectedItem.skillAlteredBonus && selectedItem.skillAlteredBonus.size > 0)">
+          <h4>Skill Modifiers</h4>
+          <div *ngIf="selectedItem.skillAlteredRollType && selectedItem.skillAlteredRollType.size > 0">
+            <p><strong>Roll Type Alterations:</strong></p>
+            <ul>
+              <li *ngFor="let entry of getMapEntries(selectedItem.skillAlteredRollType)">
+                {{entry.key}}: {{entry.value}}
+              </li>
+            </ul>
+          </div>
+          <div *ngIf="selectedItem.skillAlteredBonus && selectedItem.skillAlteredBonus.size > 0">
+            <p><strong>Skill Bonuses:</strong></p>
+            <ul>
+              <li *ngFor="let entry of getMapEntries(selectedItem.skillAlteredBonus)">
+                {{entry.key}}: +{{entry.value}}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="info-section" *ngIf="selectedItem.isContainer">
+          <h4>Container Properties</h4>
+          <p><strong>Is Container:</strong> {{selectedItem.isContainer}}</p>
+          <p *ngIf="selectedItem.capacity"><strong>Capacity:</strong> {{selectedItem.capacity}}</p>
+        </div>
+
+        <div class="info-section" *ngIf="selectedItem.classNameIdPair && selectedItem.classNameIdPair.length > 0">
+          <h4>Class Requirements</h4>
+          <ul>
+            <li *ngFor="let classPair of selectedItem.classNameIdPair">
+              {{classPair.className}}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="add-item-section">
+        <label for="quantity">Quantity</label>
+        <input 
+          type="number"
+          id="quantity"
+          [(ngModel)]="quantity"
+          min="1"
+          value="1"
+          class="quantity-input">
+        <button (click)="addItem()"
+          [disabled]="!quantity || quantity < 1">
+          Add Item</button>
+      </div>
+      <button class="btn btn-secondary" (click)="closeItemModal()">Close</button>
+    </div>
+  </div>
 </div>

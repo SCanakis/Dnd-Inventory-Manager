@@ -1,8 +1,29 @@
 <div class="nav-container">
   <div class="nav-buttons">
-    <button class="nav-button inventory-btn active"  (click)="navigateToInventory()">Inventory</button>
-    <button class="nav-button catalog-btn" (click)="navigateToItemCatalog()">Item Catalog</button>
-    <button class="nav-button">Character Stats</button>
-    <button class="nav-button">Sign Out</button>
+    <button 
+      class="nav-button inventory-btn" 
+      [class.active]="currentPage === 'inventory'"
+      (click)="navigateToInventory()">
+      Inventory
+    </button>
+    <button 
+      class="nav-button catalog-btn" 
+      [class.active]="currentPage === 'catalog'"
+      (click)="navigateToItemCatalog()">
+      Item Catalog
+    </button>
+    <button 
+      class="nav-button stats-btn" 
+      [class.active]="currentPage === 'stats'"
+      [disabled]="true"
+      title="Character Stats page coming soon">
+      Character Stats
+    </button>
+    <button 
+      class="nav-button logout-btn" 
+      [disabled]="true"
+      title="Sign out functionality coming soon">
+      Sign Out
+    </button>
   </div>
 </div>
