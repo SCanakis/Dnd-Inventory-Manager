@@ -34,7 +34,7 @@ export class NavComponent implements OnInit{
       this.currentPage = 'inventory';
     } else if (url.includes('/itemCatalog')) {
       this.currentPage = 'catalog';
-    } else if (url.includes('/character-stats') || url.includes('/stats')) {
+    } else if (url.includes('/characterStats')) {
       this.currentPage = 'stats';
     } else {
       this.currentPage = 'inventory'; // Default fallback
@@ -53,6 +53,14 @@ export class NavComponent implements OnInit{
       this.currentPage = 'catalog'
       this.router.navigate(['/character', this.charUuid, 'itemCatalog']);
     }
+  }
+
+  navigateToCharacterStats() {
+    if(this.charUuid) {
+      this.currentPage = 'stats'
+      this.router.navigate(['/character', this.charUuid, 'characterStats']);
+    }
+
   }
 
 }

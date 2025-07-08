@@ -1,0 +1,149 @@
+<div class="character-stats-container">
+  <app-basic-character-info-component></app-basic-character-info-component>
+  <app-nav-component></app-nav-component>
+
+  <div class="stats-header">
+    <h2>Character Statistics</h2>
+  </div>
+
+  <div *ngIf="characterInfo" class="character-stats-content">
+    
+    <!-- New Layout: Ability Scores on Left, HP/Death Saves + Basic Info on Right -->
+    <div class="ability-hp-death-container">
+      
+      <!-- Ability Scores Section - Left Side -->
+      <div class="stats-section">
+        <h3>Ability Scores</h3>
+        <div class="ability-scores-grid">
+          <div *ngFor="let ability of getAbilityScoreKeys()" class="ability-score-card">
+            <div class="ability-name">{{ ability | titlecase }}</div>
+            <div class="ability-score">{{ getAbilityScore(ability) }}</div>
+            <div class="ability-modifier">
+              {{ getAbilityScorePositive(ability) }}{{ getAbilityScoreModifier(ability) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side Container - HP/Death Saves + Basic Info -->
+      <div class="right-column">
+        <!-- HP and Death Saves Section -->
+        <div class="stats-section hp-death-section">
+          <h3>Hit Points & Death Saves</h3>
+          <div class="hp-death-saves-grid">
+            
+            <!-- HP Section -->
+            <div class="hp-section">
+              <h4>Hit Points</h4>
+              <div class="hp-display">
+                <div class="hp-item">
+                  <span class="hp-label">Current HP:</span>
+                  <span class="hp-value current-hp">{{ characterInfo.hpHandler.currentHp }}</span>
+                </div>
+                <div class="hp-item">
+                  <span class="hp-label">Max HP:</span>
+                  <span class="hp-value max-hp">{{ characterInfo.hpHandler.maxHp }}</span>
+                </div>
+                <div class="hp-item" *ngIf="characterInfo.hpHandler.temporaryHp">
+                  <span class="hp-label">Temporary HP:</span>
+                  <span class="hp-value temp-hp">{{ characterInfo.hpHandler.temporaryHp }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Death Saves Section -->
+            <div class="death-saves-section">
+              <h4>Death Saving Throws</h4>
+              <div class="death-saves-display">
+                <div class="save-type">
+                  <span class="save-label">Successes:</span>
+                  <div class="save-dots">
+                    <span *ngFor="let i of [1,2,3]" 
+                          class="save-dot" 
+                          [class.filled]="i <= characterInfo.deathSavingThrowsHelper.successes"
+                          [class.success]="i <= characterInfo.deathSavingThrowsHelper.successes">
+                    </span>
+                  </div>
+                </div>
+                <div class="save-type">
+                  <span class="save-label">Failures:</span>
+                  <div class="save-dots">
+                    <span *ngFor="let i of [1,2,3]" 
+                          class="save-dot" 
+                          [class.filled]="i <= characterInfo.deathSavingThrowsHelper.failures"
+                          [class.failure]="i <= characterInfo.deathSavingThrowsHelper.failures">
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Basic Info Section - Below HP/Death Saves -->
+        <div class="stats-section basic-info-compact">
+          <h3>Basic Information</h3>
+          <div class="basic-info-grid">
+            <div class="info-item">
+              <span class="info-label">Name:</span>
+              <span class="info-value">{{ characterInfo.name }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Race:</span>
+              <span class="info-value">{{ characterInfo.race }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Background:</span>
+              <span class="info-value">{{ characterInfo.background }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Inspiration:</span>
+              <span class="info-value" [class.inspiration-active]="characterInfo.inspiration">
+                {{ characterInfo.inspiration ? 'Yes' : 'No' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Classes Section -->
+    <div class="stats-section">
+      <h3>Classes</h3>
+      <div class="classes-list">
+        <div *ngFor="let characterClass of characterInfo.classes" class="class-card">
+          <div class="class-header">
+            <span class="class-name">{{ characterClass.className }}</span>
+            <span class="class-level">Level {{ characterClass.level }}</span>
+          </div>
+          <div class="class-details">
+            <div class="class-detail-item">
+              <span class="detail-label">Subclass:</span>
+              <span class="detail-value">{{ characterClass.subClassName || 'None' }}</span>
+            </div>
+            <div class="class-detail-item">
+              <span class="detail-label">Hit Dice:</span>
+              <span class="detail-value">d{{ characterClass.hitDiceValue }}</span>
+            </div>
+            <div class="class-detail-item">
+              <span class="detail-label">Hit Dice Remaining:</span>
+              <span class="detail-value">{{ characterClass.hitDiceRemaining }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="!characterInfo" class="loading-state">
+    <p>Loading character statistics...</p>
+  </div>
+
+  <!-- Error state (you might want to add an error property to your component) -->
+  <div *ngIf="!characterInfo && charUuid" class="error-state">
+    <p>Unable to load character statistics. Please try again.</p>
+    <button class="btn btn-primary" (click)="loadCharacterStats()">Retry</button>
+  </div>
+</div>

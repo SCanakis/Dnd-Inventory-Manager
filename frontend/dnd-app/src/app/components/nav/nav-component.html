@@ -15,8 +15,7 @@
     <button 
       class="nav-button stats-btn" 
       [class.active]="currentPage === 'stats'"
-      [disabled]="true"
-      title="Character Stats page coming soon">
+      (click)="navigateToCharacterStats()">
       Character Stats
     </button>
     <button 
