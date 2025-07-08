@@ -204,11 +204,27 @@ public class InventoryService {
 
             if(repo.existsById(slotId)) {
                 CharacterHasItemSlot slot = repo.getReferenceById(slotId);
-                repo.deleteById(new CharacterHasItemSlotId(itemUuid, charUuid, containerUuid));
-
+                
                 Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(containerUuid, charUuid));
                 
                 ItemCatalog item = itemCatalogService.getItemWithUUID(itemUuid);
+                
+                if(item.isContainer()) {
+                    List<Container> containers= containerRepo.getCharactersContainers(charUuid);
+
+                    for(Container container : containers) {
+                        if(Objects.equals(container.getItemUuid(), itemUuid)) {
+                            if(container.getCurrentCapacity() > 0) {
+                                return null;
+                            } else {
+                                containerRepo.deleteById(container.getId());
+                            }
+                        }
+                    }
+                    
+                }
+                
+                repo.deleteById(new CharacterHasItemSlotId(itemUuid, charUuid, containerUuid));
 
                 if(optionalContainer.isPresent() && item != null) {
                     Container container = optionalContainer.get();
