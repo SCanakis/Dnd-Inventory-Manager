@@ -1,3 +1,5 @@
+import { CharacterInfoUpdateDTO } from "./character-info-interface";
+
 export interface WebSocketResponse<T = any> {
   type: string;
   success: boolean;
@@ -31,6 +33,10 @@ export interface InventoryDeleteMessage extends WebSocketMessage {
 export interface InventoryRequestMessage extends WebSocketMessage{
   containerUuid?: string;
   searchTerm?: string;
+}
+
+export interface CharacterStatsUpdateMessage extends WebSocketMessage {
+  update : CharacterInfoUpdateDTO;
 }
 
 export interface CharacterHasItemProjection {

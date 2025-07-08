@@ -49,3 +49,14 @@ export interface DeathSavingThrowsHelper {
     successes: number;
     failures: number;
 }
+
+export interface CharacterInfoUpdateDTO {
+    name : String;
+    inspiration : Boolean;
+    backgroundUuid : String;
+    raceUuid : string;
+    abilityScores : Map<AbilityScore, number>;
+    hpHandler : HPHandler;
+    deathSavingThrowsHelper : DeathSavingThrowsHelper;
+    characterClassDetail : CharacterClassDetail[];
+}

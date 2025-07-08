@@ -7,6 +7,10 @@ import { CharacterInfoService } from '../../../service/character-info/character-
 import { AbilityScore, CharacterBasicInfoView } from '../../../interface/character-info-interface';
 import { error } from 'console';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
+import { WebSocketResponse } from '../../../interface/websocket-interface';
+import { WebsocketServiceCharacterStats } from '../../../service/websocket/websocket-service-character-stats';
+import { response } from 'express';
 
 @Component({
   selector: 'app-character-stats',
@@ -16,10 +20,18 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class CharacterStats implements OnInit{
 
+  private subscriptions : Subscription[] = [];
+
+  isConnected = false;
+
+  lastMessage : WebSocketResponse | null = null;
+
+
   charUuid : string | null;
   characterInfo : CharacterBasicInfoView | null = null;
 
   constructor(
+    private characterWebSocketService : WebsocketServiceCharacterStats,
     private characterService : CharacterInfoService,
     private route : ActivatedRoute
   ) {
@@ -36,13 +48,31 @@ export class CharacterStats implements OnInit{
       return;
     }
 
-    this.characterService.getCharacter(this.charUuid).subscribe(
-      (response : CharacterBasicInfoView) => {
-        this.characterInfo = response;
-      },
-      (error : HttpErrorResponse) => {
-        console.log("Error loading character: ", error.message);
-      }
+    this.characterWebSocketService.init(this.charUuid);
+    this.characterWebSocketService.connect();
+
+    this.subscriptions.push(
+      this.characterWebSocketService.isConnected$.subscribe(connected => {
+        this.isConnected = connected;
+        if(connected && this.charUuid) {
+          this.characterWebSocketService.subscribeToCharacterStats(this.charUuid);
+        }
+      })
+    );
+
+    this.subscriptions.push(
+      this.characterWebSocketService.characterUpdates$.subscribe(response => {
+        if(response) {
+          this.lastMessage = response;
+
+          if(response.data) {
+            this.characterInfo = response.data;
+          }
+
+        } else {
+          console.log("Character STat is null");
+        }
+      })
     );
   }
 
