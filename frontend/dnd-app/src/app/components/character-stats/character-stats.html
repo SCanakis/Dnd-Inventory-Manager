@@ -4,6 +4,9 @@
 
   <div class="stats-header">
     <h2>Character Statistics</h2>
+    <button class="btn btn-primary update-button" (click)="openUpdateModal()">
+      Update Character
+    </button>
   </div>
 
   <div *ngIf="characterInfo" class="character-stats-content">
@@ -32,47 +35,75 @@
           <h3>Hit Points & Death Saves</h3>
           <div class="hp-death-saves-grid">
             
-            <!-- HP Section -->
+            <!-- HP Section - Now Editable -->
             <div class="hp-section">
               <h4>Hit Points</h4>
               <div class="hp-display">
-                <div class="hp-item">
+                <div class="hp-item editable-item">
                   <span class="hp-label">Current HP:</span>
-                  <span class="hp-value current-hp">{{ characterInfo.hpHandler.currentHp }}</span>
+                  <div class="editable-value">
+                    <input 
+                      type="number" 
+                      class="inline-input hp-input"
+                      [(ngModel)]="characterInfo.hpHandler.currentHp"
+                      (blur)="onHpChange('current', characterInfo.hpHandler.currentHp)"
+                      (keydown.enter)="onHpChange('current', characterInfo.hpHandler.currentHp)"
+                      min="0"
+                      [max]="characterInfo.hpHandler.maxHp">
+                    <span class="hp-value current-hp">{{ characterInfo.hpHandler.currentHp }}</span>
+                  </div>
                 </div>
                 <div class="hp-item">
                   <span class="hp-label">Max HP:</span>
                   <span class="hp-value max-hp">{{ characterInfo.hpHandler.maxHp }}</span>
                 </div>
-                <div class="hp-item" *ngIf="characterInfo.hpHandler.temporaryHp">
+                <div class="hp-item editable-item">
                   <span class="hp-label">Temporary HP:</span>
-                  <span class="hp-value temp-hp">{{ characterInfo.hpHandler.temporaryHp }}</span>
+                  <div class="editable-value">
+                    <input 
+                      type="number" 
+                      class="inline-input hp-input"
+                      [(ngModel)]="characterInfo.hpHandler.temporaryHp"
+                      (blur)="onHpChange('temp', characterInfo.hpHandler.temporaryHp || 0)"
+                      (keydown.enter)="onHpChange('temp', characterInfo.hpHandler.temporaryHp || 0)"
+                      min="0"
+                      placeholder="0">
+                    <span class="hp-value temp-hp">{{ characterInfo.hpHandler.temporaryHp || 0 }}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Death Saves Section -->
+            <!-- Death Saves Section - Now Editable -->
             <div class="death-saves-section">
               <h4>Death Saving Throws</h4>
               <div class="death-saves-display">
-                <div class="save-type">
+                <div class="save-type editable-saves">
                   <span class="save-label">Successes:</span>
-                  <div class="save-dots">
-                    <span *ngFor="let i of [1,2,3]" 
-                          class="save-dot" 
-                          [class.filled]="i <= characterInfo.deathSavingThrowsHelper.successes"
-                          [class.success]="i <= characterInfo.deathSavingThrowsHelper.successes">
-                    </span>
+                  <div class="save-controls">
+                    <div class="save-dots">
+                      <span *ngFor="let i of [1,2,3]" 
+                            class="save-dot clickable-dot" 
+                            [class.filled]="i <= characterInfo.deathSavingThrowsHelper.successes"
+                            [class.success]="i <= characterInfo.deathSavingThrowsHelper.successes"
+                            (click)="onDeathSaveChange('successes', i)">
+                      </span>
+                    </div>
+                    <button class="reset-btn" (click)="onDeathSaveChange('successes', 0)" title="Reset">↻</button>
                   </div>
                 </div>
-                <div class="save-type">
+                <div class="save-type editable-saves">
                   <span class="save-label">Failures:</span>
-                  <div class="save-dots">
-                    <span *ngFor="let i of [1,2,3]" 
-                          class="save-dot" 
-                          [class.filled]="i <= characterInfo.deathSavingThrowsHelper.failures"
-                          [class.failure]="i <= characterInfo.deathSavingThrowsHelper.failures">
-                    </span>
+                  <div class="save-controls">
+                    <div class="save-dots">
+                      <span *ngFor="let i of [1,2,3]" 
+                            class="save-dot clickable-dot" 
+                            [class.filled]="i <= characterInfo.deathSavingThrowsHelper.failures"
+                            [class.failure]="i <= characterInfo.deathSavingThrowsHelper.failures"
+                            (click)="onDeathSaveChange('failures', i)">
+                      </span>
+                    </div>
+                    <button class="reset-btn" (click)="onDeathSaveChange('failures', 0)" title="Reset">↻</button>
                   </div>
                 </div>
               </div>
@@ -80,7 +111,7 @@
           </div>
         </div>
 
-        <!-- Basic Info Section - Below HP/Death Saves -->
+        <!-- Basic Info Section - Inspiration Now Editable -->
         <div class="stats-section basic-info-compact">
           <h3>Basic Information</h3>
           <div class="basic-info-grid">
@@ -96,22 +127,32 @@
               <span class="info-label">Background:</span>
               <span class="info-value">{{ characterInfo.background }}</span>
             </div>
-            <div class="info-item">
+            <div class="info-item editable-item">
               <span class="info-label">Inspiration:</span>
-              <span class="info-value" [class.inspiration-active]="characterInfo.inspiration">
-                {{ characterInfo.inspiration ? 'Yes' : 'No' }}
-              </span>
+              <div class="inspiration-toggle">
+                <input 
+                  type="checkbox" 
+                  id="inspiration-toggle"
+                  class="inspiration-checkbox"
+                  [(ngModel)]="characterInfo.inspiration"
+                  (change)="onInspirationChange(characterInfo.inspiration)">
+                <label for="inspiration-toggle" class="inspiration-label">
+                  <span class="info-value" [class.inspiration-active]="characterInfo.inspiration">
+                    {{ characterInfo.inspiration ? 'Yes' : 'No' }}
+                  </span>
+                </label>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Classes Section -->
+    <!-- Classes Section - Hit Dice Now Editable -->
     <div class="stats-section">
       <h3>Classes</h3>
       <div class="classes-list">
-        <div *ngFor="let characterClass of characterInfo.classes" class="class-card">
+        <div *ngFor="let characterClass of characterInfo.classes; let i = index" class="class-card">
           <div class="class-header">
             <span class="class-name">{{ characterClass.className }}</span>
             <span class="class-level">Level {{ characterClass.level }}</span>
@@ -125,9 +166,30 @@
               <span class="detail-label">Hit Dice:</span>
               <span class="detail-value">d{{ characterClass.hitDiceValue }}</span>
             </div>
-            <div class="class-detail-item">
+            <div class="class-detail-item editable-item">
               <span class="detail-label">Hit Dice Remaining:</span>
-              <span class="detail-value">{{ characterClass.hitDiceRemaining }}</span>
+              <div class="hit-dice-controls">
+                <button 
+                  class="dice-btn minus-btn" 
+                  (click)="onHitDiceChange(i, characterClass.hitDiceRemaining - 1)"
+                  [disabled]="characterClass.hitDiceRemaining <= 0">
+                  −
+                </button>
+                <input 
+                  type="number" 
+                  class="inline-input dice-input"
+                  [(ngModel)]="characterClass.hitDiceRemaining"
+                  (blur)="onHitDiceChange(i, characterClass.hitDiceRemaining)"
+                  (keydown.enter)="onHitDiceChange(i, characterClass.hitDiceRemaining)"
+                  min="0" 
+                  [max]="characterClass.level">
+                <button 
+                  class="dice-btn plus-btn" 
+                  (click)="onHitDiceChange(i, characterClass.hitDiceRemaining + 1)"
+                  [disabled]="characterClass.hitDiceRemaining >= characterClass.level">
+                  +
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -141,9 +203,152 @@
     <p>Loading character statistics...</p>
   </div>
 
-  <!-- Error state (you might want to add an error property to your component) -->
+  <!-- Error state -->
   <div *ngIf="!characterInfo && charUuid" class="error-state">
     <p>Unable to load character statistics. Please try again.</p>
     <button class="btn btn-primary" (click)="loadCharacterStats()">Retry</button>
+  </div>
+</div>
+
+<!-- Update Character Modal -->
+<div *ngIf="showUpdateModal" class="modal-overlay" (click)="closeUpdateModal()">
+  <div class="modal-content update-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Update Character Information</h3>
+      <button class="close-button" (click)="closeUpdateModal()">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <form class="update-form">
+        <!-- Basic Information Section -->
+        <div class="form-section">
+          <h4>Basic Information</h4>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="characterName">Character Name</label>
+              <input 
+                type="text" 
+                id="characterName"
+                [(ngModel)]="updateData.name"
+                name="characterName"
+                class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="characterInspiration">Inspiration</label>
+              <div class="checkbox-container">
+                <input 
+                  type="checkbox" 
+                  id="characterInspiration"
+                  [(ngModel)]="updateData.inspiration"
+                  name="characterInspiration"
+                  class="form-checkbox">
+                <span class="checkmark"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ability Scores Section -->
+        <div class="form-section">
+          <h4>Ability Scores</h4>
+          <div class="ability-scores-form-grid">
+            <div *ngFor="let ability of getAbilityScoreKeys()" class="form-group">
+              <label [for]="'ability-' + ability">{{ ability | titlecase }}</label>
+              <input 
+                type="number" 
+                [id]="'ability-' + ability"
+                [ngModel]="updateData.abilityScores[ability] || 0"
+                (ngModelChange)="updateAbilityScore(ability, $event)"
+                [name]="'ability-' + ability"
+                min="1" 
+                max="30"
+                class="form-control ability-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- Hit Points Section -->
+        <div class="form-section">
+          <h4>Hit Points</h4>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="currentHp">Current HP</label>
+              <input 
+                type="number" 
+                id="currentHp"
+                [(ngModel)]="updateData.hpHandler.currentHp"
+                name="currentHp"
+                min="0"
+                class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="maxHp">Max HP</label>
+              <input 
+                type="number" 
+                id="maxHp"
+                [(ngModel)]="updateData.hpHandler.maxHp"
+                name="maxHp"
+                min="1"
+                class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="temporaryHp">Temporary HP</label>
+              <input 
+                type="number" 
+                id="temporaryHp"
+                [(ngModel)]="updateData.hpHandler.temporaryHp"
+                name="temporaryHp"
+                min="0"
+                class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <!-- Death Saving Throws Section -->
+        <div class="form-section">
+          <h4>Death Saving Throws</h4>
+          <div class="death-saves-form">
+            <div class="form-group">
+              <label for="deathSaveSuccesses">Successes</label>
+              <input 
+                type="number" 
+                id="deathSaveSuccesses"
+                [(ngModel)]="updateData.deathSavingThrowsHelper.successes"
+                name="deathSaveSuccesses"
+                min="0" 
+                max="3"
+                class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="deathSaveFailures">Failures</label>
+              <input 
+                type="number" 
+                id="deathSaveFailures"
+                [(ngModel)]="updateData.deathSavingThrowsHelper.failures"
+                name="deathSaveFailures"
+                min="0" 
+                max="3"
+                class="form-control">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <div class="modal-footer">
+      <button 
+        class="btn btn-primary" 
+        (click)="saveCharacterUpdates()"
+        [disabled]="!isValidUpdate()">
+        Save Changes
+      </button>
+      <button class="btn btn-secondary" (click)="closeUpdateModal()">
+        Cancel
+      </button>
+    </div>
   </div>
 </div>

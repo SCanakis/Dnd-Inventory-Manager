@@ -289,7 +289,7 @@ public class CharacterInfoService {
                 if(updateDTO.getRaceUuid() != null) {
                     existing.setRaceUuid(updateDTO.getRaceUuid());
                 }
-                if(updateDTO.getAbilityScores() != null) {
+                if(updateDTO.getAbilityScores() != null && !updateDTO.getAbilityScores().isEmpty()) {
                     existing.setAbilityScores((updateDTO.getAbilityScores()));
                 }
                 if(updateDTO.getHpHandler() != null) {

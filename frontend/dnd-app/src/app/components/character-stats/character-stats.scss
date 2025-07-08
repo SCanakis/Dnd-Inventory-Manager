@@ -1,191 +1,176 @@
-// ========================================
-// CHARACTER STATS COMPONENT STYLES
-// ========================================
+/* ========================================
+   CHARACTER STATS CONTAINER
+   ======================================== */
 .character-stats-container {
-  padding: 1.5rem;
-  min-height: 100vh;
-  background-color: var(--bg-primary);
-  animation: fadeIn 0.3s ease;
-
-  @media (max-width: 768px) {
-    padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  padding: 0 20px 24px;
+  
+  // Make character info and nav consistent with other pages
+  app-basic-character-info-component,
+  app-nav-component {
+    flex-shrink: 0;
+    margin-bottom: 1rem;
   }
 }
 
-// ========================================
-// Header Section
-// ========================================
+/* ========================================
+   STATS HEADER
+   ======================================== */
 .stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1.5rem;
+  flex-shrink: 0;
   
   h2 {
     color: var(--text-primary);
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 700;
-    border-bottom: 3px solid var(--accent-primary);
+    margin: 0 0 1rem 0;
     padding-bottom: 0.5rem;
-    margin-bottom: 0;
+    border-bottom: 2px solid var(--border-primary);
+  }
+  
+  .update-button {
+    background-color: var(--accent-primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
     
-    @media (max-width: 768px) {
-      font-size: 1.75rem;
+    &:hover {
+      background-color: var(--accent-primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--shadow-medium);
+    }
+    
+    &:active {
+      transform: translateY(0);
     }
   }
 }
 
-// ========================================
-// Content Container
-// ========================================
+/* ========================================
+   CHARACTER STATS CONTENT
+   ======================================== */
 .character-stats-content {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  animation: slideInUp 0.4s ease;
-}
-
-// ========================================
-// New Layout: Ability Scores + HP/Death Saves + Basic Info Grid
-// ========================================
-.ability-hp-death-container {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 1.25rem;
-  align-items: start;
+  gap: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
   
-  @media (max-width: 1024px) {
-    grid-template-columns: 250px 1fr;
-    gap: 1rem;
+  // Custom scrollbar to match other pages
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-secondary) var(--bg-tertiary);
+  
+  &::-webkit-scrollbar {
+    width: 12px;
+    background: var(--bg-tertiary);
   }
   
-  @media (max-width: 768px) {
+  &::-webkit-scrollbar-track {
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+    margin: 2px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-secondary);
+    border-radius: 6px;
+    border: 2px solid var(--bg-tertiary);
+    
+    &:hover { background: var(--border-tertiary); }
+    &:active { background: var(--border-tertiary); }
+  }
+}
+
+.ability-hp-death-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  
+  @media (max-width: 968px) {
     grid-template-columns: 1fr;
-    gap: 1rem;
   }
 }
 
 .right-column {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
-// Compact Basic Info for right column
-.basic-info-compact {
-  .basic-info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-    
-    @media (max-width: 1024px) {
-      grid-template-columns: 1fr;
-      gap: 0.375rem;
-    }
-  }
-  
-  .info-item {
-    padding: 0.5rem 0.75rem;
-    
-    .info-label {
-      font-size: 0.8rem;
-    }
-    
-    .info-value {
-      font-size: 0.85rem;
-    }
-  }
-  
-  h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.75rem;
-  }
-}
-
-// ========================================
-// Stats Section Base
-// ========================================
+/* ========================================
+   STATS SECTIONS
+   ======================================== */
 .stats-section {
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-secondary);
   border: 1px solid var(--border-primary);
-  border-radius: 8px;
-  padding: 1.25rem;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px var(--shadow-light);
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: var(--border-secondary);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px var(--shadow-light);
+    box-shadow: 0 4px 16px var(--shadow-medium);
   }
   
   h3 {
     color: var(--text-primary);
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    border-bottom: 1px solid var(--border-secondary);
-    padding-bottom: 0.25rem;
+    border-bottom: 2px solid var(--accent-primary);
+    padding-bottom: 0.5rem;
   }
   
   h4 {
     color: var(--text-primary);
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 0.75rem;
   }
-  
-  @media (max-width: 768px) {
-    padding: 1rem;
-    
-    h3 {
-      font-size: 1.1rem;
-    }
-  }
 }
 
-// ========================================
-// HP and Death Saves Section (special compact styling)
-// ========================================
-.hp-death-section {
-  padding: 1rem;
-  
-  h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.75rem;
-  }
-}
-
-// ========================================
-// Ability Scores Section - Vertical Layout
-// ========================================
+/* ========================================
+   ABILITY SCORES
+   ======================================== */
 .ability-scores-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
   
   @media (max-width: 768px) {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
+    grid-template-columns: repeat(2, 1fr);
   }
   
   @media (max-width: 480px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
 .ability-score-card {
-  background-color: var(--bg-hover);
-  border: 1px solid var(--border-primary);
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-secondary);
   border-radius: 8px;
-  padding: 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  padding: 1rem;
+  text-align: center;
   transition: all 0.2s ease;
-  cursor: pointer;
   
   &:hover {
-    background-color: var(--bg-active);
+    background-color: var(--bg-hover);
     border-color: var(--accent-primary);
-    transform: translateX(3px);
+    transform: translateY(-2px);
     box-shadow: 0 4px 12px var(--shadow-medium);
   }
   
@@ -195,222 +180,127 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    min-width: 3rem;
-    flex-shrink: 0;
+    margin-bottom: 0.5rem;
   }
   
   .ability-score {
     color: var(--text-primary);
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: 700;
-    min-width: 2rem;
-    text-align: center;
-    flex-shrink: 0;
+    margin-bottom: 0.25rem;
   }
   
   .ability-modifier {
     color: var(--accent-primary);
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 600;
-    background-color: var(--bg-tertiary);
+  }
+}
+
+/* ========================================
+   INLINE EDITING STYLES
+   ======================================== */
+.editable-item {
+  position: relative;
+  
+  &:hover {
+    background-color: var(--bg-hover);
     border-radius: 4px;
-    padding: 0.125rem 0.375rem;
-    min-width: 2.5rem;
-    text-align: center;
-    flex-shrink: 0;
+    padding: 0.25rem;
+    margin: -0.25rem;
   }
+}
+
+.editable-value {
+  position: relative;
+  display: inline-block;
   
-  @media (max-width: 768px) {
-    flex-direction: column;
-    text-align: center;
-    gap: 0.25rem;
-    padding: 0.5rem;
+  .inline-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    color: transparent;
+    z-index: 2;
     
-    .ability-name {
-      font-size: 0.7rem;
-      min-width: auto;
+    &:focus {
+      color: var(--text-primary);
+      background-color: var(--bg-primary);
+      border: 2px solid var(--accent-primary);
+      border-radius: 4px;
+      outline: none;
+      padding: 0.25rem;
     }
     
-    .ability-score {
-      font-size: 1.25rem;
-    }
-    
-    .ability-modifier {
-      font-size: 0.8rem;
+    &:focus + span {
+      opacity: 0;
     }
   }
 }
 
-// ========================================
-// Basic Info Section
-// ========================================
-.basic-info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.75rem;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-}
-
-.info-item {
+.inline-input {
   background-color: var(--bg-hover);
   border: 1px solid var(--border-primary);
-  border-radius: 6px;
-  padding: 0.75rem 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-primary);
   transition: all 0.2s ease;
-  
-  &:hover {
-    background-color: var(--bg-active);
-    border-color: var(--border-secondary);
-  }
-  
-  .info-label {
-    color: var(--text-secondary);
-    font-weight: 600;
-    font-size: 0.85rem;
-  }
-  
-  .info-value {
-    color: var(--text-primary);
-    font-weight: 500;
-    font-size: 0.9rem;
-    
-    &.inspiration-active {
-      color: var(--accent-warning);
-      font-weight: 600;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-  }
-}
+  text-align: center;
 
-// ========================================
-// Classes Section
-// ========================================
-.classes-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.class-card {
-  background-color: var(--bg-hover);
-  border: 1px solid var(--border-primary);
-  border-radius: 8px;
-  padding: 1rem;
-  transition: all 0.2s ease;
   
-  &:hover {
-    background-color: var(--bg-active);
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  &:focus {
+    outline: none;
     border-color: var(--accent-primary);
-    transform: translateX(3px);
-    box-shadow: 0 2px 8px var(--shadow-light);
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+    background-color: var(--bg-primary);
   }
   
-  .class-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border-primary);
-    
-    .class-name {
-      color: var(--text-primary);
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-    
-    .class-level {
-      background-color: var(--accent-primary);
-      color: white;
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-    
-    @media (max-width: 480px) {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.25rem;
-    }
+  &.hp-input {
+    width: 60px;
+    font-weight: 700;
   }
   
-  .class-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 0.5rem;
-    
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-      gap: 0.5rem;
-    }
-  }
-  
-  .class-detail-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.375rem 0.5rem;
-    background-color: var(--bg-tertiary);
-    border-radius: 4px;
-    
-    .detail-label {
-      color: var(--text-secondary);
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
-    
-    .detail-value {
-      color: var(--text-primary);
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-    
-    @media (max-width: 480px) {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.125rem;
-    }
+  &.dice-input {
+    width: 50px;
+    font-weight: 600;
   }
 }
 
-// ========================================
-// HP and Death Saves Section
-// ========================================
+/* ========================================
+   HP AND DEATH SAVES
+   ======================================== */
+.hp-death-section {
+  background-color: var(--bg-secondary);
+}
+
 .hp-death-saves-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 1.5rem;
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
   }
 }
 
-.hp-section, .death-saves-section {
-  background-color: var(--bg-hover);
-  border: 1px solid var(--border-primary);
-  border-radius: 6px;
-  padding: 0.75rem;
-  
-  h4 {
-    margin-bottom: 0.75rem;
-    color: var(--accent-primary);
-    font-size: 0.9rem;
-  }
+.hp-section {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 8px;
+  padding: 1rem;
 }
 
 .hp-display {
@@ -423,19 +313,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.375rem 0.5rem;
-  background-color: var(--bg-tertiary);
-  border-radius: 4px;
   
   .hp-label {
     color: var(--text-secondary);
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.9rem;
   }
   
   .hp-value {
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 700;
+    font-size: 1.1rem;
     
     &.current-hp {
       color: var(--accent-success);
@@ -451,139 +338,703 @@
   }
 }
 
+/* ========================================
+   DEATH SAVES
+   ======================================== */
+.death-saves-section {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
 .death-saves-display {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: 0.75rem;
 }
 
 .save-type {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
   
   .save-label {
     color: var(--text-secondary);
     font-weight: 600;
-    font-size: 1rem;
-    min-width: 3.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+.editable-saves {
+  .save-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 }
 
 .save-dots {
   display: flex;
   gap: 0.25rem;
+}
+
+.save-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+  transition: all 0.2s ease;
   
-  .save-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 1px solid var(--border-secondary);
-    background-color: var(--bg-tertiary);
-    transition: all 0.2s ease;
+  &.clickable-dot {
+    cursor: pointer;
     
-    &.filled.success {
+    &:hover {
+      border-color: var(--accent-primary);
+      transform: scale(1.1);
+    }
+  }
+  
+  &.filled {
+    &.success {
       background-color: var(--accent-success);
       border-color: var(--accent-success);
-      box-shadow: 0 0 4px hsla(140, 65%, 45%, 0.4);
     }
     
-    &.filled.failure {
+    &.failure {
       background-color: var(--accent-danger);
       border-color: var(--accent-danger);
-      box-shadow: 0 0 4px hsla(0, 65%, 55%, 0.4);
     }
   }
 }
 
-// ========================================
-// Loading and Error States
-// ========================================
-.loading-state, .error-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1rem;
-  text-align: center;
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-primary);
-  border-radius: 8px;
-  margin-top: 1rem;
+.reset-btn {
+  background: none;
+  border: 1px solid var(--border-secondary);
+  border-radius: 4px;
+  padding: 0.25rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
   
-  p {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    margin-bottom: 1rem;
-  }
-  
-  .btn {
-    margin-top: 0.5rem;
+  &:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
   }
 }
 
-.loading-state {
-  p {
-    color: var(--accent-info);
+/* ========================================
+   INSPIRATION TOGGLE
+   ======================================== */
+.inspiration-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  
+  .inspiration-checkbox {
+    opacity: 0;
+    position: absolute;
+    cursor: pointer;
+  }
+  
+  .inspiration-label {
+    cursor: pointer;
+    position: relative;
+    padding-left: 1.5rem;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border-primary);
+      border-radius: 4px;
+      background-color: var(--bg-hover);
+      transition: all 0.2s ease;
+    }
     
     &::after {
-      content: '...';
-      animation: loadingDots 1.5s steps(4, end) infinite;
+      content: '✓';
+      position: absolute;
+      left: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+  }
+  
+  .inspiration-checkbox:checked + .inspiration-label {
+    &::before {
+      background-color: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+    
+    &::after {
+      opacity: 1;
     }
   }
 }
 
-@keyframes loadingDots {
-  0%, 20% { content: ''; }
-  40% { content: '.'; }
-  60% { content: '..'; }
-  80%, 100% { content: '...'; }
+/* ========================================
+   BASIC INFO COMPACT
+   ======================================== */
+.basic-info-compact {
+  background-color: var(--bg-secondary);
+}
+
+.basic-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: var(--bg-tertiary);
+  border-radius: 6px;
+  border: 1px solid var(--border-secondary);
+  transition: all 0.2s ease;
+  
+  .info-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  
+  .info-value {
+    color: var(--text-primary);
+    font-weight: 600;
+    
+    &.inspiration-active {
+      color: var(--accent-primary);
+    }
+  }
+}
+
+/* ========================================
+   CLASSES SECTION
+   ======================================== */
+.classes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.class-card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--accent-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--shadow-medium);
+  }
+}
+
+.class-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  
+  .class-name {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  
+  .class-level {
+    color: var(--accent-primary);
+    font-weight: 600;
+    background-color: var(--bg-primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--accent-primary);
+  }
+}
+
+.class-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.class-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  
+  .detail-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .detail-value {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+}
+
+/* ========================================
+   HIT DICE CONTROLS
+   ======================================== */
+.hit-dice-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  
+  .dice-btn {
+    background-color: var(--bg-hover);
+    border: 1px solid var(--border-primary);
+    border-radius: 4px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+    
+    &:hover:not(:disabled) {
+      background-color: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: white;
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    &.minus-btn {
+      color: var(--accent-danger);
+      
+      &:hover:not(:disabled) {
+        background-color: var(--accent-danger);
+        border-color: var(--accent-danger);
+      }
+    }
+    
+    &.plus-btn {
+      color: var(--accent-success);
+      
+      &:hover:not(:disabled) {
+        background-color: var(--accent-success);
+        border-color: var(--accent-success);
+      }
+    }
+  }
+}
+
+/* ========================================
+   LOADING AND ERROR STATES
+   ======================================== */
+.loading-state, .error-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+  
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
 }
 
 .error-state {
-  p {
-    color: var(--accent-danger);
+  .btn {
+    margin-top: 1rem;
   }
 }
 
-// ========================================
-// Responsive Design
-// ========================================
-@media (max-width: 1200px) {
-  .character-stats-container {
-    padding: 1.25rem;
+/* ========================================
+   MODAL STYLES
+   ======================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.update-modal {
+  background-color: var(--bg-primary);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideInUp 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-primary);
+  
+  h3 {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: var(--accent-danger);
+    }
   }
 }
 
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-primary);
+  background-color: var(--bg-secondary);
+  border-radius: 0 0 12px 12px;
+}
+
+/* ========================================
+   FORM STYLES
+   ======================================== */
+.update-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  padding: 1.25rem;
+  
+  h4 {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-secondary);
+    padding-bottom: 0.5rem;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ability-scores-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.death-saves-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  
+  label {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+}
+
+.form-control {
+  padding: 0.75rem;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    background-color: var(--bg-primary);
+  }
+  
+  &:hover {
+    border-color: var(--border-secondary);
+  }
+}
+
+.ability-input {
+  text-align: center;
+  font-weight: 600;
+}
+
+.checkbox-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  
+  .form-checkbox {
+    opacity: 0;
+    position: absolute;
+    cursor: pointer;
+    
+    &:checked + .checkmark {
+      background-color: var(--accent-primary);
+      border-color: var(--accent-primary);
+      
+      &::after {
+        display: block;
+      }
+    }
+  }
+  
+  .checkmark {
+    height: 20px;
+    width: 20px;
+    background-color: var(--bg-hover);
+    border: 2px solid var(--border-primary);
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.2s ease;
+    
+    &::after {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+}
+
+/* ========================================
+   CLASS FORM GROUPS
+   ======================================== */
+.class-form-group {
+  background-color: var(--bg-hover);
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  
+  h5 {
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-primary);
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* ========================================
+   BUTTON STYLES
+   ======================================== */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &.btn-primary {
+    background-color: var(--accent-primary);
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background-color: var(--accent-primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--shadow-medium);
+    }
+    
+    &:disabled {
+      background-color: var(--text-secondary);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+  
+  &.btn-secondary {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+    
+    &:hover {
+      background-color: var(--bg-active);
+      border-color: var(--border-secondary);
+    }
+  }
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
 @media (max-width: 768px) {
-  .stats-section {
+  .character-stats-container {
+    height: 100vh;
+    padding: 16px;
+  }
+  
+  .stats-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    
+    .update-button {
+      align-self: flex-end;
+    }
+  }
+  
+  .update-modal {
+    width: 95%;
+    margin: 0.5rem;
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
     padding: 1rem;
   }
   
-  .class-card {
-    padding: 0.75rem;
+  .modal-footer {
+    flex-direction: column;
+    
+    .btn {
+      width: 100%;
+    }
   }
   
-  .hp-death-saves-grid {
-    gap: 0.75rem;
+  .hit-dice-controls {
+    justify-content: center;
   }
 }
 
 @media (max-width: 480px) {
   .character-stats-container {
-    padding: 0.75rem;
-  }
-  
-  .stats-header h2 {
-    font-size: 1.5rem;
+    padding: 1rem;
   }
   
   .stats-section {
-    padding: 0.75rem;
+    padding: 1rem;
   }
   
-  .hp-section, .death-saves-section {
-    padding: 0.5rem;
+  .ability-scores-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .class-details {
+    grid-template-columns: 1fr;
+  }
+  
+  .hp-death-saves-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .basic-info-grid {
+    grid-template-columns: 1fr;
   }
 }
