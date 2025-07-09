@@ -68,8 +68,8 @@ public class ContainerWebSocketController {
         }
     }
 
-    @MessageMapping("conatiner/delete")
-    public void subscribeToContainers(@Payload ContainerDeleteMessage message, Principal principal) {
+    @MessageMapping("container/delete")
+    public void deleteContainer(@Payload ContainerDeleteMessage message, Principal principal) {
         LOG.info("WebSocket container delete for character" + message.getCharUuid());
         try {
             Authentication authentication = (Authentication) principal;
