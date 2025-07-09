@@ -902,3 +902,39 @@ h2 {
     }
   }
 }
+
+
+/* tiny “⋯” icon button beside each container */
+.options-btn {
+  @include button-base;
+  font-size: 1rem;
+  padding: 4px 8px;
+  background: transparent;
+  color: $text-muted;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+
+  &:hover {
+    background: $bg-hover;
+    color: $text-primary;
+    transform: scale(1.1);
+  }
+}
+
+/* danger variant that matches your existing delete-item style */
+.btn.btn-danger {
+  @include button-base;
+  background: $accent-danger;
+  color: #fff;
+  font-weight: 600;
+
+  &:hover {
+    background: darken($accent-danger, 7%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+  }
+
+  &:active { transform: translateY(0); }
+}
+

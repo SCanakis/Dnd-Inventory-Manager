@@ -61,15 +61,7 @@ export class CharacterInfoUpdateDTO {
     characterClassDetail: CharacterClassDetail[] = [];
 
     constructor() {
-        // Initialize ability scores with default values
-        this.abilityScores = {
-            [AbilityScore.strength]: 10,
-            [AbilityScore.dexterity]: 10,
-            [AbilityScore.constitution]: 10,
-            [AbilityScore.intelligence]: 10,
-            [AbilityScore.wisdom]: 10,
-            [AbilityScore.charisma]: 10
-        };
+
     }
 
     setName(name: string): void {
@@ -89,7 +81,7 @@ export class CharacterInfoUpdateDTO {
     }
 
     setAbilityScore(ability: AbilityScore, value: number): void {
-        this.abilityScores[ability] = value; // Changed from Map.set to object assignment
+        this.abilityScores[ability] = value; 
     }
 
     setHpHandler(hpHandler: HPHandler): void {

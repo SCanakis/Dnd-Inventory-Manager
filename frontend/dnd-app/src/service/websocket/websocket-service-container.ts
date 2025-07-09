@@ -133,6 +133,25 @@ export class WebsocketServiceContainer {
     }
   }
 
+  deleteContainer(charUuid: string, containerUuid : string) {
+    if(this.client.connected) {
+      const message = {
+        type : 'CONTAINER_DELETE',
+        charUuid,
+        containerUuid
+      };
+
+      console.log("Sending container deletion request message...", message);
+      this.client.publish({
+        destination : '/app/container/delete',
+        body: JSON.stringify(message)
+      });
+    } else {
+      console.error('Cannot send message - WebSocket not connected');
+    }
+
+
+  }
 
     get isConnected$(): Observable<boolean> {
       return this.connected.asObservable();

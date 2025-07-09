@@ -46,6 +46,9 @@ export class Inventory implements OnInit, OnDestroy {
 
   private dragOverTimeout: any = null;
 
+  deleteModalOpen = false;
+  private containerToDelete :  string | null = null;
+
 
   constructor(
     private inventoryWebSocketService: WebSocketServiceInventory,
@@ -368,6 +371,31 @@ export class Inventory implements OnInit, OnDestroy {
 
     return hasSpace && isDifferntContainer;
 
+  }
+
+  openDeleteContainerModal(containerUuid : string) : void {
+    this.containerToDelete = containerUuid;
+    this.deleteModalOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeDeleteContainerModal() : void {
+    this.containerToDelete = null;
+    this.deleteModalOpen = false;
+    document.body.style.overflow = 'auto';
+  }
+
+  confirmDeleteContainer() : void {
+    if(this.containerToDelete) {
+      this.deleteContainer(this.containerToDelete);
+    } 
+    this.closeDeleteContainerModal();
+  }
+
+  deleteContainer(containerUuid : string) {
+    if(containerUuid && this.charUuid) {
+      this.containerWebSocketService.deleteContainer(this.charUuid, containerUuid);
+    }
   }
 
 }

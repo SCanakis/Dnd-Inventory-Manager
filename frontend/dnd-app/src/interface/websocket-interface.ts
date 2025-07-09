@@ -39,6 +39,10 @@ export interface CharacterStatsUpdateMessage extends WebSocketMessage {
   update : CharacterInfoUpdateDTO;
 }
 
+export interface ContainerDeletionMessage extends WebSocketMessage {
+  containerUuid : string;
+}
+
 export interface CharacterHasItemProjection {
   itemUuid: string;
   charUuid: string;

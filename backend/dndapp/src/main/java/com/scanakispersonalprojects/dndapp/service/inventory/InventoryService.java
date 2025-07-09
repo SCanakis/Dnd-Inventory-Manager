@@ -132,23 +132,20 @@ public class InventoryService {
                 if(item.isContainer() && item.getCapacity() > 0 && item.getCapacity() != null) {
                     Container container = new Container(null, charUuid, itemUuid, item.getCapacity(), 0);
                     containerRepo.save(container);
+                    if(updateInventoryCapacity(item, charUuid, 1)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
 
                 List<CharacterHasItemSlot> exisitingSlots = repo.getSameItemDifferentContainers(charUuid, itemUuid);
 
                 if(!exisitingSlots.isEmpty()) {
-                    updateQuantity(charUuid, itemUuid, quantity);
+                    updateQuantity(charUuid, itemUuid, quantity+exisitingSlots.get(0).getQuantity());
                 }
 
-                Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(emptyContainerUuid, charUuid));
-                
-                if(optionalContainer.isPresent() && item != null) {
-                    Container container = optionalContainer.get();
-                    int sum = quantity * item.getItemWeight() + container.getCurrentCapacity();
-                    if(sum <= container.getMaxCapacity()) {
-                        containerRepo.updateCurrentCapacity(charUuid, emptyContainerUuid, sum);
-                    }
-                } else {
+                if(!updateInventoryCapacity(item, charUuid, quantity)) {
                     return false;
                 }
 
@@ -180,6 +177,19 @@ public class InventoryService {
         }
     }
 
+    private boolean updateInventoryCapacity(ItemCatalog item, UUID charUuid, int quantity) {
+        Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(emptyContainerUuid, charUuid));
+                
+        if(optionalContainer.isPresent() && item != null) {
+            Container container = optionalContainer.get();
+            int sum = quantity * item.getItemWeight() + container.getCurrentCapacity();
+            if(sum <= container.getMaxCapacity()) {
+                containerRepo.updateCurrentCapacity(charUuid, emptyContainerUuid, sum);
+                return true;
+            }
+        } 
+        return false;
+    }
 
 
     /**
@@ -313,7 +323,11 @@ public class InventoryService {
         }
 
         CharacterHasItemSlot slot = slotOptional.get();
-        
+        ItemCatalog item = itemCatalogService.getItemWithUUID(itemUuid);
+
+        if(item.isContainer()) {
+            return null;
+        }
 
         if(update.getQuantity() != null && update.getContainerUuid() != null && !Objects.equals(update.getContainerUuid(), containerUuid)) {
             

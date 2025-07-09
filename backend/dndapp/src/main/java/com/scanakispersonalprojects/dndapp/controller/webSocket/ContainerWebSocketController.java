@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
 import com.scanakispersonalprojects.dndapp.model.inventory.containers.ContainerView;
+import com.scanakispersonalprojects.dndapp.model.webSocket.ContainerDeleteMessage;
 import com.scanakispersonalprojects.dndapp.model.webSocket.ContainerRequestMessage;
 import com.scanakispersonalprojects.dndapp.model.webSocket.WebSocketResponse;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
@@ -65,12 +66,42 @@ public class ContainerWebSocketController {
         } catch (Exception e) {
             sendErrorToUser(principal.getName(), "INTERNAL_ERROR", "Failed to update containers");
         }
-        
+    }
 
+    @MessageMapping("conatiner/delete")
+    public void subscribeToContainers(@Payload ContainerDeleteMessage message, Principal principal) {
+        LOG.info("WebSocket container delete for character" + message.getCharUuid());
+        try {
+            Authentication authentication = (Authentication) principal;
+            List<UUID> characters = userService.getUsersCharacters(authentication);
+            UUID characterUuid = message.getCharUuid();
+            
+            if(!characters.contains(characterUuid)) {
+                sendErrorToUser(principal.getName(), "UNAUTHORIZED", "You don't own this character");
+                return;
+            }
+
+            if(containerService.deleteContainer(message.getCharUuid(), message.getContainerUuid())) {
+                WebSocketResponse response = new WebSocketResponse(
+                    "CONTAINER_DELETION_RESPONSE",
+                    true,
+                    "Container succesfully deleted",
+                    null
+                );
+                sendToUser(principal.getName(), response);
+                broadcastContainers(message.getCharUuid(), response);
+
+                LOG.info("WebScoekt - container succesfully deleted charUuid :" +  message.getCharUuid().toString() + ", containerUuid : " + message.getContainerUuid().toString());
+            } else {
+                sendErrorToUser(principal.getName(), "NOT_FOUND", "Container was not found or not empty");
+            }
+        } catch (Exception e) {
+            sendErrorToUser(principal.getName(), "INTERNAL_ERROR", "Failed to delete container");
+        }
 
     }
 
-      private void sendToUser(String username, WebSocketResponse response) {
+    private void sendToUser(String username, WebSocketResponse response) {
         messagingTemplate.convertAndSendToUser(username, "/queue/containers", response);
     }
 

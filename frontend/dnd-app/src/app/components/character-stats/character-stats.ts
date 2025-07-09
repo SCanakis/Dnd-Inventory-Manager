@@ -250,7 +250,6 @@ export class CharacterStats implements OnInit, OnDestroy{
       this.characterInfo.deathSavingThrowsHelper.failures = value;
     }
 
-    // TODO: Send immediate update to backend
     this.sendQuickUpdate('deathSaves', { type, value });
   }
 
@@ -259,7 +258,6 @@ export class CharacterStats implements OnInit, OnDestroy{
 
     this.characterInfo.inspiration = value;
 
-    // TODO: Send immediate update to backend
     this.sendQuickUpdate('inspiration', { value });
   }
 
@@ -268,12 +266,10 @@ export class CharacterStats implements OnInit, OnDestroy{
 
     const characterClass = this.characterInfo.classes[classIndex];
     
-    // Validate the value (0 to class level)
     value = Math.max(0, Math.min(value, characterClass.level));
     
     characterClass.hitDiceRemaining = value;
 
-    // TODO: Send immediate update to backend
     this.sendQuickUpdate('hitDice', { 
       classIndex, 
       classUuid: characterClass.classUuid, 
@@ -336,13 +332,5 @@ export class CharacterStats implements OnInit, OnDestroy{
         })
     );
   }  
-
-
-  // public onAbilityScoreInputChange(ability: AbilityScore, event: Event): void {
-  //   const target = event.target as HTMLInputElement;
-  //   const value = +target.value;
-  //   this.updateAbilityScore(ability, value);
-  // }
-
 
 }
