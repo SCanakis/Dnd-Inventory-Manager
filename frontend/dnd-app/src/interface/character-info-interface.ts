@@ -55,9 +55,9 @@ export class CharacterInfoUpdateDTO {
     inspiration: boolean | null = null;
     backgroundUuid: string | null = null;
     raceUuid: string | null = null; 
-    abilityScores: Record<AbilityScore, number> = {} as Record<AbilityScore, number>; // Changed from Map to Record
-    hpHandler: HPHandler = { currentHp: 0, maxHp: 1 };
-    deathSavingThrowsHelper: DeathSavingThrowsHelper = { successes: 0, failures: 0 };
+    abilityScores: Record<AbilityScore, number> = {} as Record<AbilityScore, number>;
+    hpHandler: HPHandler | null = null;
+    deathSavingThrowsHelper: DeathSavingThrowsHelper | null = null;
     characterClassDetail: CharacterClassDetail[] = [];
 
     constructor() {
@@ -120,11 +120,11 @@ export class CharacterInfoUpdateDTO {
         return this.abilityScores[ability] || 10; // Changed from Map.get to object access
     }
 
-    getHpHandler(): HPHandler {
+    getHpHandler(): HPHandler | null{ 
         return this.hpHandler;
     }
 
-    getDeathSavingThrowsHelper(): DeathSavingThrowsHelper {
+    getDeathSavingThrowsHelper(): DeathSavingThrowsHelper | null {
         return this.deathSavingThrowsHelper;
     }
 

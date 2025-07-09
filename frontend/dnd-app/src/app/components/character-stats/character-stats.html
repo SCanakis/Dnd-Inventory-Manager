@@ -277,7 +277,7 @@
               <input 
                 type="number" 
                 id="currentHp"
-                [(ngModel)]="updateData.hpHandler.currentHp"
+                [(ngModel)]="updateData.hpHandler!.currentHp"
                 name="currentHp"
                 min="0"
                 class="form-control">
@@ -288,7 +288,7 @@
               <input 
                 type="number" 
                 id="maxHp"
-                [(ngModel)]="updateData.hpHandler.maxHp"
+                [(ngModel)]="updateData.hpHandler!.maxHp"
                 name="maxHp"
                 min="1"
                 class="form-control">
@@ -299,7 +299,7 @@
               <input 
                 type="number" 
                 id="temporaryHp"
-                [(ngModel)]="updateData.hpHandler.temporaryHp"
+                [(ngModel)]="updateData.hpHandler!.temporaryHp"
                 name="temporaryHp"
                 min="0"
                 class="form-control">
@@ -316,7 +316,7 @@
               <input 
                 type="number" 
                 id="deathSaveSuccesses"
-                [(ngModel)]="updateData.deathSavingThrowsHelper.successes"
+                [(ngModel)]="updateData.deathSavingThrowsHelper!.successes"
                 name="deathSaveSuccesses"
                 min="0" 
                 max="3"
@@ -328,7 +328,7 @@
               <input 
                 type="number" 
                 id="deathSaveFailures"
-                [(ngModel)]="updateData.deathSavingThrowsHelper.failures"
+                [(ngModel)]="updateData.deathSavingThrowsHelper!.failures"
                 name="deathSaveFailures"
                 min="0" 
                 max="3"
