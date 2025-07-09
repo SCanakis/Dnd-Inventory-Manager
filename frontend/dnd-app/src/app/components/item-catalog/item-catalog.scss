@@ -394,64 +394,80 @@
     }
     
     .modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; // Changed from center to flex-start
+  gap: 20px; // Increased gap
+  padding: 20px 28px; // Increased padding
+  border-top: 1px solid var(--border-primary);
+  background: var(--bg-tertiary);
+  
+  .add-item-section {
+    display: flex;
+    flex-direction: column; // Stack vertically instead of horizontally
+    gap: 16px; // Add gap between quantity and buttons
+    background: var(--bg-hover);
+    padding: 16px 20px; // Increased padding
+    border-radius: 8px; // Slightly larger radius
+    border: 1px solid var(--border-primary);
+    flex: 1; // Take available space
+    
+    .quantity-section {
       display: flex;
-      justify-content: space-between;
       align-items: center;
       gap: 12px;
-      padding: 16px 28px;
-      border-top: 1px solid var(--border-primary);
-      background: var(--bg-tertiary);
       
-      .add-item-section {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        background: var(--bg-hover);
-        padding: 12px 16px;
-        border-radius: 6px;
+      label {
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        min-width: 70px; // Ensure consistent label width
+      }
+      
+      .quantity-input {
+        width: 100px; // Increased width
+        padding: 8px 12px; // Increased padding
         border: 1px solid var(--border-primary);
+        border-radius: 6px; // Slightly larger radius
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        text-align: center;
+        transition: all 0.2s ease;
         
-        label {
-          color: var(--text-primary);
-          font-weight: 600;
-          font-size: 0.9rem;
-          white-space: nowrap;
+        &:focus {
+          outline: none;
+          border-color: var(--border-tertiary);
+          box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
         }
         
-        .quantity-input {
-          width: 80px;
-          padding: 6px 8px;
-          border: 1px solid var(--border-primary);
-          border-radius: 4px;
-          background: var(--bg-tertiary);
-          color: var(--text-primary);
-          font-size: 0.9rem;
-          text-align: center;
-          transition: all 0.2s ease;
-          
-          &:focus {
-            outline: none;
-            border-color: var(--border-tertiary);
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
-          }
-          
-          &:hover {
-            border-color: var(--border-secondary);
-            background: var(--bg-hover);
-          }
+        &:hover {
+          border-color: var(--border-secondary);
+          background: var(--bg-hover);
         }
+      }
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 12px; // Space between buttons
+      justify-content: flex-start; // Align buttons to the left
+      
+      .btn {
+        padding: 10px 20px; // Increased padding
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 100px; // Ensure consistent button width
         
-        button {
-          padding: 8px 16px;
-          border: none;
-          border-radius: 6px;
-          cursor: pointer;
-          font-size: 0.9rem;
-          font-weight: 600;
-          transition: all 0.2s ease;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+        &.btn-primary {
           background-color: var(--accent-success);
           color: white;
           border: 1px solid var(--accent-success);
@@ -487,36 +503,59 @@
             }
           }
         }
+        
+        &.btn-secondary {
+          background-color: var(--bg-hover);
+          color: var(--text-primary);
+          border: 1px solid var(--border-secondary);
+          
+          &:hover {
+            background-color: var(--bg-active);
+            border-color: var(--border-tertiary);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px var(--shadow-light);
+          }
+          
+          &:active {
+            transform: translateY(0);
+          }
+          
+          &:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+          }
+        }
+      }
+    }
+  }
+      
+    .btn.btn-secondary:not(.add-item-section .btn.btn-secondary) {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+      border: 1px solid var(--border-secondary);
+      min-width: 80px;
+      
+      &:hover {
+        background-color: var(--bg-active);
+        border-color: var(--border-tertiary);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px var(--shadow-light);
       }
       
-      .btn.btn-secondary {
-        padding: 8px 16px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        font-weight: 600;
-        transition: all 0.2s ease;
-        background-color: var(--bg-hover);
-        color: var(--text-primary);
-        border: 1px solid var(--border-secondary);
-        min-width: 60px;
-        
-        &:hover {
-          background-color: var(--bg-active);
-          border-color: var(--border-tertiary);
-          transform: translateY(-1px);
-          box-shadow: 0 2px 8px var(--shadow-light);
-        }
-        
-        &:active {
-          transform: translateY(0);
-        }
-        
-        &:focus {
-          outline: none;
-          box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
-        }
+      &:active {
+        transform: translateY(0);
+      }
+      
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
       }
     }
   }
@@ -647,4 +686,5 @@
   padding: 2px 4px;
   border-radius: 2px;
   font-weight: 600;
+}
 }

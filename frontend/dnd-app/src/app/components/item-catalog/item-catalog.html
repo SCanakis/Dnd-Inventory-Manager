@@ -120,20 +120,30 @@
       </div>
     </div>
     <div class="modal-footer">
+      <!-- Quantity selection section - only show for non-containers -->
       <div class="add-item-section">
-        <label for="quantity">Quantity</label>
-        <input 
-          type="number"
-          id="quantity"
-          [(ngModel)]="quantity"
-          min="1"
-          value="1"
-          class="quantity-input">
-        <button (click)="addItem()"
-          [disabled]="!quantity || quantity < 1">
-          Add Item</button>
+        <div *ngIf="canChooseQuantity" class="quantity-section">
+          <label for="quantity">Quantity:</label>
+          <input 
+            type="number"
+            id="quantity"
+            [(ngModel)]="quantity"
+            (input)="onQuantityChange($any($event.target).value)"
+            min="1"
+            step="1"
+            class="quantity-input">
+        </div>
+        
+        <div class="action-buttons">
+          <button 
+            (click)="addItem()"
+            [disabled]="!canAddItem"
+            class="btn btn-primary add-item-btn">
+            Add Item
+          </button>
+          <button class="btn btn-secondary" (click)="closeItemModal()">Close</button>
+        </div>
       </div>
-      <button class="btn btn-secondary" (click)="closeItemModal()">Close</button>
     </div>
   </div>
 </div>

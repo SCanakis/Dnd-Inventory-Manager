@@ -24,7 +24,7 @@ export interface ItemCatalogInterface {
     skillAlteredRollType? : Map<Skill, RollType>;
     skillAlteredBonus? : Map<Skill, number>;
 
-    isContainer? : boolean
+    isContainer : boolean;
 
     capacity? : number;
 

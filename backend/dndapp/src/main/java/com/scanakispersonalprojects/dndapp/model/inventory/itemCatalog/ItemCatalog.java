@@ -187,11 +187,11 @@ public class ItemCatalog {
         this.capacity = capacity;
     }
 
-    public boolean isContainer() {
+    public boolean getIsContainer() {
         return isContainer;
     }
 
-    public void setContainer(boolean isContainer) {
+    public void setIsContainer(boolean isContainer) {
         this.isContainer = isContainer;
     }
 

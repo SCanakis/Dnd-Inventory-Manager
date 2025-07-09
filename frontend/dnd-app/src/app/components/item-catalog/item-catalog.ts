@@ -90,6 +90,7 @@ export class ItemCatalog implements OnInit, OnDestroy{
         this.itemCatalogService.getItem(item.itemUuid).subscribe(
             (response : ItemCatalogInterface) => {
                 this.selectedItem = response;
+                console.log("I AM HERE!!!!! - " + this.selectedItem.isContainer);
                 this.quantity = 1;
             },
             (error : HttpErrorResponse) => {
@@ -111,23 +112,44 @@ export class ItemCatalog implements OnInit, OnDestroy{
     }
 
     addItem() {
-    if(this.selectedItem && this.quantity > 0 && this.charUuid) {
-        console.log('Adding item with quantity:', this.quantity);
-        console.log('Type of quantity:', typeof this.quantity);
-        
-        this.itemCatalogService.addItem(this.selectedItem.itemUuid, this.charUuid, this.quantity).subscribe(
-            (response) => {
-                console.log("Item added successfully: ", response);
-                this.closeItemModal();
-            },
-            (error : HttpErrorResponse) => {
-                console.log("Error adding item: ", error);
-            }
-        );
-    } else {
-        console.log("Missing requirement to add item");
+        if(this.selectedItem && this.quantity > 0 && this.charUuid) {
+            console.log('Adding item with quantity:', this.quantity);
+            console.log('Type of quantity:', typeof this.quantity);
+            
+            const qty = this.selectedItem.isContainer ? 1 : this.quantity;
+
+            this.itemCatalogService.addItem(this.selectedItem.itemUuid, this.charUuid, qty).subscribe(
+                (response) => {
+                    console.log("Item added successfully: ", response);
+                    this.closeItemModal();
+                },
+                (error : HttpErrorResponse) => {
+                    console.log("Error adding item: ", error);
+                }
+            );
+        } else {
+            console.log("Missing requirement to add item");
+        }
     }
-}
+
+    get canChooseQuantity() : boolean {
+        return !!this.selectedItem && !this.selectedItem.isContainer;
+    }
+
+    get canAddItem() : boolean {
+        if(!this.selectedItem) return false;
+        if(this.selectedItem.isContainer) return true;
+
+        return this.quantity > 0;
+    }
+
+    onQuantityChange(value : string) : void {
+        const numValue = parseInt(value, 10);
+        this.quantity = isNaN(numValue) || numValue < 1 ? 1 : numValue;
+    }
+
+
+
 
 
 

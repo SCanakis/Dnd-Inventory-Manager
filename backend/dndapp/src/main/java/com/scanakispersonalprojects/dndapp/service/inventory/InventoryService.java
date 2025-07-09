@@ -129,7 +129,7 @@ public class InventoryService {
  
             if(item != null) {
 
-                if(item.isContainer() && item.getCapacity() > 0 && item.getCapacity() != null) {
+                if(item.getIsContainer() && item.getCapacity() > 0 && item.getCapacity() != null) {
                     Container container = new Container(null, charUuid, itemUuid, item.getCapacity(), 0);
                     containerRepo.save(container);
                     if(updateInventoryCapacity(item, charUuid, 1)) {
@@ -219,7 +219,7 @@ public class InventoryService {
                 
                 ItemCatalog item = itemCatalogService.getItemWithUUID(itemUuid);
                 
-                if(item.isContainer()) {
+                if(item.getIsContainer()) {
                     List<Container> containers= containerRepo.getCharactersContainers(charUuid);
 
                     for(Container container : containers) {
@@ -325,7 +325,7 @@ public class InventoryService {
         CharacterHasItemSlot slot = slotOptional.get();
         ItemCatalog item = itemCatalogService.getItemWithUUID(itemUuid);
 
-        if(item.isContainer()) {
+        if(item.getIsContainer()) {
             return null;
         }
 
