@@ -18,22 +18,60 @@ import com.scanakispersonalprojects.dndapp.model.webSocket.WebSocketResponse;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CharacterInfoService;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 
+
+/**
+ * WebSocket controller for handling real-tiem character information operations.
+ * 
+ * Handles subscription to character data updates and real0time character stat 
+ * modifications.
+ * 
+ * WebSocket endpoints:
+ *  /app/character-stats/subscribe - Subscribe to character stats
+ *  /app/character-stats/updates - Update character stats in real-time
+ *  
+ * 
+ */
+
 @Controller
 public class CharacterInfoController {
     
     private final static Logger LOG = Logger.getLogger(CharacterInfoController.class.getName());
 
+    // Srping messaging tempalte for sending WebScoekt messages to users and topics
     private final SimpMessagingTemplate messagingTemplate;
 
+    // Services for handling character inforamtion operations and data retrival
     private final CharacterInfoService characterInfoService;
 
+    // Servies for user authenticaiton and character owernserhip validation
     private final CustomUserDetailsService userService;
 
+
+    /**
+     * Constructs a new CharacterInfoController with the required dependencies
+     * 
+     * @param messagingTemplate
+     * @param characterInfoService
+     * @param userService
+     */
     public CharacterInfoController(SimpMessagingTemplate messagingTemplate, CharacterInfoService characterInfoService, CustomUserDetailsService userService) {
         this.messagingTemplate = messagingTemplate;
         this.characterInfoService = characterInfoService;
         this.userService = userService;
     }
+
+
+    /**
+     * Handles WebSocket subscriptions request for character stats
+     * 
+     * @param message - client WebSocket message - includes charUuid
+     * @param principal - user authentication 
+     * 
+     * @return  CHARACTER_STAT_LOAD - Succesful character data retrival
+     *          UNAUTHORIZEZD - user doesn't own the requested character
+     *          NOT_FOUND - Character data not found
+     *          INTERNAL_ERROR - Server error during procesing
+     */
 
     @MessageMapping("character-stats/subscribe")
     public void subscribeToCharStats(@Payload CharacterStatRequestMessage message, Principal principal) {
@@ -66,6 +104,19 @@ public class CharacterInfoController {
         }
     }
 
+
+    /**
+     * 
+     * Updates character stats in real time.
+     * 
+     * @param message - client WebSocket Message incldues {@link CharacterInfoUpdateDTO}
+     * @param principal - user authentication
+     * @return  CHARACTER_STAT_LOAD - Succesful character data retrival and upates
+     *          UNAUTHORIZEZD - user doesn't own the requested character
+     *          NOT_FOUND - Character data not found
+     *          INTERNAL_ERROR - Server error during procesing
+     * 
+     */
     @MessageMapping("character-stats/update")
     public void updateCharacterStats(@Payload CharacterStatsUpdateMessage message, Principal principal) {
         LOG.info("WebSocket character-stat update for character: " + message.getCharUuid());
@@ -98,15 +149,35 @@ public class CharacterInfoController {
     }
 
 
+    /**
+     * Sends a WebSocket response to a specific user's private queue.
+     * 
+     * @param username - the username of the target user
+     * @param response - the {@link WebSocketResponse} to send to the user
+     */
     private void sendToUser(String username, WebSocketResponse response) {
         messagingTemplate.convertAndSendToUser(username, "/queue/character-stats", response);
     }
 
+    /**
+     * Sends an error response to a spceific user via their private queue.
+     * 
+     * @param username - the username of the target user
+     * @param errorType - the type/category of error (e.g., "UNAOTHOIRZED, NOT_FOUND")
+     * @param message - the descriptive error message for the user
+     */
     private void sendErrorToUser(String username,String errorType, String message) {
         WebSocketResponse error = new WebSocketResponse(errorType, false, message, null);
         sendToUser(username, error);
     }
 
+
+    /**
+     * Broadcasts character updates to all subscribers of a specific character's topic.
+     * 
+     * @param charUuid - character uuid
+     * @param response - the original {@link WebSocketResponse} to base the broadcast
+     */
     private void broadcastInventoryUpdate(UUID charUuid, WebSocketResponse response) {
         try {
             CharacterBasicInfoView view = characterInfoService.getCharacterBasicInfoView(charUuid);

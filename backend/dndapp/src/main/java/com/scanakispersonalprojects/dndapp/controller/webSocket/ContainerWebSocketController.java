@@ -18,21 +18,55 @@ import com.scanakispersonalprojects.dndapp.model.webSocket.WebSocketResponse;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 import com.scanakispersonalprojects.dndapp.service.inventory.ContainerService;
 
+/**
+ * WebSocket controller for handling real-tiem container operations.
+ * 
+ * Handles subscription to containers and real time container 
+ * modifications.
+ * 
+ * WebSocket endpoints:
+ *  /app/container/subscribe - Subscribe to containers
+ *  /app/container/delete - Deletes containers in real time
+ * 
+ * 
+ */
 @Controller
 public class ContainerWebSocketController {
     private final static Logger LOG = Logger.getLogger(ContainerWebSocketController.class.getName());
 
+    // Spring messaging tempalte for sending WebSocket messages to users and topics
     private final SimpMessagingTemplate messagingTemplate;
 
+    // Services for handling container operations and data retrival
     private final ContainerService containerService;
 
+    // Services for user authentication and character ownership validation
     private final CustomUserDetailsService userService;
 
+
+    /**
+     * Constructs a new ContainerWebSocketController with the required dependencies
+     * 
+     * @param messagingTemplate
+     * @param containerService
+     * @param userService
+     */
     public ContainerWebSocketController(SimpMessagingTemplate messagingTemplate, ContainerService containerService, CustomUserDetailsService userService) {
         this.messagingTemplate = messagingTemplate;
         this.containerService = containerService;
         this.userService = userService;
     }
+
+    /**
+     * Handles WebSocket subscriptions request for containers
+     * 
+     * @param message - client WebSocket message - includes charUuid
+     * @param principal - user authentication
+     * @return  CONTAINER_REQUEST_RESPONSE - Succesful character data retrival
+     *          UNAUTHORIZEZD - user doesn't own the requested character
+     *          NOT_FOUND - Character data not found
+     *          INTERNAL_ERROR - Server error during procesing
+     */
 
     @MessageMapping("container/subscribe")
     public void subscribeToContainers(@Payload ContainerRequestMessage message, Principal principal) {
@@ -68,6 +102,18 @@ public class ContainerWebSocketController {
         }
     }
 
+    /**
+     * Deletes container in real time.
+     * 
+     * @param message - client WebScoekt Mesasge includes charUuid
+     * @param principal - user authentication
+     * 
+     * @return  CONTAINER_DELETION_RESPONSE - Succesful character data retrival and upates
+     *          UNAUTHORIZEZD - user doesn't own the requested character
+     *          NOT_FOUND - Character data not found
+     *          INTERNAL_ERROR - Server error during procesing
+     *
+     */
     @MessageMapping("container/delete")
     public void deleteContainer(@Payload ContainerDeleteMessage message, Principal principal) {
         LOG.info("WebSocket container delete for character" + message.getCharUuid());
@@ -101,15 +147,34 @@ public class ContainerWebSocketController {
 
     }
 
+    /**
+     * Sends a WebSocket response to a specific user's private queue.
+     * 
+     * @param username - the username of the target user
+     * @param response - the {@link WebSocketResponse} to send to the user
+     */
     private void sendToUser(String username, WebSocketResponse response) {
         messagingTemplate.convertAndSendToUser(username, "/queue/containers", response);
     }
 
+    /**
+     * Sends an error response to a spceific user via their private queue.
+     * 
+     * @param username - the username of the target user
+     * @param errorType - the type/category of error (e.g., "UNAOTHOIRZED, NOT_FOUND")
+     * @param message - the descriptive error message for the user
+     */
     private void sendErrorToUser(String username,String errorType, String message) {
         WebSocketResponse error = new WebSocketResponse(errorType, false, message, null);
         sendToUser(username, error);
     }
 
+    /**
+     * Broadcasts character updates to all subscribers of a specific character's topic.
+     * 
+     * @param charUuid - character uuid
+     * @param response - the original {@link WebSocketResponse} to base the broadcast
+     */
     public void broadcastContainers(UUID charUuid, WebSocketResponse response) {
         try {
             List<ContainerView> currentContainers = containerService.getCharactersContainers(charUuid);

@@ -177,6 +177,14 @@ public class InventoryService {
         }
     }
 
+    /**
+     * Updates inventory container capacity
+     * 
+     * @param item - item uuid 
+     * @param charUuid - char uuid
+     * @param quantity - number of items to be added
+     * @return true if operation was succesful, false otherwise.
+     */
     private boolean updateInventoryCapacity(ItemCatalog item, UUID charUuid, int quantity) {
         Optional<Container> optionalContainer =  containerRepo.findById(new ContainerId(emptyContainerUuid, charUuid));
                 
@@ -367,6 +375,16 @@ public class InventoryService {
         }
     }
 
+    /**
+     * Updates regular conatiner capacity
+     * 
+     * @param charUuid - uuid of container to be updated
+     * @param itemUuid - uuid of item to get weight
+     * @param containerUuid - container to be updated
+     * @param update - update information
+     * @param slot - current slot information
+     * @return
+     */
     @Transactional
     private boolean updateContainerCurrentCapacity(UUID charUuid, UUID itemUuid, UUID containerUuid, CharacterHasItemUpdate update, CharacterHasItemSlot slot) {
 
