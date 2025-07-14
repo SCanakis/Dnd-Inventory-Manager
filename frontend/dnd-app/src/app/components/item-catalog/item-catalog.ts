@@ -3,7 +3,6 @@ import { BasicCharacterInfoComponent } from '../basic-character-info/basic-chara
 import { NavComponent } from '../nav/nav-component';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { WebsocketServiceItemCatalog } from '../../../service/websocket/websocket-service-item-catalog';
 import { ItemProjection } from '../../../interface/item-projection-interface';
 import { Subscription } from 'rxjs';
 import { WebSocketResponse } from '../../../interface/websocket-interface';
@@ -13,6 +12,7 @@ import { ItemCatalogHttp } from '../../../service/item-catalog-http/item-catalog
 import { response } from 'express';
 import { error } from 'console';
 import { HttpErrorResponse } from '@angular/common/http';
+import { WebsocketServiceItemCatalog } from '../../../service/websocket/item-catalog/websocket-service-item-catalog';
 
 @Component({
   selector: 'app-item-catalog',

@@ -43,11 +43,11 @@ export interface ContainerDeletionMessage extends WebSocketMessage {
   containerUuid : string;
 }
 
-export interface CharacterHasItemProjection {
-  itemUuid: string;
-  charUuid: string;
-  quantity: number;
-}
+// export interface CharacterHasItemProjection {
+//   itemUuid: string;
+//   charUuid: string;
+//   quantity: number;
+// }
 
 export interface CharacterHasItemUpdate {
   itemUuid: string | null;

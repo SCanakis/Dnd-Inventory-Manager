@@ -7,7 +7,7 @@ import { AbilityScore, CharacterBasicInfoView, CharacterInfoUpdateDTO } from '..
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { WebSocketResponse } from '../../../interface/websocket-interface';
-import { WebsocketServiceCharacterStats } from '../../../service/websocket/websocket-service-character-stats';
+import { WebsocketServiceCharacterStats } from '../../../service/websocket/character-stats/websocket-service-character-stats';
 import { ContainerService } from '../../../service/container/container';
 import { ContainerView } from '../../../interface/container-interface';
 import { FormsModule } from '@angular/forms';

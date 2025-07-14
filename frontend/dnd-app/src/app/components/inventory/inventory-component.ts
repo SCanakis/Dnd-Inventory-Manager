@@ -2,9 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BasicCharacterInfoComponent } from '../basic-character-info/basic-character-info-component';
 import { retry, Subscription } from 'rxjs';
-import { CharacterHasItemProjection } from '../../../interface/inventory.types';
 import { WebSocketResponse } from '../../../interface/websocket-interface';
-import { WebSocketServiceInventory } from '../../../service/websocket/websocket-service-inventory';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContainerService } from '../../../service/container/container';
 import { ContainerView } from '../../../interface/container-interface';
@@ -13,13 +11,16 @@ import { NavComponent } from '../nav/nav-component';
 import { FormsModule } from '@angular/forms';
 import { ItemCatalogInterface } from '../../../interface/item-catalog-interface';
 import { ItemCatalogHttp } from '../../../service/item-catalog-http/item-catalog-http';
-import { WebsocketServiceContainer } from '../../../service/websocket/websocket-service-container';
 import { CharacterHasItemUpdate } from '../../../interface/websocket-interface';
+import { WebSocketServiceInventory } from '../../../service/websocket/inventory/websocket-service-inventory';
+import { WebsocketServiceContainer } from '../../../service/websocket/container/websocket-service-container';
+import { CharacterHasItemProjection } from '../../../interface/inventory.types';
+import { CoinPurseComponent } from '../coin-purse/coin-purse-component';
 
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [CommonModule, FormsModule, BasicCharacterInfoComponent, NavComponent],
+  imports: [CommonModule, FormsModule, BasicCharacterInfoComponent, NavComponent, CoinPurseComponent],
   templateUrl: './inventory.html',
   styleUrl: './inventory.scss'
 })
@@ -53,7 +54,6 @@ export class Inventory implements OnInit, OnDestroy {
   constructor(
     private inventoryWebSocketService: WebSocketServiceInventory,
     private containerWebSocketService: WebsocketServiceContainer,
-    private containerService: ContainerService,
     private itemCatalogService : ItemCatalogHttp,
     private route: ActivatedRoute, 
   ) {

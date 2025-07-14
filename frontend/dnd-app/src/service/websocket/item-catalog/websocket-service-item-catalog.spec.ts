@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-
 import { WebsocketServiceItemCatalog } from './websocket-service-item-catalog';
+
 
 describe('WebsocketServiceItemCatalog', () => {
   let service: WebsocketServiceItemCatalog;

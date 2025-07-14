@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Client, StompConfig } from '@stomp/stompjs';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { CharacterHasItemProjection } from '../../interface/inventory.types';
-import { CharacterHasItemUpdate, WebSocketResponse } from '../../interface/websocket-interface';
-import { environment } from '../../environments/environment.development';
-import { env } from 'process';
-import { serialize } from 'v8';
+import { environment } from '../../../environments/environment.development';
+import { CharacterHasItemUpdate, WebSocketResponse } from '../../../interface/websocket-interface';
+import { CharacterHasItemProjection } from '../../../interface/inventory.types';
+
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebSocketServiceInventory {
-  private client!: Client; // Use definite assignment assertion
+  private client!: Client; 
   private connected = new BehaviorSubject<boolean>(false);
   private inventoryUpdates = new BehaviorSubject<WebSocketResponse | null>(null);
   private inventoryBroadcasts = new BehaviorSubject<WebSocketResponse<CharacterHasItemProjection[]> | null>(null);

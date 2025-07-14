@@ -63,6 +63,7 @@ public class CoinPurseController {
                 sendErrorToUser(principal.getName(), "NOT_FOUND", "Coin Purse was not found");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             sendErrorToUser(principal.getName(), "INTERNAL_ERROR", "Failed to load coin purse");
         }
     }
@@ -94,6 +95,7 @@ public class CoinPurseController {
                 sendErrorToUser(principal.getName(), "NOT_FOUND", "Coin Purse was not found");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             sendErrorToUser(principal.getName(), "INTERNAL_ERROR", "Failed to update coin purse");
         }
     }
