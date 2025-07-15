@@ -121,8 +121,9 @@ export class WebsocketServiceCoinPurse {
   updateCoinPurse(charUuid: string, update : CoinPurseDTO ): void {
     if (this.client.connected) {
       const message = {
-        charUuid,
-        update
+        type: "COIN_PURSE_UPDATE",
+        charUuid : charUuid,
+        coinPurseDTO : update
       };
       
       console.log('Sending coin purse update message...', message);

@@ -16,7 +16,9 @@ export class CoinPurseDTO {
     copper : number = -1;
 
 
-    constructor() {}
+    constructor() {
+        
+    }
 
     setPlatinum(platinum : number) : void {
         this.platinum = platinum;

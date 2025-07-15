@@ -29,7 +29,7 @@ public class CoinPurseService {
         }
     }
     
-    @Transactional(readOnly = true) 
+    @Transactional 
     public boolean updateCoinPurse(UUID charUuid, CoinPurseDTO update) {
         if(charUuid == null || update == null) {
             return false;
@@ -52,7 +52,7 @@ public class CoinPurseService {
 
         repo.save(coinPurse);
 
-        return repo.existsById(charUuid);
+        return true;
     }
 
     public void createFreshCoinPurse(UUID charUuid) {

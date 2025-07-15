@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { WebSocketResponse } from '../../../interface/websocket-interface';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CoinPurse } from '../../../interface/coin-purse-interface';
+import { CoinPurse, CoinPurseDTO } from '../../../interface/coin-purse-interface';
 
 
 @Component({
@@ -84,7 +84,53 @@ export class CoinPurseComponent implements OnInit, OnDestroy{
     this.coinPurseWebSocketService.disconnect();
   }
 
+  onCoinValueChange(coinType : keyof Omit<CoinPurse, 'charUuid'>, newValue : number) : void {
+    if(!this.currentCoinPurse) return;
 
+    this.currentCoinPurse[coinType] = newValue;
+
+    this.handleCoinUpdate(coinType, newValue);
+  }
+
+
+  private handleCoinUpdate(coinType : keyof Omit<CoinPurse, 'charUuid'>, newValue : number) : void{
+    if(!this.charUuid) return;
+
+    const updateDTO = new CoinPurseDTO();
+
+    switch(coinType) {
+
+      case 'platinum':
+        updateDTO.setPlatinum(newValue);
+        break;
+        case 'gold':
+        updateDTO.setGold(newValue);
+        break;
+      case 'electrum':
+        updateDTO.setElectrum(newValue);
+        break;
+      case 'silver':
+        updateDTO.setSilver(newValue);
+        break;
+      case 'copper':
+        updateDTO.setCopper(newValue);
+        break;
+    }
+
+    this.coinPurseWebSocketService.updateCoinPurse(this.charUuid, updateDTO);
+  }
+
+  validateAndUpdateCoin(coinType: keyof Omit<CoinPurse, 'charUuid'>, event: any) : void {
+    const value = parseInt(event.target.value) || 0;
+    const validValue = Math.max(0, value);
+
+    if(validValue !== value) {
+      event.target.value = validValue;
+    }
+
+    this.onCoinValueChange(coinType, validValue);
+
+  }
 
 
 

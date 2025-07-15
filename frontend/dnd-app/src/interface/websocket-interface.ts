@@ -1,4 +1,5 @@
 import { CharacterInfoUpdateDTO } from "./character-info-interface";
+import { CoinPurseDTO } from "./coin-purse-interface";
 
 export interface WebSocketResponse<T = any> {
   type: string;
@@ -43,12 +44,6 @@ export interface ContainerDeletionMessage extends WebSocketMessage {
   containerUuid : string;
 }
 
-// export interface CharacterHasItemProjection {
-//   itemUuid: string;
-//   charUuid: string;
-//   quantity: number;
-// }
-
 export interface CharacterHasItemUpdate {
   itemUuid: string | null;
   quantity: number | null;
@@ -58,3 +53,6 @@ export interface CharacterHasItemUpdate {
   containerUuid: string | null;
 }
 
+export interface CoinPurseUpdateMessage extends WebSocketMessage {
+  coinPurseDTO : CoinPurseDTO | null;
+}

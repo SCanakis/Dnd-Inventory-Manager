@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
 import com.scanakispersonalprojects.dndapp.model.coinPurse.CoinPurse;
+import com.scanakispersonalprojects.dndapp.model.coinPurse.CoinPurseDTO;
 import com.scanakispersonalprojects.dndapp.model.webSocket.CoinPurseRequestMessage;
 import com.scanakispersonalprojects.dndapp.model.webSocket.CoinPurseUpdateMessage;
 import com.scanakispersonalprojects.dndapp.model.webSocket.WebSocketResponse;
@@ -63,7 +64,6 @@ public class CoinPurseController {
                 sendErrorToUser(principal.getName(), "NOT_FOUND", "Coin Purse was not found");
             }
         } catch (Exception e) {
-            e.printStackTrace();
             sendErrorToUser(principal.getName(), "INTERNAL_ERROR", "Failed to load coin purse");
         }
     }
@@ -82,7 +82,10 @@ public class CoinPurseController {
                 return;
             } 
 
-            if(coinPurseService.updateCoinPurse(charUuid, message.getCoinPurseDTO())) {
+            CoinPurseDTO update = message.getCoinPurseDTO();
+            boolean result = coinPurseService.updateCoinPurse(charUuid, update);
+
+            if(result) {
                 WebSocketResponse response = new WebSocketResponse(
                     "COIN-PURSE-UPDATE",
                     true,
@@ -95,7 +98,6 @@ public class CoinPurseController {
                 sendErrorToUser(principal.getName(), "NOT_FOUND", "Coin Purse was not found");
             }
         } catch (Exception e) {
-            e.printStackTrace();
             sendErrorToUser(principal.getName(), "INTERNAL_ERROR", "Failed to update coin purse");
         }
     }

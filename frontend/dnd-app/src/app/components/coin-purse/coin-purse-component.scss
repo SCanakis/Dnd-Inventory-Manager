@@ -1,123 +1,206 @@
 body {
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+}
 
-        /* Compact coin purse styles */
-        .coin-purse-compact {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--bg-lighter);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 6px 12px;
-            margin-left: 16px;
-            font-size: 0.85rem;
-            vertical-align: middle;
-        }
+/* Compact coin purse styles */
+.coin-purse-compact {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-lighter);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 12px;
+    margin-left: 16px;
+    font-size: 0.85rem;
+    vertical-align: middle;
+    max-width: calc(100vw - 32px);
+    overflow-x: auto;
+    flex-shrink: 1;
+}
 
-        .coin-purse-icon {
-            font-size: 1rem;
-            margin-right: 4px;
-        }
+.coin-purse-icon {
+    font-size: 1rem;
+    margin-right: 4px;
+}
 
-        .coins-horizontal {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+.coins-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+    min-width: 0;
+}
 
-        .coin-compact {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            white-space: nowrap;
-        }
+.coin-compact {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 0;
+}
 
-        .coin-compact .coin-icon {
-            font-size: 0.9em;
-        }
+.coin-compact .coin-icon {
+    font-size: 0.9em;
+}
 
-        .coin-compact .coin-amount {
-            font-weight: 600;
-            color: var(--accent-warning);
-        }
+/* Updated styles for editable coin amounts */
+.coin-amount-input {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--accent-warning);
+    font-weight: 600;
+    font-size: 0.85rem;
+    width: 45px;
+    min-width: 35px;
+    max-width: 60px;
+    padding: 2px 4px;
+    text-align: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
 
-        .coin-compact .coin-name {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
+.coin-amount-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px var(--accent-primary)20;
+    background: var(--bg-lighter);
+}
 
-        /* Status indicator for compact version */
-        .status-compact {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            margin-right: 6px;
-            flex-shrink: 0;
-        }
+.coin-amount-input:hover {
+    border-color: var(--accent-primary);
+}
 
-        .status-compact.connected {
-            background-color: var(--accent-success);
-            animation: pulse 2s infinite;
-        }
+/* Remove spinner arrows in Chrome/Safari */
+.coin-amount-input::-webkit-outer-spin-button,
+.coin-amount-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
-        .status-compact.disconnected {
-            background-color: var(--accent-danger);
-            animation: pulse 2s infinite;
-        }
+// /* Remove spinner arrows in Firefox */
+.coin-amount-input[type=number] {
+    background-color: var(--bg-lighter);
+}
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.6; }
-            100% { opacity: 1; }
-        }
+.coin-compact .coin-name {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
 
-        .loading-compact {
-            color: var(--text-muted);
-            font-style: italic;
-        }
+/* Status indicator for compact version */
+.status-compact {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 6px;
+    flex-shrink: 0;
+}
 
-        /* Demo styling to show it with header */
-        .demo-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
+.status-compact.connected {
+    background-color: var(--accent-success);
+    animation: pulse 2s infinite;
+}
 
-        .demo-header h2 {
-            color: var(--text-primary);
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 0;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--border-color);
-        }
+.status-compact.disconnected {
+    background-color: var(--accent-danger);
+    animation: pulse 2s infinite;
+}
 
-        /* Responsive - stack on small screens */
-        @media (max-width: 768px) {
-            .demo-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-            
-            .coin-purse-compact {
-                margin-left: 0;
-            }
-            
-            .coins-horizontal {
-                gap: 8px;
-            }
-            
-            .coin-compact {
-                gap: 3px;
-            }
-        }
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+.loading-compact {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Demo styling to show it with header */
+.demo-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.demo-header h2 {
+    color: var(--text-primary);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+/* Responsive - stack on small screens */
+@media (max-width: 768px) {
+    .demo-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .coin-purse-compact {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 4px 8px;
+        gap: 6px;
+    }
+    
+    .coins-horizontal {
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    
+    .coin-compact {
+        gap: 2px;
+        min-width: auto;
+    }
+    
+    .coin-amount-input {
+        width: 35px;
+        min-width: 30px;
+        font-size: 0.8rem;
+        padding: 1px 2px;
+    }
+    
+    .coin-compact .coin-icon {
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 480px) {
+    .coin-purse-compact {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+        gap: 4px;
+    }
+    
+    .coins-horizontal {
+        gap: 4px;
+    }
+    
+    .coin-amount-input {
+        width: 30px;
+        min-width: 25px;
+        font-size: 0.75rem;
+    }
+    
+    .demo-header h2 {
+        font-size: 1.5rem;
+    }
+}
