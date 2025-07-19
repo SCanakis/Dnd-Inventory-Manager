@@ -22,7 +22,7 @@ import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetai
 /**
  * WebSocket controller for handling real-tiem character information operations.
  * 
- * Handles subscription to character data updates and real0time character stat 
+ * Handles subscription to character data updates and real time character stat 
  * modifications.
  * 
  * WebSocket endpoints:

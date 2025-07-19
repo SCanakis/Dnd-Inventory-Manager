@@ -1,5 +1,14 @@
 package com.scanakispersonalprojects.dndapp.model.coinPurse;
 
+
+/**
+ * Data Transfer Object (DTO) dfor updating ocin purse information.
+ *  
+ * This class reprseents the five standard currenty type. 
+ * 
+ * Fileds initialized to -1 indicated no update should be perfomred. 
+ * 
+ */
 public class CoinPurseDTO {
     
     private int platinum = -1;

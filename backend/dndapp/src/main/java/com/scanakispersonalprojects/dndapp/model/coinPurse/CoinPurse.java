@@ -12,6 +12,18 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+/**
+ * Entity represent a coin_purse sql table
+ * 
+ * The table incldue the follwowing fileds:
+ * 
+ * pk   char_info_uuid      UUID (fk)
+ *      platinum            INT
+ *      gold                INT
+ *      electrum            INT
+ *      silver              INT
+ *      copper              INT
+ */
 @Entity
 @Table(name = "coin_purse")
 public class CoinPurse {

@@ -33,6 +33,7 @@ $dragging-opacity: 0.6;
 // ========================================
 // Mixins
 // ========================================
+
 @mixin button-base {
   padding: 8px 16px;
   border: none;
@@ -56,28 +57,34 @@ $dragging-opacity: 0.6;
   }
 }
 
+* {
+  &::-webkit-scrollbar { display: none; }
+  scrollbar-width: none;
+}
+
+// Scrollbar mixin - only apply where needed
 @mixin scrollbar-style {
   scrollbar-width: thin;
-  scrollbar-color: $border-light $bg-light;
+  scrollbar-color: var(--border-secondary) var(--bg-tertiary);
   
   &::-webkit-scrollbar {
-    width: 12px;
-    background: $bg-light;
+    width: 8px;
+    background: var(--bg-tertiary);
   }
   
   &::-webkit-scrollbar-track {
-    background: $bg-light;
-    border-radius: 6px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
     margin: 2px;
   }
   
   &::-webkit-scrollbar-thumb {
-    background: $border-light;
-    border-radius: 6px;
-    border: 2px solid $bg-light;
+    background: var(--border-secondary);
+    border-radius: 4px;
+    border: 1px solid var(--bg-tertiary);
     
-    &:hover { background: $border-hover; }
-    &:active { background: $border-selected; }
+    &:hover { background: var(--border-tertiary); }
+    &:active { background: var(--border-tertiary); }
   }
 }
 
@@ -85,12 +92,12 @@ $dragging-opacity: 0.6;
 // Base Layout
 // ========================================
 html, body {
-  height: 100%;
+  // height: 100%;
   overflow: hidden;
   margin: 0;
   padding: 0;
-  background-color: $bg-dark;
-  color: $text-primary;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   box-sizing: border-box;
@@ -99,21 +106,10 @@ html, body {
 app-root {
   display: flex;
   flex-direction: column;
-  height: 70%;
+  height: 100vh;
   overflow: hidden;
-  padding: 0 20px 24px; // More padding reducing space
+  padding: 0 20px 24px;
   box-sizing: border-box;
-}
-
-// Hide scrollbars globally except where needed
-* {
-  &::-webkit-scrollbar { display: none; }
-  scrollbar-width: none;
-}
-
-// Enable scrollbars only for specific elements
-.inventory-scroll, .container-list-scroll, .modal-body {
-  @include scrollbar-style;
 }
 
 // ========================================
@@ -123,7 +119,7 @@ app-root {
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: 70%;
+  height: 100%;
   overflow: hidden;
   padding: 0 20px 24px;
 }
@@ -140,6 +136,7 @@ app-nav-component {
   grid-template-columns: 350px 1fr;
   gap: 2rem;
   overflow: hidden;
+  min-height: 0;
 }
 
 .containers-sidebar,
@@ -148,6 +145,7 @@ app-nav-component {
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  min-height: 0;
 }
 
 .containers-sidebar { margin-right: 10px; }
@@ -157,12 +155,12 @@ app-nav-component {
 // Headers
 // ========================================
 h2 {
-  color: $text-primary;
+  color: var(--text-primary);
   font-size: 1.8rem;
   font-weight: 700;
   margin: 0 0 1rem 0;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid $border-color;
+  border-bottom: 2px solid var(--border-primary);
   flex-shrink: 0;
   
   .containers-sidebar & {
@@ -180,26 +178,26 @@ h2 {
   input[type="text"] {
     width: 100%;
     padding: 12px 16px;
-    border: 1px solid $border-color;
+    border: 1px solid var(--border-primary);
     border-radius: 8px;
     font-size: 14px;
-    background: $bg-light;
-    color: $text-primary;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
     transition: all 0.2s ease;
     box-sizing: border-box;
     
-    &::placeholder { color: $text-muted; }
+    &::placeholder { color: var(--text-muted); }
     
     &:focus {
       outline: none;
-      border-color: $border-hover;
+      border-color: var(--border-secondary);
       box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
-      background: $bg-hover;
+      background: var(--bg-hover);
     }
     
     &:hover {
-      border-color: $border-light;
-      background: $bg-hover;
+      border-color: var(--border-secondary);
+      background: var(--bg-hover);
     }
   }
 }
@@ -208,15 +206,14 @@ h2 {
 // Container & Inventory Sections
 // ========================================
 .container-section {
-  background: $bg-light;
-  border: 1px solid $border-color;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
   border-radius: 12px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   height: 100%;
   max-height: 70%;
-  // max-height: 450px;
   overflow: hidden;
   
   h2 { margin-bottom: 1rem; }
@@ -224,11 +221,13 @@ h2 {
 
 .container-list-scroll {
   flex: 1;
-  // max-height: 350px;
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 4px;
+  min-height: 0;
+  @include scrollbar-style;
 }
+
 
 .inventory-section {
   display: flex;
@@ -245,6 +244,8 @@ h2 {
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 4px;
+  min-height: 0;
+  @include scrollbar-style;
 }
 
 // Shared list styling
@@ -793,14 +794,18 @@ h2 {
   }
   
   app-root {
-    height: auto;
-    min-height: 100vh;
-    overflow: visible;
-    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; // Full viewport height
+    overflow: hidden;
+    padding: 20px;
+    box-sizing: border-box;
   }
   
   .inventory-container {
     height: auto;
+    overflow: hidden;
+
     overflow: visible;
   }
   

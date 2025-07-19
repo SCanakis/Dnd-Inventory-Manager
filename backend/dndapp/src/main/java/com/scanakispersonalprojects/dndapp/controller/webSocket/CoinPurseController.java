@@ -19,17 +19,40 @@ import com.scanakispersonalprojects.dndapp.model.webSocket.WebSocketResponse;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 import com.scanakispersonalprojects.dndapp.service.coinPurse.CoinPurseService;
 
+
+/**
+ * 
+ * WebSocke controller for handling real-time coin purse information operations.
+ * 
+ * Handles subscriptoin to coin purse and real time coin purse modifications.
+ * 
+ * WebSocket endpoints:
+ *  /app/coin-purse/subscribe - Subscribe to coin purse
+ *  /app/coin-purse/update - update to coin purse
+ * 
+ */
 @Controller
 public class CoinPurseController {
     
     private static final Logger LOG = Logger.getLogger(CoinPurseController.class.getName());
 
+    // Spring messaging tempalte for sending WebScoekt messages to users and topics
     private final SimpMessagingTemplate messagingTemplate;
 
+    // Services for handling character inforamtion operations and data retrival
     private final CoinPurseService coinPurseService;
-
+    
+    // Servies for user authenticaiton and character owernserhip validation
     private final CustomUserDetailsService userService;
 
+
+    /**
+     * Constucts a new CoinPurseController with the required dependencies
+     * 
+     * @param messagingTemplate
+     * @param coinPurseService
+     * @param userService
+     */
     public CoinPurseController(SimpMessagingTemplate messagingTemplate, CoinPurseService coinPurseService,
             CustomUserDetailsService userService) {
         this.messagingTemplate = messagingTemplate;
@@ -37,6 +60,18 @@ public class CoinPurseController {
         this.userService = userService;
     }
 
+
+    /**
+     * Hanldes WebSocket subscriptions requres for coin-purse
+     * 
+     * @param message - client WebSocket message - incldues charUuid
+     * @param principal - user authentication
+     * 
+     * @return  COIN-PURSE-LOAD - Succesful character data retrival
+     *          UNAUTHORIZEZD - user doesn't own the requested character
+     *          NOT_FOUND - Character data not found
+     *          INTERNAL_ERROR - Server error during procesing
+     */
     @MessageMapping("coin-purse/subscribe")
     public void subscribeToCoinPurse(@Payload CoinPurseRequestMessage message, Principal principal) {
         LOG.info("WebSocket coin-purse subscriber to character: " + message.getCharUuid());
@@ -68,6 +103,18 @@ public class CoinPurseController {
         }
     }
 
+    /**
+     * Updates coin-purse in real time
+     * 
+     * @param message - client WebSocket messgae incldues {@link CoinPurseDTO}
+     * @param principal - user authentication
+     * 
+     * @return  COIN-PURSE-UPDATE - Succesful character data retrival
+     *          UNAUTHORIZEZD - user doesn't own the requested character
+     *          NOT_FOUND - Character data not found
+     *          INTERNAL_ERROR - Server error during procesing
+     * 
+     */
     @MessageMapping("coin-purse/update")
     public void updateCoinPurse(@Payload CoinPurseUpdateMessage message, Principal principal) {
         LOG.info("WebSocket coin-purse update to character: " + message.getCharUuid());

@@ -74,7 +74,6 @@ body {
   background-color: var(--bg-primary) !important;
   color: var(--text-primary) !important;
   line-height: 1.6;
-//   min-height: 100vh;
 }
 
 // ========================================
@@ -457,29 +456,6 @@ input, textarea, select {
     }
   }
 }
-
-// ========================================
-// Scrollbar Styling
-// ========================================
-// * {
-//   &::-webkit-scrollbar {
-//     width: 8px;
-//     height: 8px;
-//   }
-  
-//   &::-webkit-scrollbar-track {
-//     background: var(--bg-secondary);
-//   }
-  
-//   &::-webkit-scrollbar-thumb {
-//     background: var(--border-secondary);
-//     border-radius: 4px;
-    
-//     &:hover {
-//       background: var(--border-tertiary);
-//     }
-//   }
-// }
 
 // ========================================
 // Animation System
