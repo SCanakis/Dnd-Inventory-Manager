@@ -16,6 +16,8 @@ import com.scanakispersonalprojects.dndapp.model.basicCharInfo.User;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.UserRoleProjection;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserRepo;
 
+import jakarta.transaction.Transactional;
+
 
 /**
  * Tells Spring Security how to look up a user in the database.
@@ -88,6 +90,18 @@ public class CustomUserDetailsService implements UserDetailsService{
     public boolean isAdmin(Authentication authentication) {
         UserRoleProjection projection = userRepo.getAuthoritiesFromUsername(authentication.getName());
         return projection.getAuthority().equals("ROLE_ADMIN");
+
+    }
+
+
+    @Transactional
+    public boolean linkCharacter(UUID charUuid, UUID userUuid) {
+        try {
+            userRepo.addCharacterUser(userUuid, charUuid);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
 
     }
 

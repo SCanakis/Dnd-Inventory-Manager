@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.BasicCharInfoCreationDTO;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterInfoUpdateDTO;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CharacterInfoService;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
+
 
 
 
@@ -34,6 +37,7 @@ public class BasicCharInfoController {
     private final static String GET_PATH = "GET /characters/";
     private final static String PUT_PATH = "PUT /characters/";
     private final static String DELETE_PATH = "DELETE /characters/";
+    private final static String POST_PATH = "POST /characters/";
    
     /**
      * Contructor instantiates the {@link CustomUserDetailsService} and 
@@ -125,7 +129,7 @@ public class BasicCharInfoController {
     */
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<CharacterBasicInfoView> deleteCharacter(Authentication authentication ,@PathVariable UUID uuid) {
+    public ResponseEntity<CharacterBasicInfoView> deleteCharacter(Authentication authentication, @PathVariable UUID uuid) {
         LOG.info(DELETE_PATH + uuid);
 
         List<UUID> characters = userService.getUsersCharacters(authentication);
@@ -145,9 +149,24 @@ public class BasicCharInfoController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
-         
+            
     }
+
+    @PostMapping()
+    public ResponseEntity<CharacterBasicInfoView> createCharacter(Authentication authentication, @RequestBody BasicCharInfoCreationDTO dto) {
+
+        UUID userUuid = userService.getUsersUuid(authentication);
+        LOG.info(POST_PATH + " for user: "+ userUuid);
+
+        try {
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
+
+
+    }
+    
 
 
 }

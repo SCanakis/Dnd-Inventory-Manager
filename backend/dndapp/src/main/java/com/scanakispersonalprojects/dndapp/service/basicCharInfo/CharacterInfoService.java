@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Background;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.BasicCharInfoCreationDTO;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterClass;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterClassDetail;
@@ -36,6 +37,8 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class CharacterInfoService {
+
+    private final CustomUserDetailsService customUserDetailsService;
     
     /** Repository for character information ops */
     private CharacterInfoRepo characterInfoRepo;
@@ -71,7 +74,7 @@ public class CharacterInfoService {
      */
 
     public CharacterInfoService(CharacterInfoRepo characterInfoRepo, CharacterClassRepo characterClassRepo,
-            DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, UserRepo userRepo) {
+            DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, UserRepo userRepo, CustomUserDetailsService customUserDetailsService) {
         this.characterInfoRepo = characterInfoRepo;
         this.characterClassRepo = characterClassRepo;
         this.dndClassRepo = dndClassRepo;
@@ -79,6 +82,7 @@ public class CharacterInfoService {
         this.raceRepo = raceRepo;
         this.backgroundRepo = backgroundRepo;
         this.userRepo = userRepo;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
 
@@ -329,6 +333,55 @@ public class CharacterInfoService {
         return getCharacterBasicInfoView(uuid);
     }
 
+
+    @Transactional
+    public CharacterBasicInfoView createCharacter(UUID userUuid, BasicCharInfoCreationDTO dto) {
+        try {
+
+            if(raceRepo.existsById(dto.getRaceUuid()) && backgroundRepo.existsById(dto.getBackgroundUuid())) {
+                
+                UUID charInfoUuid = UUID.randomUUID();
+                CharacterInfo characterInfo = new CharacterInfo(
+                    dto.getName(),
+                    dto.getRaceUuid(),
+                    dto.getBackgroundUuid()
+                );
+                characterInfo.setCharInfoUuid(charInfoUuid);
+                characterInfo.setAbilityScores(dto.getAbilityScores());
+                characterInfoRepo.save(characterInfo);
+                characterInfo = characterInfoRepo.getReferenceById(charInfoUuid);
+                
+                if(characterInfo == null) {return null;}
+
+                for(CharacterClassDetail classDetail : dto.getCharacterClassDetails()) {
+                    if(dndClassRepo.existsById(classDetail.classUuid())) {
+                        
+                        CharacterClass charClass = new CharacterClass(
+                            charInfoUuid,
+                            classDetail.classUuid(),
+                            classDetail.subclassUuid(),
+                            classDetail.level(),
+                            classDetail.level()
+                        );
+                        characterClassRepo.save(charClass);
+                    } else {
+                        return null;
+                    }
+                }
+
+                if(customUserDetailsService.linkCharacter(userUuid, userUuid)) {
+                    return getCharacterBasicInfoView(charInfoUuid);
+                }
+            }
+
+            return null;
+
+        } catch (Exception e) {
+            
+            return null;
+        }
+
+    }
 
 
 }

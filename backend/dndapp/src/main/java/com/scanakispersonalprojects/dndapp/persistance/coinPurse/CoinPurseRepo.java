@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.scanakispersonalprojects.dndapp.model.coinPurse.CoinPurse;
 
 
+
 /**
  * Basic JPA Repository for accesing the coin_purse postgresql table
  * 
