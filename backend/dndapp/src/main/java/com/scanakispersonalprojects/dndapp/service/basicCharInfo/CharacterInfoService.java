@@ -22,7 +22,6 @@ import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.CharacterIn
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.DndClassRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.RaceRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.SubClassRepo;
-import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserRepo;
 
 import jakarta.transaction.Transactional;
 
@@ -37,8 +36,6 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class CharacterInfoService {
-
-    private final CustomUserDetailsService customUserDetailsService;
     
     /** Repository for character information ops */
     private CharacterInfoRepo characterInfoRepo;
@@ -58,8 +55,8 @@ public class CharacterInfoService {
     /** Repository for dnd background definitions */
     private BackgroundRepo backgroundRepo;
 
-    /** Repository for user related operations */
-    private UserRepo userRepo;
+
+    private CharacterLinkService characterLinkService;
 
     /**
      * Constructs a new CharacterInfoServie with the requires repo dependenceis
@@ -74,15 +71,14 @@ public class CharacterInfoService {
      */
 
     public CharacterInfoService(CharacterInfoRepo characterInfoRepo, CharacterClassRepo characterClassRepo,
-            DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, UserRepo userRepo, CustomUserDetailsService customUserDetailsService) {
+            DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, CharacterLinkService characterLinkService) {
         this.characterInfoRepo = characterInfoRepo;
         this.characterClassRepo = characterClassRepo;
         this.dndClassRepo = dndClassRepo;
         this.subClassRepo = subClassRepo;
         this.raceRepo = raceRepo;
         this.backgroundRepo = backgroundRepo;
-        this.userRepo = userRepo;
-        this.customUserDetailsService = customUserDetailsService;
+        this.characterLinkService = characterLinkService;
     }
 
 
@@ -219,7 +215,7 @@ public class CharacterInfoService {
             
             if(characterInfoOptional.isPresent()) {
                 
-                userRepo.deleteCharacter(userUuid, charInfoUuid);
+                characterLinkService.unlinkCharacter(userUuid, charInfoUuid);
                 characterClassRepo.deleteCharacterClasses(charInfoUuid);
                 characterInfoRepo.deleteById(charInfoUuid);
                 
@@ -364,14 +360,14 @@ public class CharacterInfoService {
                             classDetail.level()
                         );
                         characterClassRepo.save(charClass);
+                        characterLinkService.linkCharacter(userUuid, charInfoUuid);
+
+                        return getCharacterBasicInfoView(charInfoUuid);
                     } else {
                         return null;
                     }
                 }
 
-                if(customUserDetailsService.linkCharacter(userUuid, userUuid)) {
-                    return getCharacterBasicInfoView(charInfoUuid);
-                }
             }
 
             return null;
