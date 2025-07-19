@@ -159,10 +159,16 @@ public class BasicCharInfoController {
         LOG.info(POST_PATH + " for user: "+ userUuid);
 
         try {
-            return null;
+            CharacterBasicInfoView character = characterInfoService.createCharacter(userUuid, dto);
+            if(character != null) {
+                return new ResponseEntity<>(character, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
-            return null;
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
 
 
     }

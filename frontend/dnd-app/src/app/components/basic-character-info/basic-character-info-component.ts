@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CharacterBasicInfoView } from '../../../interface/character-info-interface';
 import { CharacterInfoService } from '../../../service/character-info/character-info-service';
 import { ActivatedRoute } from '@angular/router';
-import { error } from 'console';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
@@ -38,6 +37,5 @@ export class BasicCharacterInfoComponent implements OnInit{
           console.log("Error loading character:", error.message)
         }
     )
-
   }
 }

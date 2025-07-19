@@ -1,1 +1,217 @@
-<p>character-creation works!</p>
+<div class="character-creation-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>Create New Character</h1>
+    <button class="btn btn-secondary" (click)="cancel()">← Back to Characters</button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Loading character creation data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <h3>Error</h3>
+    <p>{{ errorMessage }}</p>
+    <button class="btn btn-primary" (click)="loadInitialData()">Try Again</button>
+  </div>
+
+  <!-- Character Creation Form -->
+  <div *ngIf="!isLoading && !errorMessage" class="creation-form">
+    
+    <!-- Basic Information -->
+    <div class="section">
+      <h2>Basic Information</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="characterName">Character Name *</label>
+          <input 
+            id="characterName"
+            type="text" 
+            [(ngModel)]="characterDTO.name"
+            placeholder="Enter character name"
+            class="form-input"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Background Selection -->
+    <div class="section">
+      <h2>Background</h2>
+      <div class="selection-grid">
+        <div 
+          *ngFor="let background of backgrounds"
+          class="selection-card"
+          [class.selected]="selectedBackground?.backgroundUuid === background.backgroundUuid"
+          (click)="selectBackground(background)"
+        >
+          <h3>{{ background.name }}</h3>
+          <p class="description">{{ background.description }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Race Selection -->
+    <div class="section">
+      <h2>Race</h2>
+      <div class="selection-grid">
+        <div 
+          *ngFor="let race of races"
+          class="selection-card"
+          [class.selected]="selectedRace?.raceUuid === race.raceUuid"
+          (click)="selectRace(race)"
+        >
+          <h3>{{ race.name }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Class Selection -->
+    <div class="section">
+      <h2>Classes</h2>
+      
+      <!-- Selected Classes -->
+      <div *ngIf="getSelectedClasses().length > 0" class="selected-classes">
+        <h3>Your Classes (Total Level: {{ getTotalCharacterLevel() }}/20)</h3>
+        <div class="class-list">
+          <div 
+            *ngFor="let selectedClass of getSelectedClasses(); let i = index"
+            class="class-item"
+          >
+            <div class="class-info">
+              <span class="class-name">{{ selectedClass.name }}</span>
+              <span class="hit-dice">d{{ selectedClass.hitDiceValue }}</span>
+            </div>
+            <div class="level-controls">
+              <button 
+                class="btn btn-secondary btn-sm"
+                (click)="updateClassLevel(i, getClassLevel(selectedClass.classUuid) - 1)"
+                [disabled]="getClassLevel(selectedClass.classUuid) <= 1"
+              >-</button>
+              <input 
+                type="number" 
+                [value]="getClassLevel(selectedClass.classUuid)"
+                (change)="onClassLevelChange(i, $event)"
+                min="1" max="20"
+                class="level-input"
+              />
+              <button 
+                class="btn btn-secondary btn-sm"
+                (click)="updateClassLevel(i, getClassLevel(selectedClass.classUuid) + 1)"
+                [disabled]="getClassLevel(selectedClass.classUuid) >= 20 || getTotalCharacterLevel() >= 20"
+              >+</button>
+            </div>
+            <button 
+              class="btn btn-danger btn-sm"
+              (click)="removeClass(i)"
+              title="Remove class"
+            >×</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Classes -->
+      <div *ngIf="canAddMoreClasses()">
+        <h3>{{ getSelectedClasses().length === 0 ? 'Choose Classes' : 'Add More Classes' }}</h3>
+        <div class="selection-grid">
+          <div 
+            *ngFor="let dndClass of availableClasses"
+            class="selection-card class-card"
+            (click)="selectClass(dndClass)"
+          >
+            <h3>{{ dndClass.name }}</h3>
+            <p class="description">{{ dndClass.description }}</p>
+            <div class="hit-dice-info">
+              <span>🎲 Hit Die: d{{ dndClass.hitDiceValue }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!canAddMoreClasses() && getTotalCharacterLevel() >= 20" class="max-level-warning">
+        ⚠️ Maximum character level (20) reached.
+      </div>
+    </div>
+
+    <!-- Ability Scores -->
+    <div class="section">
+      <h2>Ability Scores</h2>
+      <div class="ability-scores-grid">
+        <div *ngFor="let ability of abilityScoreKeys" class="ability-card">
+          <label>{{ ability }}</label>
+          <div class="score-controls">
+            <button 
+              class="btn btn-secondary btn-sm"
+              (click)="updateAbilityScore(ability, getAbilityScore(ability) - 1)"
+              [disabled]="getAbilityScore(ability) <= 1"
+            >-</button>
+            <input 
+              type="number" 
+              [value]="getAbilityScore(ability)"
+              (change)="onAbilityScoreChange(ability, $event)"
+              min="1" max="20"
+              class="score-input"
+            />
+            <button 
+              class="btn btn-secondary btn-sm"
+              (click)="updateAbilityScore(ability, getAbilityScore(ability) + 1)"
+              [disabled]="getAbilityScore(ability) >= 20"
+            >+</button>
+          </div>
+          <div class="modifier">
+            {{ getAbilityModifier(ability) >= 0 ? '+' : '' }}{{ getAbilityModifier(ability) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Character Summary -->
+    <div class="section">
+      <h2>Character Summary</h2>
+      <div class="summary-card">
+        <div class="summary-row">
+          <span>Name:</span>
+          <span>{{ characterDTO.name || 'Unnamed Character' }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Background:</span>
+          <span>{{ selectedBackground?.name || 'None selected' }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Race:</span>
+          <span>{{ selectedRace?.name || 'None selected' }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Classes:</span>
+          <span>
+            <span *ngFor="let selectedClass of getSelectedClasses(); let i = index">
+              {{ selectedClass.name }} {{ getClassLevel(selectedClass.classUuid) }}{{ i < getSelectedClasses().length - 1 ? ', ' : '' }}
+            </span>
+            <span *ngIf="getSelectedClasses().length === 0">None selected</span>
+          </span>
+        </div>
+        <div class="summary-row">
+          <span>Total Level:</span>
+          <span>{{ getTotalCharacterLevel() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="actions">
+      <button class="btn btn-danger" (click)="reset()">Reset</button>
+      <button 
+        class="btn btn-success btn-lg" 
+        (click)="createCharacter()"
+        [disabled]="isSaving || !isFormValid()"
+      >
+        <span *ngIf="!isSaving">✨ Create Character</span>
+        <span *ngIf="isSaving">Creating...</span>
+      </button>
+    </div>
+  </div>
+</div>

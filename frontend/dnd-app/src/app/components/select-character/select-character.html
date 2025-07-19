@@ -1,16 +1,96 @@
-<div>
-    
-<h1>Characters:</h1>    
+<div class="character-select-container">
+  <!-- Header Section -->
+  <div class="header">
+    <h1>Your Characters</h1>
+    <button class="btn btn-secondary" (click)="logout()">
+      Logout
+    </button>
+  </div>
 
-    <div *ngIf="characters">
-        <div *ngFor="let character of characters" (click)="handleClick(character.charInfoUUID)">
-            <h3>{{character.name}} - Level {{getTotalLevel(character)}}</h3>
-            <span>
-                <p *ngFor="let cls of character.classes">{{cls.className}} - {{cls.level}}</p>
-            </span>
-            <p>{{character.race}}</p>
-            <p>{{character.background}}</p>
-        </div>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Loading your characters...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <h3>Something went wrong</h3>
+    <p>{{ errorMessage }}</p>
+    <button class="btn btn-primary" (click)="loadCharacter()">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Create New Character Section -->
+  <div *ngIf="!isLoading && !errorMessage" class="create-character-section">
+    <div class="create-character-card" (click)="handleCreateCharacter()">
+      <div class="create-icon">✨</div>
+      <h2>Create New Character</h2>
+      <p class="text-secondary">Start your next adventure with a brand new character</p>
+      <button class="btn btn-success btn-lg">
+        <span class="plus-icon">+</span>
+        Create Character
+      </button>
     </div>
+  </div>
 
+  <!-- Characters Grid -->
+  <div *ngIf="characters && characters.length > 0 && !isLoading" class="characters-section">
+    <h2 class="section-title">Select a Character</h2>
+    
+    <div class="characters-grid">
+      <div 
+        *ngFor="let character of characters" 
+        class="character-card"
+        (click)="handleClick(character.charInfoUUID)"
+      >
+        <div class="character-header">
+          <h3 class="character-name">{{ character.name }}</h3>
+          <div class="character-level">
+            <span class="level-badge">Level {{ getTotalLevel(character) }}</span>
+          </div>
+        </div>
+
+        <div class="character-details">
+          <div class="character-classes">
+            <div 
+              *ngFor="let cls of character.classes" 
+              class="class-item"
+            >
+              <span class="class-name">{{ cls.className }}</span>
+              <span class="class-level">{{ cls.level }}</span>
+            </div>
+          </div>
+
+          <div class="character-info">
+            <div class="info-item">
+              <span class="info-label">Race:</span>
+              <span class="info-value">{{ character.race }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Background:</span>
+              <span class="info-value">{{ character.background }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="character-footer">
+          <span class="play-text">Click to play</span>
+          <div class="arrow-icon">→</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="characters && characters.length === 0 && !isLoading" class="empty-state">
+    <div class="empty-icon">🎲</div>
+    <h3>No Characters Yet</h3>
+    <p class="text-secondary">Create your first character to begin your D&D adventure!</p>
+    <button class="btn btn-primary btn-lg" (click)="handleCreateCharacter()">
+      Create Your First Character
+    </button>
+  </div>
 </div>

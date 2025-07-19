@@ -67,7 +67,7 @@ public class CharacterInfoService {
      * @param subClassRepo
      * @param raceRepo
      * @param backgroundRepo
-     * @param userRepo
+     * @param characterLinkService
      */
 
     public CharacterInfoService(CharacterInfoRepo characterInfoRepo, CharacterClassRepo characterClassRepo,

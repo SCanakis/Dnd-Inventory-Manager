@@ -15,30 +15,43 @@ export class CharacterCreationService {
 
   constructor(private http : HttpClient) {}
 
+
   getAllBackgrounds() : Observable<Background[]> {
-    return this.http.get<Background[]>(`${this.apiUrl}/background/`);
+    return this.http.get<Background[]>(`${this.apiUrl}/background`, 
+      {withCredentials: true}
+    );
   }
 
   getAllRaces() : Observable<Race[]> {
-    return this.http.get<Race[]>(`${this.apiUrl}/race/`);
+    return this.http.get<Race[]>(`${this.apiUrl}/race`,
+      {withCredentials: true}
+    );
   }
 
   getAllClasses() : Observable<DndClass[]> {
-    return this.http.get<DndClass[]>(`${this.apiUrl}/classes/`);
+    return this.http.get<DndClass[]>(`${this.apiUrl}/classes`, {
+      withCredentials: true
+    });
   }
 
   getAllSubClasses() : Observable<SubClass[]> {
-    return this.http.get<SubClass[]>(`${this.apiUrl}/subclasses/`);
+    return this.http.get<SubClass[]>(`${this.apiUrl}/subclasses`, {
+      withCredentials : true
+    });
   }
 
   getSubClassesForSourceClass(classUuid : string) : Observable<SubClass[]> {
-    return this.http.get<SubClass[]>(`${this.apiUrl}/subclasses/id=${classUuid}`);
+    return this.http.get<SubClass[]>(`${this.apiUrl}/subclasses/id=${classUuid}`, {
+      withCredentials : true
+    });
   }
 
 
   createCharacter(charInfoDTO : BasicCharInfoCreationDTO) {
-    return this.http.post<CharacterBasicInfoView>(`${this.apiUrl}`, {
-      body: charInfoDTO
+    return this.http.post<CharacterBasicInfoView>(
+      `${this.apiUrl}/character`,
+      charInfoDTO, {
+      withCredentials : true,
     });
   }
 

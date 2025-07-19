@@ -44,7 +44,7 @@ public class SubClassController {
         }
     }
 
-    @GetMapping("/{uuid}")
+    @GetMapping("/id={uuid}")
     public ResponseEntity<List<Subclass>> getSubClassesForClass(@PathVariable("uuid") UUID classUuid) { 
         LOG.info(GET_PATH + classUuid);
         try {

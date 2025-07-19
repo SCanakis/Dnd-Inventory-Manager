@@ -59,6 +59,10 @@ export class SelectCharacter implements OnInit{
   handleClick(charUuid : string) : void {
     this.router.navigate(['/character', charUuid, 'inventory']);
   }
+
+  handleCreateCharacter() : void {
+    this.router.navigate(['character-creation']);
+  }
 	
 
 }
