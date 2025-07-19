@@ -27,7 +27,7 @@ public class DndClassController {
         this.classService = classService;
     }
     
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<DndClass>> getAll() {
         LOG.info(GET_PATH);
         try {
