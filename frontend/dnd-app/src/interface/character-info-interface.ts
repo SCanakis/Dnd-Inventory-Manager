@@ -21,7 +21,7 @@ export enum AbilityScore {
     charisma = 'charisma'
 }
 
-export enum hitDiceValue {
+export enum HitDiceValue {
     D4 = 4,
     D6 = 6,
     D8 = 8,
@@ -32,7 +32,7 @@ export enum hitDiceValue {
 export interface CharacterClassDetail {
     classUuid: string,
     className: string;
-    hitDiceValue: hitDiceValue, 
+    hitDiceValue: HitDiceValue, 
     subClassUuid: string,
     subClassName: string,
     level: number;

@@ -4,6 +4,7 @@ import { SelectCharacter } from './components/select-character/select-character'
 import { Inventory } from './components/inventory/inventory-component';
 import { ItemCatalog } from './components/item-catalog/item-catalog';
 import { CharacterStats } from './components/character-stats/character-stats';
+import { CharacterCreation } from './components/character-creation/character-creation';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -11,6 +12,7 @@ export const routes: Routes = [
   { path: 'character/:charUuid/inventory', component: Inventory },
   { path: 'character/:charUuid/itemCatalog', component: ItemCatalog },
   { path : 'character/:charUuid/characterStats', component: CharacterStats},
+  { path : 'character-creation', component: CharacterCreation},
   { path: '', redirectTo: '/login', pathMatch: 'full' }, 
   { path: '**', redirectTo: '/login' }
 ];
