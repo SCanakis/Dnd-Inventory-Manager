@@ -153,15 +153,15 @@ public class BasicCharInfoController {
     }
 
     @PostMapping()
-    public ResponseEntity<CharacterBasicInfoView> createCharacter(Authentication authentication, @RequestBody BasicCharInfoCreationDTO dto) {
+    public ResponseEntity<Boolean> createCharacter(Authentication authentication, @RequestBody BasicCharInfoCreationDTO dto) {
 
         UUID userUuid = userService.getUsersUuid(authentication);
         LOG.info(POST_PATH + " for user: "+ userUuid);
 
         try {
-            CharacterBasicInfoView character = characterInfoService.createCharacter(userUuid, dto);
-            if(character != null) {
-                return new ResponseEntity<>(character, HttpStatus.OK);
+            Boolean result = characterInfoService.createCharacter(userUuid, dto);
+            if(result) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }

@@ -13,15 +13,18 @@ import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterClass;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterClassDetail;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterInfo;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DndClass;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.HPHandler;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Race;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Subclass;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterInfoUpdateDTO;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DeathSavingThrowsHelper;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.BackgroundRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.CharacterClassRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.CharacterInfoRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.DndClassRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.RaceRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.SubClassRepo;
+import com.scanakispersonalprojects.dndapp.service.coinPurse.CoinPurseService;
 
 import jakarta.transaction.Transactional;
 
@@ -58,6 +61,8 @@ public class CharacterInfoService {
 
     private CharacterLinkService characterLinkService;
 
+    private CoinPurseService coinPurseService;
+
     /**
      * Constructs a new CharacterInfoServie with the requires repo dependenceis
      * 
@@ -71,7 +76,8 @@ public class CharacterInfoService {
      */
 
     public CharacterInfoService(CharacterInfoRepo characterInfoRepo, CharacterClassRepo characterClassRepo,
-            DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, CharacterLinkService characterLinkService) {
+            DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, CharacterLinkService characterLinkService,
+            CoinPurseService coinPurseService) {
         this.characterInfoRepo = characterInfoRepo;
         this.characterClassRepo = characterClassRepo;
         this.dndClassRepo = dndClassRepo;
@@ -79,6 +85,7 @@ public class CharacterInfoService {
         this.raceRepo = raceRepo;
         this.backgroundRepo = backgroundRepo;
         this.characterLinkService = characterLinkService;
+        this.coinPurseService = coinPurseService;
     }
 
 
@@ -331,23 +338,27 @@ public class CharacterInfoService {
 
 
     @Transactional
-    public CharacterBasicInfoView createCharacter(UUID userUuid, BasicCharInfoCreationDTO dto) {
+    public boolean createCharacter(UUID userUuid, BasicCharInfoCreationDTO dto) {
         try {
 
             if(raceRepo.existsById(dto.getRaceUuid()) && backgroundRepo.existsById(dto.getBackgroundUuid())) {
                 
-                UUID charInfoUuid = UUID.randomUUID();
                 CharacterInfo characterInfo = new CharacterInfo(
                     dto.getName(),
                     dto.getRaceUuid(),
                     dto.getBackgroundUuid()
                 );
-                characterInfo.setCharInfoUuid(charInfoUuid);
                 characterInfo.setAbilityScores(dto.getAbilityScores());
-                characterInfoRepo.save(characterInfo);
-                characterInfo = characterInfoRepo.getReferenceById(charInfoUuid);
+                characterInfo.setHpHandler(new HPHandler(0, 0, 0));
+                characterInfo.setDeathSavingThrowsHelper(new DeathSavingThrowsHelper(0,0));
+                characterInfo = characterInfoRepo.save(characterInfo);
+
                 
-                if(characterInfo == null) {return null;}
+                if(characterInfo == null) {
+                    return false;
+                }
+
+                UUID charInfoUuid = characterInfo.getCharInfoUuid();
 
                 for(CharacterClassDetail classDetail : dto.getCharacterClassDetails()) {
                     if(dndClassRepo.existsById(classDetail.classUuid())) {
@@ -360,21 +371,21 @@ public class CharacterInfoService {
                             classDetail.level()
                         );
                         characterClassRepo.save(charClass);
-                        characterLinkService.linkCharacter(userUuid, charInfoUuid);
-
-                        return getCharacterBasicInfoView(charInfoUuid);
                     } else {
-                        return null;
+                        return false;
                     }
                 }
+                characterLinkService.linkCharacter(userUuid, charInfoUuid);
+                coinPurseService.createFreshCoinPurse(charInfoUuid);
+                return true;
 
             }
 
-            return null;
+            return false;
 
         } catch (Exception e) {
-            
-            return null;
+            e.printStackTrace();
+            return false;
         }
 
     }
