@@ -44,41 +44,54 @@
       <div 
         *ngFor="let character of characters" 
         class="character-card"
-        (click)="handleClick(character.charInfoUUID)"
       >
-        <div class="character-header">
-          <h3 class="character-name">{{ character.name }}</h3>
-          <div class="character-level">
-            <span class="level-badge">Level {{ getTotalLevel(character) }}</span>
-          </div>
+        <!-- Character Options Button -->
+        <div class="character-options">
+          <button 
+            class="options-btn"
+            (click)="openOptionsModal($event, character)"
+            [attr.aria-label]="'Options for ' + character.name"
+          >
+            ⋮
+          </button>
         </div>
 
-        <div class="character-details">
-          <div class="character-classes">
-            <div 
-              *ngFor="let cls of character.classes" 
-              class="class-item"
-            >
-              <span class="class-name">{{ cls.className }}</span>
-              <span class="class-level">{{ cls.level }}</span>
+        <!-- Character Content (clickable to enter game) -->
+        <div class="character-content" (click)="handleClick(character.charInfoUUID)">
+          <div class="character-header">
+            <h3 class="character-name">{{ character.name }}</h3>
+            <div class="character-level">
+              <span class="level-badge">Level {{ getTotalLevel(character) }}</span>
             </div>
           </div>
 
-          <div class="character-info">
-            <div class="info-item">
-              <span class="info-label">Race:</span>
-              <span class="info-value">{{ character.race }}</span>
+          <div class="character-details">
+            <div class="character-classes">
+              <div 
+                *ngFor="let cls of character.classes" 
+                class="class-item"
+              >
+                <span class="class-name">{{ cls.className }}</span>
+                <span class="class-level">{{ cls.level }}</span>
+              </div>
             </div>
-            <div class="info-item">
-              <span class="info-label">Background:</span>
-              <span class="info-value">{{ character.background }}</span>
+
+            <div class="character-info">
+              <div class="info-item">
+                <span class="info-label">Race:</span>
+                <span class="info-value">{{ character.race }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Background:</span>
+                <span class="info-value">{{ character.background }}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="character-footer">
-          <span class="play-text">Click to play</span>
-          <div class="arrow-icon">→</div>
+          <div class="character-footer">
+            <span class="play-text">Click to play</span>
+            <div class="arrow-icon">→</div>
+          </div>
         </div>
       </div>
     </div>
@@ -92,5 +105,69 @@
     <button class="btn btn-primary btn-lg" (click)="handleCreateCharacter()">
       Create Your First Character
     </button>
+  </div>
+
+  <!-- Character Options Modal -->
+  <div *ngIf="showOptionsModal" class="modal-overlay" (click)="closeOptionsModal()">
+    <div class="modal-content options-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ selectedCharacter?.name }} Options</h3>
+        <button class="modal-close" (click)="closeOptionsModal()">×</button>
+      </div>
+      
+      <div class="modal-body options-body">
+        <button 
+          class="option-button delete-option"
+          (click)="openDeleteConfirmation($event, selectedCharacter!)"
+        >
+          <span class="option-icon">🗑️</span>
+          <span class="option-text">Delete Character</span>
+          <span class="option-description">Permanently remove this character</span>
+        </button>
+        
+        <!-- Add more options here in the future -->
+        <!--
+        <button class="option-button">
+          <span class="option-icon">✏️</span>
+          <span class="option-text">Edit Character</span>
+          <span class="option-description">Modify character details</span>
+        </button>
+        -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div *ngIf="showDeleteConfirmation" class="modal-overlay" (click)="closeDeleteConfirmation()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Delete Character</h3>
+        <button class="modal-close" (click)="closeDeleteConfirmation()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="warning-icon">⚠️</div>
+        <p>Are you sure you want to delete <strong>{{ characterToDelete?.name }}</strong>?</p>
+        <p class="warning-text">This action cannot be undone. All character data will be permanently lost.</p>
+      </div>
+      
+      <div class="modal-footer">
+        <button 
+          class="btn btn-secondary" 
+          (click)="closeDeleteConfirmation()"
+          [disabled]="isDeleting"
+        >
+          Cancel
+        </button>
+        <button 
+          class="btn btn-danger" 
+          (click)="confirmDelete()"
+          [disabled]="isDeleting"
+        >
+          <span *ngIf="isDeleting" class="spinner"></span>
+          {{ isDeleting ? 'Deleting...' : 'Delete Character' }}
+        </button>
+      </div>
+    </div>
   </div>
 </div>
