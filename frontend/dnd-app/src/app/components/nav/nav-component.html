@@ -18,10 +18,16 @@
       (click)="navigateToCharacterStats()">
       Character Stats
     </button>
+    <button
+      class="nav-button select-char-btn"
+      (click)="navigateToSelectChar()"
+    >Character Selection
+
+    </button>
     <button 
       class="nav-button logout-btn" 
-      [disabled]="true"
-      title="Sign out functionality coming soon">
+      (click)="navigateToSignOut()"
+      >
       Sign Out
     </button>
   </div>

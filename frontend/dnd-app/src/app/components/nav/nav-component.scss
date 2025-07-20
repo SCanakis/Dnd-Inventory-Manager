@@ -71,6 +71,7 @@
   &.inventory-btn::before { content: "🎒"; margin-right: 8px; }
   &.catalog-btn::before { content: "📖"; margin-right: 8px; }
   &.stats-btn::before { content: "⚔️"; margin-right: 8px; }
+  &.select-char-btn::before { content: "👤"; margin-right: 8px; }
   &.logout-btn::before { content: "🚪"; margin-right: 8px; }
 }
 

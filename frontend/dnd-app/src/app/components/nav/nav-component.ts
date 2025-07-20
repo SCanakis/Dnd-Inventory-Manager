@@ -60,7 +60,15 @@ export class NavComponent implements OnInit{
       this.currentPage = 'stats'
       this.router.navigate(['/character', this.charUuid, 'characterStats']);
     }
-
   }
+
+  navigateToSelectChar() {
+    this.router.navigate(['characters']);
+  }
+
+  navigateToSignOut() {
+    this.router.navigate(['/login']);
+  }
+
 
 }
