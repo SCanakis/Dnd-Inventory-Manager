@@ -11,6 +11,7 @@ import com.scanakispersonalprojects.dndapp.model.inventory.characterHasItem.Char
 import com.scanakispersonalprojects.dndapp.model.inventory.containers.Container;
 import com.scanakispersonalprojects.dndapp.model.inventory.containers.ContainerId;
 import com.scanakispersonalprojects.dndapp.model.inventory.containers.ContainerView;
+import com.scanakispersonalprojects.dndapp.model.inventory.itemCatalog.ItemCatalog;
 import com.scanakispersonalprojects.dndapp.persistance.inventory.ContainerRepo;
 import com.scanakispersonalprojects.dndapp.persistance.inventory.InventoryRepo;
 
@@ -133,6 +134,18 @@ public class ContainerService {
             if(optionalContainer.isPresent()) {
                 List<CharacterHasItemProjection> items = inventoryRepo.getItemsForAContainer(charUuid, containerUuid);
                 if(items.isEmpty()) {
+                    
+                    Optional<Container> inventoryOptional =  containerRepo.findById(new ContainerId(inventoryContainerUuid, charUuid));
+                    if(!inventoryOptional.isPresent()) {
+                        return false;
+                    }
+                    Container containerToDelete = optionalContainer.get();
+                    Container inventory = inventoryOptional.get();
+                    
+                    ItemCatalog item = itemCatalogService.getItemWithUUID(containerToDelete.getItemUuid());
+            
+                    inventory.setCurrentCapacity(inventory.getCurrentCapacity() - item.getItemWeight());
+                    containerRepo.save(inventory);
                     containerRepo.deleteById(new ContainerId(containerUuid, charUuid));
                     return true;
                 }

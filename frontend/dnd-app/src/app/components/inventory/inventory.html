@@ -2,6 +2,24 @@
 <app-nav-component></app-nav-component>
 
 <div class="inventory-container">
+  <!-- ADD THIS: Demo header that was missing from your HTML -->
+  <div class="demo-header">    
+    <!-- <h2>Character Inventory</h2>     -->
+    <app-coin-purse-component></app-coin-purse-component>
+  </div>
+
+  <!-- ADD THIS: Search section at the top level -->
+  <div class="search-section">
+    <div class="search-container">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="onSearchTerm()" 
+        placeholder="Search items by name"
+      >
+    </div>
+  </div>
+
   <div class="content-layout">
     
     <div class="containers-sidebar">
@@ -10,7 +28,7 @@
         <div *ngIf="currentContainer.length > 0">
           <div class="container-list-scroll">
             <ul>
-              <!-- All Items button - no longer a drop zone, just clickable -->
+              <!-- All Items button -->
               <li (click)="getAllItems()" 
                   class="container-item all-items-container">
                 <span>All Items</span>
@@ -54,54 +72,37 @@
 
     <div class="inventory-main">
       <div class="inventory-section">
+        <!-- REMOVE THE INVENTORY HEADER FROM HERE - it's now at the top -->
+        <!-- REMOVE THE SEARCH SECTION FROM HERE - it's now at the top -->
         
-        <div class="inventory-header">
-          <app-coin-purse-component></app-coin-purse-component>
-        </div>
-          
-        <!-- Move search section inside inventory-section -->
-        <div class="search-section">
-          <div class="search-container">
-            <input 
-              type="text" 
-              [(ngModel)]="searchTerm" 
-              (input)="onSearchTerm()" 
-              placeholder="Search items by name"
-            >
-          </div>
-        </div>
-        
-        <div *ngIf="currentInventory.length > 0">
-          <!-- Remove the wrapper div that was causing issues -->
-          <div class="inventory-scroll">
-            <ul>
-              <li *ngFor="let item of currentInventory; let i = index" 
-                  class="inventory-item" 
-                  draggable="true"
-                  (dragstart)="onDragStart($event, item)"
-                  (dragend)="onDragEnd($event)"
-                  (click)="openItemModal(item)"
-                  [class.dragging]="draggedItem === item">
-                
-                <div class="drag-handle" *ngIf="!draggedItem">
-                  <span class="drag-icon">⋮⋮</span>
-                </div>
-                
-                <div class="item-content">
-                  <span>Name: {{ item.itemName || 'Unknown' }}</span> - 
-                  <span>Equipped: {{ item.equipped ? 'Yes' : 'No' }}</span> - 
-                  <span>Attuned: {{ item.attuned ? 'Yes' : 'No' }}</span> - 
-                  <span>Rarity: {{ item.itemRarity || 'Unknown' }}</span> - 
-                  <span>Quantity: {{ item.quantity || 0 }}</span> - 
-                  <span>Value: {{ item.itemValue || 0 }}</span> - 
-                  <span>Weight: {{ item.itemWeight || 0 }}</span>
-                </div>
-              </li>
-            </ul>
-          </div>
+        <div class="inventory-scroll">
+          <ul>
+            <li *ngFor="let item of currentInventory; let i = index" 
+                class="inventory-item" 
+                draggable="true"
+                (dragstart)="onDragStart($event, item)"
+                (dragend)="onDragEnd($event)"
+                (click)="openItemModal(item)"
+                [class.dragging]="draggedItem === item">
+              
+              <div class="drag-handle" *ngIf="!draggedItem">
+                <span class="drag-icon">⋮⋮</span>
+              </div>
+              
+              <div class="item-content">
+                <span>Name: {{ item.itemName || 'Unknown' }}</span> - 
+                <span>Equipped: {{ item.equipped ? 'Yes' : 'No' }}</span> - 
+                <span>Attuned: {{ item.attuned ? 'Yes' : 'No' }}</span> - 
+                <span>Rarity: {{ item.itemRarity || 'Unknown' }}</span> - 
+                <span>Quantity: {{ item.quantity || 0 }}</span> - 
+                <span>Value: {{ item.itemValue || 0 }}</span> - 
+                <span>Weight: {{ item.itemWeight || 0 }}</span>
+              </div>
+            </li>
+          </ul>
         </div>
 
-        <!-- Updated drag instructions -->
+        <!-- Drag instructions -->
         <div class="drag-instructions" *ngIf="draggedItem">
           <p>💡 Drag the item to a container on the left to move it there.</p>
         </div>
@@ -111,6 +112,7 @@
   </div>
 </div>
 
+<!-- Modals remain the same -->
 <div *ngIf="selectedItem" class="modal-overlay" (click)="closeItemModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="modal-header">

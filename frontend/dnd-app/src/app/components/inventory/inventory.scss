@@ -1,181 +1,59 @@
 // ========================================
-// Color Palette
+// INVENTORY COMPONENT SPECIFIC STYLES
 // ========================================
-$bg-dark: hsl(0, 0%, 3%);
-$bg: hsl(0, 0%, 8%);
-$bg-light: hsl(0, 0%, 12%);
-$bg-lighter: hsl(0, 0%, 16%);
-$bg-lightest: hsl(0, 0%, 20%);
-$bg-selected: hsl(0, 0%, 25%);
-$bg-hover: hsl(0, 0%, 18%);
-
-$text-primary: hsl(0, 0%, 95%);
-$text-secondary: hsl(0, 0%, 75%);
-$text-muted: hsl(0, 0%, 55%);
-
-$accent-danger: hsl(0, 65%, 55%);
-$accent-success: hsl(120, 50%, 50%);
-$accent-warning: hsl(45, 85%, 55%);
-$border-color: hsl(0, 0%, 20%);
-$border-light: hsl(0, 0%, 25%);
-$border-hover: hsl(0, 0%, 35%);
-$border-selected: hsl(0, 0%, 40%);
-
-$shadow-light: rgba(0, 0, 0, 0.3);
-
-// Drag and drop colors - enhanced visibility
-$drag-over-bg: hsla(120, 50%, 50%, 0.15);
-$drag-over-border: hsl(120, 50%, 60%);
-$cannot-drop-bg: hsla(0, 65%, 55%, 0.15);
-$cannot-drop-border: hsl(0, 65%, 65%);
-$dragging-opacity: 0.6;
+// This component should work within its allocated space,
+// not control the entire viewport
 
 // ========================================
-// Mixins
-// ========================================
-
-@mixin button-base {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
-  }
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-* {
-  &::-webkit-scrollbar { display: none; }
-  scrollbar-width: none;
-}
-
-// Scrollbar mixin - only apply where needed
-@mixin scrollbar-style {
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-secondary) var(--bg-tertiary);
-  
-  &::-webkit-scrollbar {
-    width: 8px;
-    background: var(--bg-tertiary);
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: var(--bg-tertiary);
-    border-radius: 4px;
-    margin: 2px;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: var(--border-secondary);
-    border-radius: 4px;
-    border: 1px solid var(--bg-tertiary);
-    
-    &:hover { background: var(--border-tertiary); }
-    &:active { background: var(--border-tertiary); }
-  }
-}
-
-// ========================================
-// Base Layout
-// ========================================
-html, body {
-  // height: 100%;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
-  box-sizing: border-box;
-}
-
-app-root {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-  padding: 0 20px 24px;
-  box-sizing: border-box;
-}
-
-// ========================================
-// Layout Structure
+// INVENTORY CONTAINER - Flexible height container
 // ========================================
 .inventory-container {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  // Don't set fixed height - let it work within app-root's flex layout
+  flex: 1; // Take remaining space after other components
+  height: 65%;
+  min-height: 0; // Critical: allows flex-grow to work properly
   overflow: hidden;
-  padding: 0 20px 24px;
+  padding: 0 20px 24px; // Keep your existing padding
 }
 
-app-basic-character-info-component,
-app-nav-component {
-  flex-shrink: 0;
+// ========================================
+// INVENTORY HEADER - Fixed height
+// ========================================
+.inventory-header {
+  flex-shrink: 0; // Don't shrink
   margin-bottom: 1rem;
 }
 
-.content-layout {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 350px 1fr;
-  gap: 2rem;
-  overflow: hidden;
-  min-height: 0;
-}
-
-.containers-sidebar,
-.inventory-main {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-  min-height: 0;
-}
-
-.containers-sidebar { margin-right: 10px; }
-.inventory-main { margin-left: 10px; }
-
-// ========================================
-// Headers
-// ========================================
-h2 {
-  color: var(--text-primary);
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin: 0 0 1rem 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--border-primary);
+// Demo header (contains h2 and coin purse)
+.demo-header {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 8px;
   
-  .containers-sidebar & {
-    font-size: 1.4rem;
+  h2 {
+    color: var(--text-primary);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-primary);
+    flex-shrink: 0;
   }
 }
 
 // ========================================
-// Search Input
+// SEARCH SECTION - Fixed height
 // ========================================
 .search-section {
-  flex-shrink: 0;
+  flex-shrink: 0; // Don't shrink
   margin-bottom: 1rem;
   
-  input[type="text"] {
+  .search-container input[type="text"] {
     width: 100%;
     padding: 12px 16px;
     border: 1px solid var(--border-primary);
@@ -203,52 +81,149 @@ h2 {
 }
 
 // ========================================
-// Container & Inventory Sections
+// CONTENT LAYOUT - Main grid container
 // ========================================
+.content-layout {
+  flex: 1; // Take remaining space after headers
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 2rem;
+  overflow: hidden; // Critical
+  min-height: 0; // Critical: allows children to shrink
+}
+
+// ========================================
+// CONTAINERS SIDEBAR - Scrollable column
+// ========================================
+.containers-sidebar {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0; // Critical
+  margin-right: 10px;
+  height: 100%; // Ensure full height
+}
+
 .container-section {
+  flex: 1; // Take all available space in sidebar
   background: var(--bg-tertiary);
   border: 1px solid var(--border-primary);
   border-radius: 12px;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  max-height: 70%;
-  overflow: hidden;
+  overflow: hidden; // Critical
+  min-height: 0; // Critical
+  height: 100%; // Ensure full height
   
-  h2 { margin-bottom: 1rem; }
+  h2 {
+    flex-shrink: 0; // Don't shrink header
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-primary);
+  }
 }
 
 .container-list-scroll {
-  flex: 1;
-  overflow-y: auto;
+  flex: 1; // Take remaining space after header
+  overflow-y: auto !important; // Force scrolling
   overflow-x: hidden;
   padding-right: 4px;
-  min-height: 0;
-  @include scrollbar-style;
+  min-height: 0; // Critical
+  max-height: 95%; // Prevent container from expanding
+  
+  // Custom scrollbar - more visible
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-primary) var(--bg-secondary);
+  
+  &::-webkit-scrollbar {
+    width: 12px;
+    background: var(--bg-secondary);
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    margin: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 6px;
+    border: 2px solid var(--bg-secondary);
+    
+    &:hover { 
+      background: hsl(210, 100%, 45%);
+    }
+    &:active { 
+      background: hsl(210, 100%, 40%);
+    }
+  }
 }
 
-
-.inventory-section {
+// ========================================
+// INVENTORY MAIN - Scrollable column
+// ========================================
+.inventory-main {
   display: flex;
   flex-direction: column;
-  height: 100%;
   overflow: hidden;
-  
-  h2 { margin-bottom: 1rem; }
+  min-height: 0; // Critical
+  margin-left: 10px;
+  height: 100%; // Ensure full height
+}
+
+.inventory-section {
+  flex: 1; // Take all available space in main area
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // Critical
+  min-height: 0; // Critical
+  height: 100%; // Ensure full height
 }
 
 .inventory-scroll {
-  flex: 1;
-  max-height: 70%;
-  overflow-y: auto;
+  flex: 1; // Take remaining space after header and search
+  overflow-y: auto !important; // Force scrolling
   overflow-x: hidden;
   padding-right: 4px;
-  min-height: 0;
-  @include scrollbar-style;
+  min-height: 0; // Critical
+  max-height: 100%; // Prevent container from expanding
+  
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-primary) var(--bg-secondary);
+  
+  &::-webkit-scrollbar {
+    width: 12px;
+    background: var(--bg-secondary);
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    margin: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 6px;
+    border: 2px solid var(--bg-secondary);
+    
+    &:hover { 
+      background: hsl(210, 100%, 45%);
+    }
+    &:active { 
+      background: hsl(210, 100%, 40%);
+    }
+  }
 }
 
-// Shared list styling
+// ========================================
+// LIST STYLING
+// ========================================
 .container-list-scroll ul,
 .inventory-scroll ul {
   list-style: none;
@@ -257,30 +232,51 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-bottom: 20px;
+  padding-bottom: 50px; // Extra space at bottom
 }
 
 // ========================================
-// Drag and Drop Styles - Enhanced
+// DRAG INSTRUCTIONS - Fixed positioning
+// ========================================
+.drag-instructions {
+  flex-shrink: 0; // Don't shrink
+  margin-top: 1rem;
+  padding: 12px 16px;
+  background: var(--bg-lighter);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  border-left: 4px solid var(--accent-warning);
+  animation: slide-down 0.3s ease;
+  
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+}
+
+// ========================================
+// ITEM AND CONTAINER STYLES
 // ========================================
 .inventory-item {
   position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  background: $bg-light;
-  border: 1px solid $border-color;
+  background: var(--bg-light);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 16px 20px;
   cursor: grab;
-  color: $text-primary;
+  color: var(--text-primary);
   transition: all 0.2s ease;
   
   &:hover {
-    background: $bg-hover;
-    border-color: $border-hover;
+    background: var(--bg-hover);
+    border-color: var(--border-hover);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px $shadow-light;
+    box-shadow: 0 4px 12px var(--shadow-light);
   }
   
   &:active {
@@ -288,12 +284,12 @@ h2 {
   }
   
   &.dragging {
-    opacity: $dragging-opacity;
+    opacity: 0.6;
     transform: rotate(2deg) scale(0.98);
     cursor: grabbing;
     z-index: 1000;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    border-color: $accent-warning;
+    border-color: var(--accent-warning);
   }
   
   .drag-handle {
@@ -302,7 +298,7 @@ h2 {
     justify-content: center;
     width: 20px;
     height: 100%;
-    color: $text-muted;
+    color: var(--text-muted);
     cursor: grab;
     user-select: none;
     
@@ -313,7 +309,7 @@ h2 {
     }
     
     &:hover {
-      color: $text-primary;
+      color: var(--text-primary);
     }
   }
   
@@ -330,114 +326,68 @@ h2 {
   }
 }
 
-// Enhanced container drop zones - much more forgiving
 .container-item {
-  background: $bg-light;
-  border: 1px solid $border-color;
+  background: var(--bg-light);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 20px 24px; // Increased padding for larger drop zone
+  padding: 20px 24px;
   cursor: pointer;
-  color: $text-primary;
+  color: var(--text-primary);
   transition: all 0.2s ease;
   position: relative;
-  min-height: 80px; // Increased minimum height
+  min-height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   
-  // Add invisible expanded drop zone
-  &::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: -8px;
-    right: -8px;
-    bottom: -8px;
-    pointer-events: none;
-    border-radius: 12px;
-    z-index: -1;
-  }
-  
   &:hover {
-    background: $bg-hover;
-    border-color: $border-hover;
+    background: var(--bg-hover);
+    border-color: var(--border-hover);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px $shadow-light;
+    box-shadow: 0 4px 12px var(--shadow-light);
   }
   
-  &:active {
-    transform: translateY(0);
-    background: $bg-selected;
-    border-color: $border-selected;
-  }
-  
-  // Enhanced drag over states with better visibility
+  // Drag states
   &.drag-over {
     transform: translateY(-1px) scale(1.02);
     
     &.can-drop {
-      background: $drag-over-bg;
-      border-color: $drag-over-border;
-      border-width: 3px; // Thicker border for better visibility
+      background: hsla(120, 50%, 50%, 0.15);
+      border-color: hsl(120, 50%, 60%);
+      border-width: 3px;
       box-shadow: 0 0 25px rgba(120, 255, 120, 0.3), 
                   0 4px 15px rgba(0, 0, 0, 0.2);
       animation: pulse-green 1.2s infinite;
-      
-      &::before {
-        background: rgba(120, 255, 120, 0.1);
-        border: 2px solid $drag-over-border;
-        pointer-events: auto;
-      }
     }
     
     &.cannot-drop {
-      background: $cannot-drop-bg;
-      border-color: $cannot-drop-border;
+      background: hsla(0, 65%, 55%, 0.15);
+      border-color: hsl(0, 65%, 65%);
       border-width: 3px;
       box-shadow: 0 0 25px rgba(255, 120, 120, 0.3),
                   0 4px 15px rgba(0, 0, 0, 0.2);
       animation: pulse-red 1.2s infinite;
-      
-      &::before {
-        background: rgba(255, 120, 120, 0.1);
-        border: 2px solid $cannot-drop-border;
-        pointer-events: auto;
-      }
     }
   }
   
-  // All items container special styling - enhanced
+  // Special styling for "All Items" container
   &.all-items-container {
-    background: $bg-selected;
+    background: var(--bg-selected);
     font-weight: 600;
-    border-color: $border-selected;
-    min-height: 90px; // Larger drop zone for main inventory
+    border-color: var(--border-selected);
+    min-height: 90px;
     padding: 24px;
     border-width: 2px;
     
     &:hover {
-      background: $bg-lightest;
-      border-color: $border-hover;
+      background: var(--bg-lightest);
+      border-color: var(--border-hover);
       transform: translateY(-3px);
-    }
-    
-    &.drag-over {
-      background: $drag-over-bg;
-      border-color: $drag-over-border;
-      border-width: 4px; // Extra thick for main inventory
-      animation: pulse-green 1s infinite;
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 0 30px rgba(120, 255, 120, 0.4);
-      
-      &::before {
-        background: rgba(120, 255, 120, 0.15);
-        border: 3px solid $drag-over-border;
-        pointer-events: auto;
-      }
     }
   }
   
+  // Drop hints
   span {
     display: inline-block;
     margin-right: 16px;
@@ -448,7 +398,7 @@ h2 {
     &:last-child { margin-right: 0; }
     
     &.drop-hint {
-      color: $accent-success;
+      color: var(--accent-success);
       font-weight: 700;
       font-size: 0.9rem;
       animation: fade-in 0.3s ease;
@@ -456,72 +406,43 @@ h2 {
     }
     
     &.drop-hint-no {
-      color: $accent-danger;
+      color: var(--accent-danger);
       font-weight: 700;
       font-size: 0.9rem;
       animation: fade-in 0.3s ease;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
   }
-}
-
-// Container items in sidebar get special treatment
-.container-item {
-  .container-section & {
-    padding: 16px 20px;
-    font-size: 0.9rem;
-    min-height: 70px;
-    
-    &:first-child {
-      font-size: 1rem;
-      margin-bottom: 8px;
-      min-height: 80px;
-    }
-    
-    span {
-      display: block;
-      margin: 2px 0;
-      font-size: 0.85rem;
-      
-      &:first-child {
-        font-weight: 600;
-        color: $text-primary;
-        margin-bottom: 4px;
-      }
-      
-      &.drop-hint,
-      &.drop-hint-no {
-        display: block;
-        margin: 0;
-        text-align: center;
-        font-size: 0.85rem;
-      }
-    }
-  }
-}
-
-// ========================================
-// Drag Instructions
-// ========================================
-.drag-instructions {
-  margin-top: 1rem;
-  padding: 12px 16px;
-  background: $bg-lighter;
-  border: 1px solid $border-light;
-  border-radius: 8px;
-  border-left: 4px solid $accent-warning;
-  animation: slide-down 0.3s ease;
   
-  p {
-    margin: 0;
-    color: $text-secondary;
-    font-size: 0.9rem;
-    line-height: 1.4;
+  // Options button styling
+  .options-btn {
+    padding: 4px 8px;
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+      transform: scale(1.1);
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+    }
   }
 }
 
 // ========================================
-// Modal (unchanged from original)
+// MODAL STYLES (unchanged - positioned absolutely)
 // ========================================
 .modal-overlay {
   position: fixed;
@@ -539,8 +460,8 @@ h2 {
 }
 
 .modal-content {
-  background: $bg;
-  border: 1px solid $border-color;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
   width: 90%;
@@ -556,31 +477,38 @@ h2 {
   justify-content: space-between;
   align-items: center;
   padding: 24px 28px 20px;
-  border-bottom: 1px solid $border-color;
-  background: $bg-light;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-light);
   
   h3 {
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
-    color: $text-primary;
+    color: var(--text-primary);
   }
 }
 
 .close-button {
-  @include button-base;
   background: transparent;
-  color: $text-muted;
+  color: var(--text-muted);
   font-size: 1.5rem;
   padding: 8px;
   width: 36px;
   height: 36px;
   border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
   
   &:hover {
-    background-color: $bg-hover;
-    color: $text-primary;
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
     transform: scale(1.1);
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
   }
 }
 
@@ -596,19 +524,17 @@ h2 {
   align-items: center;
   gap: 12px;
   padding: 16px 28px;
-  border-top: 1px solid $border-color;
-  background: $bg-light;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-light);
 }
 
-// ========================================
-// Modal Content
-// ========================================
+// Modal content styling
 .item-detail p {
   margin: 0 0 16px 0;
   line-height: 1.5;
   
   strong {
-    color: $text-primary;
+    color: var(--text-primary);
     font-weight: 600;
   }
   
@@ -620,13 +546,13 @@ h2 {
   gap: 2rem;
   margin-bottom: 2rem;
   padding: 16px;
-  background: $bg-lighter;
+  background: var(--bg-lighter);
   border-radius: 8px;
-  border: 1px solid $border-color;
+  border: 1px solid var(--border-color);
   
   span {
     font-weight: 600;
-    color: $text-primary;
+    color: var(--text-primary);
     font-size: 0.95rem;
   }
 }
@@ -638,10 +564,10 @@ h2 {
   
   h4 {
     margin: 0 0 16px 0;
-    color: $text-primary;
+    color: var(--text-primary);
     font-size: 1.1rem;
     font-weight: 600;
-    border-bottom: 2px solid $border-color;
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 8px;
   }
   
@@ -651,56 +577,29 @@ h2 {
     
     li {
       margin: 8px 0;
-      color: $text-secondary;
+      color: var(--text-secondary);
       line-height: 1.4;
       
-      &:hover { color: $text-primary; }
+      &:hover { color: var(--text-primary); }
     }
   }
 }
 
-// ========================================
-// Buttons
-// ========================================
-.btn {
-  @include button-base;
-  padding: 6px 12px;
-  font-size: 13px;
-  
-  &.btn-secondary {
-    background-color: $bg-lighter;
-    color: $text-primary;
-    border: 1px solid $border-light;
-    min-width: 60px;
-    font-weight: 600;
-    
-    &:hover {
-      background-color: $bg-hover;
-      border-color: $border-hover;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-    
-    &:active {
-      transform: translateY(0);
-      background-color: $bg-selected;
-    }
-  }
-}
-
+// Button styling for modals
 .delete-item-section button {
-  @include button-base;
-  background-color: $accent-danger;
+  background-color: var(--accent-danger);
   color: white;
   font-weight: 600;
   min-width: 60px;
   padding: 6px 12px;
   font-size: 13px;
-  border: 1px solid darken($accent-danger, 10%);
+  border: 1px solid darken(hsl(0, 65%, 55%), 10%);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
   
   &:hover {
-    background-color: darken($accent-danger, 8%);
-    border-color: darken($accent-danger, 15%);
+    background-color: hsl(0, 65%, 50%);
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
   }
@@ -708,12 +607,66 @@ h2 {
   &:active { transform: translateY(0); }
   
   &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.4);
+  }
+}
+
+.btn.btn-secondary {
+  background-color: var(--bg-lighter);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  min-width: 60px;
+  font-weight: 600;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    background-color: var(--bg-selected);
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+  }
+}
+
+.btn.btn-danger {
+  background-color: var(--accent-danger);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: hsl(0, 65%, 50%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+  }
+  
+  &:active { transform: translateY(0); }
+  
+  &:focus {
+    outline: none;
     box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.4);
   }
 }
 
 // ========================================
-// Animations - Enhanced
+// ANIMATIONS
 // ========================================
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -731,11 +684,6 @@ h2 {
   }
 }
 
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
 @keyframes slide-down {
   from {
     opacity: 0;
@@ -745,6 +693,11 @@ h2 {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes pulse-green {
@@ -766,94 +719,53 @@ h2 {
 }
 
 // ========================================
-// Mobile Responsive
+// MOBILE RESPONSIVE
 // ========================================
 @media (max-width: 768px) {
-  // Enable page scrolling on mobile
-  html, body {
-    height: auto;
-    min-height: 100vh;
-    overflow-y: auto;
-    
-    &::-webkit-scrollbar {
-      width: 8px;
-      background: $bg-dark;
-    }
-    
-    &::-webkit-scrollbar-track {
-      background: $bg-dark;
-      border-radius: 4px;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      background: $border-color;
-      border-radius: 4px;
-      
-      &:hover { background: $border-light; }
-    }
-  }
-  
-  app-root {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; // Full viewport height
-    overflow: hidden;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  
   .inventory-container {
-    height: auto;
-    overflow: hidden;
-
-    overflow: visible;
+    // Remove fixed padding on mobile, let parent handle it
+    padding: 0;
   }
   
   .content-layout {
-    height: auto;
-    overflow: visible;
     gap: 1rem;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; // Stack vertically on mobile
   }
   
   .containers-sidebar,
   .inventory-main {
-    height: auto;
-    overflow: visible;
-    margin: 0;
+    margin: 0; // Remove side margins on mobile
   }
   
   .container-section {
-    height: auto;
-    // max-height: 400px;
+    max-height: 400px; // Reasonable max height on mobile
     margin-bottom: 2rem;
     padding: 16px;
   }
   
   .container-list-scroll {
-    max-height: 70%;
-  }
-  
-  .inventory-section {
-    height: auto;
+    max-height: 300px; // Limit height on mobile
   }
   
   .inventory-scroll {
-    max-height: 70%;
+    max-height: 400px; // Limit height on mobile
   }
   
-  h2 {
-    font-size: 1.5rem;
+  .demo-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
     
-    .containers-sidebar & {
-      font-size: 1.3rem;
+    h2 {
+      font-size: 1.5rem;
     }
   }
   
+  // Adjust item sizes for mobile
   .inventory-item,
   .container-item {
-    padding: 16px 20px; // Maintain larger padding on mobile for easier touch targets
-    min-height: 70px;   // Maintain larger touch targets
+    padding: 16px 20px;
+    min-height: 70px;
     
     span {
       display: block;
@@ -862,25 +774,11 @@ h2 {
     }
   }
   
-  // Mobile drag and drop adjustments - maintain forgiving zones
   .inventory-item {
-    .drag-handle {
-      width: 20px; // Keep larger for easier touch
-      
-      .drag-icon {
-        font-size: 16px;
-      }
-    }
-    
     .item-content span {
       font-size: 0.8rem;
       margin-right: 8px;
     }
-  }
-  
-  .drag-instructions {
-    font-size: 0.85rem;
-    padding: 12px 16px;
   }
   
   .modal-content {
@@ -908,39 +806,3 @@ h2 {
     }
   }
 }
-
-
-/* tiny “⋯” icon button beside each container */
-.options-btn {
-  @include button-base;
-  font-size: 1rem;
-  padding: 4px 8px;
-  background: transparent;
-  color: $text-muted;
-  position: absolute;
-  top: 6px;
-  right: 6px;
-
-  &:hover {
-    background: $bg-hover;
-    color: $text-primary;
-    transform: scale(1.1);
-  }
-}
-
-/* danger variant that matches your existing delete-item style */
-.btn.btn-danger {
-  @include button-base;
-  background: $accent-danger;
-  color: #fff;
-  font-weight: 600;
-
-  &:hover {
-    background: darken($accent-danger, 7%);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
-  }
-
-  &:active { transform: translateY(0); }
-}
-
