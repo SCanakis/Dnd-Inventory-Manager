@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.AbilityScore;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Background;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.BasicCharInfoCreationDTO;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
@@ -25,7 +27,7 @@ import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.DndClassRep
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.RaceRepo;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.SubClassRepo;
 import com.scanakispersonalprojects.dndapp.service.coinPurse.CoinPurseService;
-
+import com.scanakispersonalprojects.dndapp.service.inventory.ContainerService;
 import jakarta.transaction.Transactional;
 
 /**
@@ -39,6 +41,8 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class CharacterInfoService {
+
+    private final ContainerService containerService;
     
     /** Repository for character information ops */
     private CharacterInfoRepo characterInfoRepo;
@@ -77,7 +81,7 @@ public class CharacterInfoService {
 
     public CharacterInfoService(CharacterInfoRepo characterInfoRepo, CharacterClassRepo characterClassRepo,
             DndClassRepo dndClassRepo, SubClassRepo subClassRepo, RaceRepo raceRepo, BackgroundRepo backgroundRepo, CharacterLinkService characterLinkService,
-            CoinPurseService coinPurseService) {
+            CoinPurseService coinPurseService, ContainerService containerService) {
         this.characterInfoRepo = characterInfoRepo;
         this.characterClassRepo = characterClassRepo;
         this.dndClassRepo = dndClassRepo;
@@ -86,6 +90,7 @@ public class CharacterInfoService {
         this.backgroundRepo = backgroundRepo;
         this.characterLinkService = characterLinkService;
         this.coinPurseService = coinPurseService;
+        this.containerService = containerService;
     }
 
 
@@ -348,6 +353,10 @@ public class CharacterInfoService {
                     dto.getRaceUuid(),
                     dto.getBackgroundUuid()
                 );
+                if(dto.getAbilityScores() == null || dto.getAbilityScores().isEmpty()) {
+                    return false;
+                }
+
                 characterInfo.setAbilityScores(dto.getAbilityScores());
                 characterInfo.setHpHandler(new HPHandler(0, 0, 0));
                 characterInfo.setDeathSavingThrowsHelper(new DeathSavingThrowsHelper(0,0));
@@ -377,6 +386,7 @@ public class CharacterInfoService {
                 }
                 characterLinkService.linkCharacter(userUuid, charInfoUuid);
                 coinPurseService.createFreshCoinPurse(characterInfo);
+                containerService.createInventory(charInfoUuid, characterInfo.getAbilityScores().get(AbilityScore.strength) * 15);
                 return true;
             }
 

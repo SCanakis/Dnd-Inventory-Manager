@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 
 /**
  * Composite primary key for the Container entity.
@@ -15,7 +13,6 @@ import jakarta.persistence.GenerationType;
 @Embeddable
 public class ContainerId implements Serializable{
     
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "container_uuid")
     private UUID containerUuid;
 

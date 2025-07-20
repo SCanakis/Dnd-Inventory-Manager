@@ -130,7 +130,7 @@ public class InventoryService {
             if(item != null) {
 
                 if(item.getIsContainer() && item.getCapacity() > 0 && item.getCapacity() != null) {
-                    Container container = new Container(null, charUuid, itemUuid, item.getCapacity(), 0);
+                    Container container = new Container(UUID.randomUUID(), charUuid, itemUuid, item.getCapacity(), 0);
                     containerRepo.save(container);
                     if(updateInventoryCapacity(item, charUuid, 1)) {
                         return true;

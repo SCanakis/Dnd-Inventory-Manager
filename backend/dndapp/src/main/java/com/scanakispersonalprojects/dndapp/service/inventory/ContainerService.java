@@ -174,4 +174,18 @@ public class ContainerService {
         return null;
     }    
 
+
+    @Transactional
+    public boolean createInventory(UUID charUuid, int maxCapacity) {
+        if(charUuid == null) {
+            return false;
+        }
+    
+        Container container = new Container(inventoryContainerUuid, charUuid, null, maxCapacity,0);
+        
+        containerRepo.save(container);
+
+        return true;
+
+    }
 }
