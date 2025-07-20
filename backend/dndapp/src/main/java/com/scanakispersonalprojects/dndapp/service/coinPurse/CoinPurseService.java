@@ -5,9 +5,12 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterInfo;
 import com.scanakispersonalprojects.dndapp.model.coinPurse.CoinPurse;
 import com.scanakispersonalprojects.dndapp.model.coinPurse.CoinPurseDTO;
 import com.scanakispersonalprojects.dndapp.persistance.coinPurse.CoinPurseRepo;
+
+import jakarta.persistence.EntityManager;
 
 
 /**
@@ -22,13 +25,16 @@ public class CoinPurseService {
     // coin-pruse repo
     private CoinPurseRepo repo;
 
+    private EntityManager entityManager;
+
 
     /**
      * Contructor for dpenednecy injuection of the coin purse repo.
      * @param repo
      */
-    public CoinPurseService(CoinPurseRepo repo) {
+    public CoinPurseService(CoinPurseRepo repo, EntityManager entityManager) {
         this.repo = repo;
+        this.entityManager = entityManager;
     }
 
 
@@ -90,13 +96,17 @@ public class CoinPurseService {
     }
 
     /**
-     * Creats a new coin purse for a characte rwith all coin amounts set to zero. 
+     * Creats a new coin purse for a characte with all coin amounts set to zero. 
      * 
      * @param charUuid
      */
-    public void createFreshCoinPurse(UUID charUuid) {
-        CoinPurse coinPurse = new CoinPurse(charUuid, 0, 0, 0, 0, 0);
-        repo.save(coinPurse);
+    @Transactional
+    public void createFreshCoinPurse(CharacterInfo characterInfo) {
+        
+        CoinPurse coinPurse = new CoinPurse(characterInfo.getCharInfoUuid(), 0, 0, 0, 0, 0);
+        coinPurse.setCharacterInfo(characterInfo);
+        entityManager.persist(coinPurse);
+
     }
 
 }

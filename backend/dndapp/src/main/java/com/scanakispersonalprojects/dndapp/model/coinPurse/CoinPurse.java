@@ -65,7 +65,7 @@ public class CoinPurse {
         this.copper = copper;
     }
 
-    public UUID getCharUucharUuid() {
+    public UUID getcharUuid() {
         return charUuid;
     }
 
@@ -111,6 +111,14 @@ public class CoinPurse {
 
     public void setCopper(int copper) {
         this.copper = copper;
+    }
+
+    public void setCharacterInfo(CharacterInfo characterInfo) {
+        this.characterInfo = characterInfo;
+    }
+
+    public CharacterInfo getCharacterInfo() {
+        return this.characterInfo;
     }
     
 }

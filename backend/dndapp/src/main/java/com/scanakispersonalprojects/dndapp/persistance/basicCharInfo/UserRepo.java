@@ -41,6 +41,7 @@ public interface UserRepo extends JpaRepository<User, UUID>{
     @Query(value = "SELECT character_uuid FROM users_characters WHERE user_uuid= :userUuid", nativeQuery = true)
     List<UUID> findCharacterUuidByUserUuid(@Param("userUuid") UUID userUuid);
 
+    @Modifying
     @Query(value = "INSERT INTO users_characters (user_uuid, character_uuid) " + 
                     "VALUES( :userUuid, :characterUuid)", nativeQuery = true)
     void addCharacterUser(@Param("userUuid") UUID userUuid, @Param ("characterUuid") UUID characterUuid);

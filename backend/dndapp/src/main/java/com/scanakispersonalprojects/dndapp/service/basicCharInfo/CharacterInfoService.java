@@ -351,9 +351,9 @@ public class CharacterInfoService {
                 characterInfo.setAbilityScores(dto.getAbilityScores());
                 characterInfo.setHpHandler(new HPHandler(0, 0, 0));
                 characterInfo.setDeathSavingThrowsHelper(new DeathSavingThrowsHelper(0,0));
+
                 characterInfo = characterInfoRepo.save(characterInfo);
 
-                
                 if(characterInfo == null) {
                     return false;
                 }
@@ -376,9 +376,8 @@ public class CharacterInfoService {
                     }
                 }
                 characterLinkService.linkCharacter(userUuid, charInfoUuid);
-                coinPurseService.createFreshCoinPurse(charInfoUuid);
+                coinPurseService.createFreshCoinPurse(characterInfo);
                 return true;
-
             }
 
             return false;
