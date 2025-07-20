@@ -101,4 +101,25 @@ export class BasicCharInfoCreationDTO {
         return sum
     }
 
+    toJSON(): any {
+        return {
+            name: this.name,
+            backgroundUuid: this.backgroundUuid,
+            raceUuid: this.raceUuid,
+            abilityScores: Object.fromEntries(this.abilityScores), // Convert Map to Object
+            characterClassDetails: this.characterClassDetails
+        };
+    }
+
+    // Alternative: Create a method that returns a serializable object
+    toSerializableObject(): any {
+        return {
+            name: this.name,
+            backgroundUuid: this.backgroundUuid,
+            raceUuid: this.raceUuid,
+            abilityScores: Object.fromEntries(this.abilityScores),
+            characterClassDetails: this.characterClassDetails
+        };
+    }
+
 }

@@ -48,9 +48,11 @@ export class CharacterCreationService {
 
 
   createCharacter(charInfoDTO : BasicCharInfoCreationDTO) {
+    
+    const serializable = charInfoDTO.toSerializableObject();
     return this.http.post<CharacterBasicInfoView>(
       `${this.apiUrl}/character`,
-      charInfoDTO, {
+      serializable, {
       withCredentials : true,
     });
   }
