@@ -54,7 +54,7 @@
 
 html {
   height: 100vh; // Full viewport height
-  overflow: hidden; // Prevent page scroll (desktop)
+  // overflow: hidden; // Prevent page scroll (desktop)
   margin: 0;
   padding: 0;
   font-size: 16px;
@@ -62,7 +62,7 @@ html {
 
 body {
   height: 100vh; // Full viewport height
-  overflow: hidden; // Prevent page scroll (desktop)
+  // overflow: hidden; // Prevent page scroll (desktop)
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -78,7 +78,7 @@ app-root {
   display: flex;
   flex-direction: column;
   height: 100vh; // Full viewport height
-  overflow: hidden; // Prevent page scroll
+  // overflow: hidden; // Prevent page scroll
   padding: 20px;
   box-sizing: border-box;
   background-color: var(--bg-primary);
