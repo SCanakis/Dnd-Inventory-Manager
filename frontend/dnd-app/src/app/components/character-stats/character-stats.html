@@ -336,6 +336,94 @@
             </div>
           </div>
         </div>
+
+        <!-- NEW: Classes Section -->
+        <div class="form-section">
+          <h4>Classes & Levels</h4>
+          <div class="classes-form-section">
+            <div *ngFor="let characterClass of updateData.characterClassDetail; let i = index" 
+                 class="class-form-group">
+              <h5>{{ characterClass.className }}</h5>
+              <div class="class-form-grid">
+                <div class="form-group">
+                  <label [for]="'class-level-' + i">Level</label>
+                  <div class="level-input-container">
+                    <button 
+                      type="button"
+                      class="level-btn minus-btn" 
+                      (click)="updateClassLevel(i, characterClass.level - 1)"
+                      [disabled]="characterClass.level <= 1 || getTotalLevel() >= 20 && characterClass.level === 1">
+                      −
+                    </button>
+                    <input 
+                      type="number" 
+                      [id]="'class-level-' + i"
+                      [(ngModel)]="characterClass.level"
+                      (ngModelChange)="onClassLevelChangeInModal(i, $event)"
+                      [name]="'class-level-' + i"
+                      min="1" 
+                      max="20"
+                      class="form-control level-input">
+                    <button 
+                      type="button"
+                      class="level-btn plus-btn" 
+                      (click)="updateClassLevel(i, characterClass.level + 1)"
+                      [disabled]="characterClass.level >= 20 || getTotalLevel() >= 20">
+                      +
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label [for]="'hit-dice-remaining-' + i">Hit Dice Remaining</label>
+                  <input 
+                    type="number" 
+                    [id]="'hit-dice-remaining-' + i"
+                    [(ngModel)]="characterClass.hitDiceRemaining"
+                    [name]="'hit-dice-remaining-' + i"
+                    min="0" 
+                    [max]="characterClass.level"
+                    class="form-control">
+                </div>
+                
+                <!-- NEW: Subclass Selection -->
+                <div class="form-group">
+                  <label [for]="'subclass-' + i">Subclass</label>
+                  <div *ngIf="getSubClassesForClass(characterClass.classUuid).length > 0; else noSubclassTemplate">
+                    <select 
+                      [id]="'subclass-' + i"
+                      [(ngModel)]="characterClass.subclassUuid"
+                      (ngModelChange)="onSubclassChangeInModal(i, $event)"
+                      [name]="'subclass-' + i"
+                      class="form-control subclass-select">
+                      <option value="">-- No Subclass --</option>
+                      <option 
+                        *ngFor="let subClass of getSubClassesForClass(characterClass.classUuid)"
+                        [value]="subClass.subclassUuid">
+                        {{ subClass.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <ng-template #noSubclassTemplate>
+                    <div class="no-subclass-available">
+                      <span class="class-info-display">
+                        <span class="class-subclass">No subclasses available</span>
+                        <span class="hit-dice-info">Hit Die: d{{ characterClass.hitDiceValue }}</span>
+                      </span>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            
+            <div class="total-level-display">
+              <strong>Total Character Level: {{ getTotalLevel() }}/20</strong>
+              <span *ngIf="getTotalLevel() > 20" class="level-warning">
+                ⚠️ Total level exceeds maximum (20)
+              </span>
+            </div>
+          </div>
+        </div>
       </form>
     </div>
     

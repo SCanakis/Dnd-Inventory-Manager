@@ -3,7 +3,9 @@ import { BasicCharacterInfoComponent } from '../basic-character-info/basic-chara
 import { NavComponent } from '../nav/nav-component';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { AbilityScore, CharacterBasicInfoView, CharacterInfoUpdateDTO} from '../../../interface/character-info-interface';
+import { AbilityScore, CharacterBasicInfoView, CharacterInfoUpdateDTO, CharacterClassDetail} from '../../../interface/character-info-interface';
+import { Background, DndClass, Race, SubClass } from '../../../interface/character-creation-interface';
+import { CharacterCreationService } from '../../../service/character-creation-service/character-creation-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { WebSocketResponse } from '../../../interface/websocket-interface';
@@ -34,11 +36,15 @@ export class CharacterStats implements OnInit, OnDestroy{
 
   updateData : CharacterInfoUpdateDTO;
 
+  classes: DndClass[] = [];
+  subClasses: SubClass[] = [];
+
 
   constructor(
     private characterWebSocketService : WebsocketServiceCharacterStats,
     private route : ActivatedRoute,
-    private containerServce : ContainerService
+    private containerServce : ContainerService,
+    private creationService: CharacterCreationService
 
   ) {
     this.charUuid = route.snapshot.paramMap.get('charUuid');
@@ -48,10 +54,35 @@ export class CharacterStats implements OnInit, OnDestroy{
   ngOnInit(): void {
       this.loadCharacterStats();
       this.loadInventoryContainer();
+      this.loadCreationData();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
+  // NEW: Load creation data for subclass selection
+  private loadCreationData(): void {
+    Promise.all([
+      this.loadSubClasses()
+    ]).catch((error) => {
+      console.error('Error loading creation data:', error);
+    });
+  }
+
+  private loadSubClasses(): Promise<SubClass[]> {
+    return new Promise((resolve, reject) => {
+      this.creationService.getAllSubClasses().subscribe({
+        next: (response: SubClass[]) => {
+          this.subClasses = response;
+          resolve(response);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Failed to load subclasses:', error);
+          reject(error);
+        }
+      });
+    });
   }
 
 
@@ -123,7 +154,10 @@ export class CharacterStats implements OnInit, OnDestroy{
 
     this.updateData.hpHandler = { ...this.characterInfo.hpHandler };
     this.updateData.deathSavingThrowsHelper = { ...this.characterInfo.deathSavingThrowsHelper };
-    this.updateData.characterClassDetail = [...this.characterInfo.classes];
+    // Deep clone the character class details to avoid reference issues
+    this.updateData.characterClassDetail = this.characterInfo.classes.map(classDetail => ({
+      ...classDetail
+    }));
   }
 }
 
@@ -182,6 +216,74 @@ export class CharacterStats implements OnInit, OnDestroy{
   console.log(`Updated abilityScores:`, this.updateData.abilityScores);
 }
 
+  // NEW: Class level management methods
+  public updateClassLevel(classIndex: number, newLevel: number): void {
+    if (classIndex < 0 || classIndex >= this.updateData.characterClassDetail.length) {
+      return;
+    }
+
+    // Validate level bounds
+    newLevel = Math.max(1, Math.min(20, newLevel));
+    
+    const currentClass = this.updateData.characterClassDetail[classIndex];
+    const oldLevel = currentClass.level;
+    
+    // Check if total level would exceed 20
+    const currentTotal = this.getTotalLevel();
+    const levelDifference = newLevel - oldLevel;
+    
+    if (currentTotal + levelDifference > 20) {
+      console.log('Cannot increase level: would exceed maximum total level of 20');
+      return;
+    }
+
+    // Update the level
+    currentClass.level = newLevel;
+    
+    // Adjust hit dice remaining if it exceeds new level
+    if (currentClass.hitDiceRemaining > newLevel) {
+      currentClass.hitDiceRemaining = newLevel;
+    }
+  }
+
+  public onClassLevelChangeInModal(classIndex: number, newLevel: number): void {
+    this.updateClassLevel(classIndex, newLevel);
+  }
+
+  // NEW: Handle subclass changes in modal
+  public onSubclassChangeInModal(classIndex: number, subclassUuid: string): void {
+    if (classIndex < 0 || classIndex >= this.updateData.characterClassDetail.length) {
+      return;
+    }
+
+    const currentClass = this.updateData.characterClassDetail[classIndex];
+    
+    // Clean the subclass UUID - convert empty string to null
+    const cleanSubclassUuid = subclassUuid && subclassUuid !== '' ? subclassUuid : null;
+    
+    // Find the subclass name
+    let subclassName = '';
+    if (cleanSubclassUuid) {
+      const subClass = this.subClasses.find(sc => sc.subclassUuid === cleanSubclassUuid);
+      subclassName = subClass?.name || '';
+    }
+
+    // Update the class detail
+    currentClass.subclassUuid = cleanSubclassUuid;
+    currentClass.subclassName = subclassName;
+  }
+
+  // NEW: Get subclasses for a specific class
+  public getSubClassesForClass(classUuid: string): SubClass[] {
+    return this.subClasses.filter(sc => sc.classSource === classUuid);
+  }
+
+  public getTotalLevel(): number {
+    return this.updateData.characterClassDetail.reduce((total, classDetail) => {
+      return total + classDetail.level;
+    }, 0);
+  }
+
   public openUpdateModal(): void {
     this.populateUpdateData();
     this.showUpdateModal = true;
@@ -219,6 +321,25 @@ export class CharacterStats implements OnInit, OnDestroy{
         }
       }
     }
+
+    // NEW: Validate class levels
+    if (this.updateData.characterClassDetail.length > 0) {
+      const totalLevel = this.getTotalLevel();
+      if (totalLevel > 20 || totalLevel < 1) {
+        return false;
+      }
+
+      // Validate each class
+      for (const classDetail of this.updateData.characterClassDetail) {
+        if (classDetail.level < 1 || classDetail.level > 20) {
+          return false;
+        }
+        if (classDetail.hitDiceRemaining < 0 || classDetail.hitDiceRemaining > classDetail.level) {
+          return false;
+        }
+      }
+    }
+
     return true;
   }
 
@@ -280,7 +401,7 @@ export class CharacterStats implements OnInit, OnDestroy{
 
   sendQuickUpdate(updateType : string, data : any) {
     if(!this.charUuid || !this.characterInfo) {
-      console.log("Cannot send update - mssing character UUID of info");
+      console.log("Cannot send update - missing character UUID of info");
       return;
     }
 
@@ -297,14 +418,14 @@ export class CharacterStats implements OnInit, OnDestroy{
         break;
       case 'inspiration':
         quickUpdateData.inspiration = this.characterInfo.inspiration;
-        console.log("Update Inspritation");
+        console.log("Update Inspiration");
         break;
       case 'hitDice':
         quickUpdateData.characterClassDetail = [...this.characterInfo.classes];
         console.log("Update Hit Dice");
         break;
       default:
-        console.warn("Unkown update type")
+        console.warn("Unknown update type")
         return;
     }
     this.characterWebSocketService.updateCharacterInfo(this.charUuid, quickUpdateData);
