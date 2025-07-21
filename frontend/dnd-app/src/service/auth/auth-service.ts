@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment.development';
+import { CreateUserDTO } from '../../interface/authentication-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,13 @@ export class AuthService {
       })
     );
   }
+
+  createUser(username : string, password : string) : Observable<any>{
+    let userDTO = new CreateUserDTO(username, password);
+
+    return this.http.post(`${this.apiUrl}/api/auth/create-user`, userDTO);
+  }
+
 
   getCharacters() : Observable<any> {
     return this.http.get(`${this.apiUrl}/characters/`, {

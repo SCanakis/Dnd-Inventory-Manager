@@ -1,8 +1,8 @@
 // ========================================
-// LOGIN PAGE STYLES
+// SIGN UP PAGE STYLES
 // ========================================
 
-.login-container {
+.signup-container {
   max-width: 400px;
   margin: 2rem auto;
   padding: 2rem;
@@ -20,13 +20,19 @@
   margin-bottom: 2rem;
   
   h2 {
-    margin: 0;
+    margin: 0 0 0.5rem 0;
     font-size: 1.8rem;
     font-weight: 700;
     color: var(--text-primary);
-    border-bottom: 2px solid var(--accent-primary);
+    border-bottom: 2px solid var(--accent-success);
     padding-bottom: 0.5rem;
     display: inline-block;
+  }
+  
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
   }
 }
 
@@ -45,10 +51,6 @@
   }
 }
 
-.input-wrapper {
-  position: relative;
-}
-
 .form-input {
   width: 100%;
   padding: 0.75rem;
@@ -61,8 +63,8 @@
   
   &:focus {
     outline: none;
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px hsla(210, 100%, 50%, 0.2);
+    border-color: var(--accent-success);
+    box-shadow: 0 0 0 3px hsla(158, 64%, 52%, 0.2);
     background-color: var(--bg-hover);
   }
   
@@ -72,6 +74,15 @@
   
   &::placeholder {
     color: var(--text-muted);
+  }
+  
+  &.error {
+    border-color: var(--accent-danger);
+    
+    &:focus {
+      border-color: var(--accent-danger);
+      box-shadow: 0 0 0 3px hsla(0, 84%, 60%, 0.2);
+    }
   }
 }
 
@@ -115,12 +126,12 @@
 }
 
 .btn-primary {
-  background-color: var(--accent-primary);
+  background-color: var(--accent-success);
   color: var(--text-inverse);
   width: 100%;
   
   &:hover:not(:disabled) {
-    background-color: #2563eb;
+    background-color: #059669;
     transform: translateY(-1px);
   }
   
@@ -151,22 +162,6 @@
 }
 
 // ========================================
-// Sign Up Section
-// ========================================
-.signup-section {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-primary);
-  text-align: center;
-  
-  p {
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-  }
-}
-
-// ========================================
 // Loading State
 // ========================================
 .loading-spinner {
@@ -185,10 +180,26 @@
 }
 
 // ========================================
+// Login Section
+// ========================================
+.login-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-primary);
+  text-align: center;
+  
+  p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+// ========================================
 // Responsive Design
 // ========================================
 @media (max-width: 480px) {
-  .login-container {
+  .signup-container {
     margin: 1rem;
     padding: 1.5rem;
     
