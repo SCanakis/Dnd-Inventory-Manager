@@ -369,7 +369,7 @@ public class CharacterInfoService {
                 }
 
                 characterInfo.setAbilityScores(dto.getAbilityScores());
-                characterInfo.setHpHandler(new HPHandler(0, 0, 0));
+                characterInfo.setHpHandler(new HPHandler(1, 0, 0));
                 characterInfo.setDeathSavingThrowsHelper(new DeathSavingThrowsHelper(0,0));
 
                 characterInfo = characterInfoRepo.save(characterInfo);

@@ -8,12 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CreateUserDTO;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CustomUserPrincipal;
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -61,5 +66,39 @@ public class UserController {
         }
         
     }   
+
+    @PostMapping("/api/auth/create-user")
+    public ResponseEntity<Boolean> createUser(@RequestBody CreateUserDTO createUserDTO) {
+        LOG.info("POST /user");
+
+        try {
+            if(detailsService.createUser(createUserDTO)) {
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            }
+            
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/user-deletion")
+    public ResponseEntity<Boolean> postMethodName(Authentication authentication) {
+        LOG.info("DELETE /user-deletion");
+
+        try {
+            if(detailsService.deleteUser(authentication)) {
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+    
+    
 
 }

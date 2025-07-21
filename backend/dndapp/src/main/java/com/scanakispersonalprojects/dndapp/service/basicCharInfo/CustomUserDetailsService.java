@@ -2,19 +2,24 @@ package com.scanakispersonalprojects.dndapp.service.basicCharInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterBasicInfoView;
+import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CreateUserDTO;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CustomUserPrincipal;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.User;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.UserRoleProjection;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.UserRepo;
+
+import jakarta.transaction.Transactional;
 
 /**
  * Tells Spring Security how to look up a user in the database.
@@ -36,13 +41,16 @@ public class CustomUserDetailsService implements UserDetailsService{
 
     private CharacterInfoService characterService;
 
+    private PasswordEncoder passwordEncoder;
+
     /**
      * Builds the {@link UserDetails} boject Srping Security needs.
      */
 
-    public CustomUserDetailsService(UserRepo userRepo, CharacterInfoService characterService) {
+    public CustomUserDetailsService(UserRepo userRepo, CharacterInfoService characterService, PasswordEncoder passwordEncoder) {
         this.characterService = characterService;
         this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -88,6 +96,56 @@ public class CustomUserDetailsService implements UserDetailsService{
         UserRoleProjection projection = userRepo.getAuthoritiesFromUsername(authentication.getName());
         return projection.getAuthority().equals("ROLE_ADMIN");
 
+    }
+
+    @Transactional
+    public boolean createUser(CreateUserDTO createUserDTO) {
+        if(createUserDTO == null ||  
+            createUserDTO.getUsername() == null || createUserDTO.getUsername().trim().isEmpty() ||
+            createUserDTO.getPassword() == null ||  createUserDTO.getPassword().trim().isEmpty()
+            ) {
+                return false;
+            }
+        try {
+            String hashedPassword = passwordEncoder.encode(createUserDTO.getPassword());
+            User user = new User(createUserDTO.getUsername(), hashedPassword);
+            userRepo.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean deleteUser(Authentication authentication) {
+        if(authentication == null || authentication.getName() == null) {
+            return false;
+        }
+
+        try {
+            Optional<User> userOptional = userRepo.findByUsername(authentication.getName());
+            if(userOptional.isPresent()) {
+            
+                
+                List<UUID> userCharacters = getUsersCharacters(authentication);
+                User user = userOptional.get();
+                UUID userUuid = user.getUuid();
+                
+                for(UUID character : userCharacters) {
+                    if(!characterService.deleteCharacter(character, userUuid)) {
+                        throw new IllegalStateException("Failed to dlete character: " + character);
+                    }
+                }
+
+                userRepo.delete(user);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+
+        
     }
 
 
