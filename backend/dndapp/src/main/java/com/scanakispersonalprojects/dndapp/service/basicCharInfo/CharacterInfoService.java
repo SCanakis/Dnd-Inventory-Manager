@@ -18,6 +18,7 @@ import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DndClass;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.HPHandler;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Race;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Subclass;
+import com.scanakispersonalprojects.dndapp.model.inventory.containers.Container;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CharacterInfoUpdateDTO;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.DeathSavingThrowsHelper;
 import com.scanakispersonalprojects.dndapp.persistance.basicCharInfo.BackgroundRepo;
@@ -41,6 +42,8 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class CharacterInfoService {
+
+    private final static UUID inventoryContainerUuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
     private final ContainerService containerService;
     
@@ -303,6 +306,14 @@ public class CharacterInfoService {
                 }
                 if(updateDTO.getAbilityScores() != null && !updateDTO.getAbilityScores().isEmpty()) {
                     existing.setAbilityScores((updateDTO.getAbilityScores()));
+                    if(updateDTO.getAbilityScores().get(AbilityScore.strength) != null || updateDTO.getAbilityScores().get(AbilityScore.strength) != 0) {
+                        int newCapacity =  updateDTO.getAbilityScores().get(AbilityScore.strength) * 15;
+                        Container container = containerService.updateMaxCapacityOfContainer(uuid, inventoryContainerUuid, newCapacity);
+                        if(container == null || container.getMaxCapacity() != newCapacity) {
+                            return null;
+                        }
+                    }
+
                 }
                 if(updateDTO.getHpHandler() != null) {
                     existing.setHpHandler(updateDTO.getHpHandler());
