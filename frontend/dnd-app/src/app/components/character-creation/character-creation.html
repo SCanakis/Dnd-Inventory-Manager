@@ -75,34 +75,58 @@
       <h2>Classes</h2>
       
       <!-- Selected Classes -->
-      <div *ngIf="getSelectedClasses().length > 0" class="selected-classes">
+      <div *ngIf="characterDTO.getCharacterClassDetails().length > 0" class="selected-classes">
         <h3>Your Classes (Total Level: {{ getTotalCharacterLevel() }}/20)</h3>
         <div class="class-list">
           <div 
-            *ngFor="let selectedClass of getSelectedClasses(); let i = index"
+            *ngFor="let classDetail of characterDTO.getCharacterClassDetails(); let i = index"
             class="class-item"
           >
             <div class="class-info">
-              <span class="class-name">{{ selectedClass.name }}</span>
-              <span class="hit-dice">d{{ selectedClass.hitDiceValue }}</span>
+              <span class="class-name">{{ classDetail.className }}</span>
+              <span class="hit-dice">d{{ classDetail.hitDiceValue }}</span>
+              <span *ngIf="classDetail.subclassName" class="subclass-name">
+                {{ classDetail.subclassName }}
+              </span>
+              <span *ngIf="!classDetail.subclassName && hasSubClasses(classDetail.classUuid)" class="no-subclass">
+                No Subclass
+              </span>
             </div>
+            
+            <!-- Subclass selector for added classes -->
+            <div *ngIf="hasSubClasses(classDetail.classUuid)" class="subclass-selector">
+              <select 
+                [(ngModel)]="classDetail.subclassUuid"
+                (change)="onSelectedClassSubclassChange(i, $event)"
+                class="subclass-select-small"
+              >
+                <option value="">-- Select Subclass --</option>
+                <option 
+                  *ngFor="let subClass of getSubClassesForClass(classDetail.classUuid)"
+                  [value]="subClass.subclassUuid"
+                >
+                  {{ subClass.name }}
+                </option>
+              </select>
+            </div>
+            
             <div class="level-controls">
               <button 
                 class="btn btn-secondary btn-sm"
-                (click)="updateClassLevel(i, getClassLevel(selectedClass.classUuid) - 1)"
-                [disabled]="getClassLevel(selectedClass.classUuid) <= 1"
+                (click)="updateClassLevel(i, classDetail.level - 1)"
+                [disabled]="classDetail.level <= 1"
               >-</button>
               <input 
                 type="number" 
-                [value]="getClassLevel(selectedClass.classUuid)"
+                [value]="classDetail.level"
                 (change)="onClassLevelChange(i, $event)"
                 min="1" max="20"
                 class="level-input"
               />
               <button 
                 class="btn btn-secondary btn-sm"
-                (click)="updateClassLevel(i, getClassLevel(selectedClass.classUuid) + 1)"
-                [disabled]="getClassLevel(selectedClass.classUuid) >= 20 || getTotalCharacterLevel() >= 20"
+                (click)="updateClassLevel(i, classDetail.level + 1)"
+                [disabled]="classDetail.level >= 20 || getTotalCharacterLevel() >= 20"
               >+</button>
             </div>
             <button 
@@ -115,24 +139,59 @@
       </div>
 
       <!-- Add Classes -->
-      <div *ngIf="canAddMoreClasses()">
-        <h3>{{ getSelectedClasses().length === 0 ? 'Choose Classes' : 'Add More Classes' }}</h3>
+      <div *ngIf="getTotalCharacterLevel() < 20">
+        <h3>{{ characterDTO.getCharacterClassDetails().length === 0 ? 'Choose Classes' : 'Add More Classes' }}</h3>
         <div class="selection-grid">
           <div 
-            *ngFor="let dndClass of availableClasses"
+            *ngFor="let dndClass of classes"
             class="selection-card class-card"
-            (click)="selectClass(dndClass)"
+            [class.disabled]="isClassSelected(dndClass.classUuid)"
           >
             <h3>{{ dndClass.name }}</h3>
             <p class="description">{{ dndClass.description }}</p>
             <div class="hit-dice-info">
               <span>🎲 Hit Die: d{{ dndClass.hitDiceValue }}</span>
             </div>
+            
+            <!-- Show message if already selected -->
+            <div *ngIf="isClassSelected(dndClass.classUuid)" class="already-selected">
+              Already Selected
+            </div>
+            
+            <!-- Subclass Dropdown and Add Button -->
+            <div *ngIf="!isClassSelected(dndClass.classUuid)" class="class-selection-controls">
+              <!-- Subclass dropdown if class has subclasses -->
+              <div *ngIf="hasSubClasses(dndClass.classUuid)" class="subclass-dropdown">
+                <label>Choose subclass:</label>
+                <select 
+                  [(ngModel)]="selectedSubClassForClass[dndClass.classUuid]"
+                  class="subclass-select"
+                  (click)="$event.stopPropagation()"
+                >
+                  <option value="">-- Select Subclass --</option>
+                  <option 
+                    *ngFor="let subClass of getSubClassesForClass(dndClass.classUuid)"
+                    [value]="subClass.subclassUuid"
+                  >
+                    {{ subClass.name }}
+                  </option>
+                </select>
+              </div>
+              
+              <!-- Add button -->
+              <button 
+                class="btn btn-primary btn-sm add-class-btn"
+                (click)="addClass(dndClass); $event.stopPropagation()"
+                [disabled]="!canAddClass(dndClass)"
+              >
+                Add {{ dndClass.name }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div *ngIf="!canAddMoreClasses() && getTotalCharacterLevel() >= 20" class="max-level-warning">
+      <div *ngIf="getTotalCharacterLevel() >= 20" class="max-level-warning">
         ⚠️ Maximum character level (20) reached.
       </div>
     </div>
@@ -188,10 +247,13 @@
         <div class="summary-row">
           <span>Classes:</span>
           <span>
-            <span *ngFor="let selectedClass of getSelectedClasses(); let i = index">
-              {{ selectedClass.name }} {{ getClassLevel(selectedClass.classUuid) }}{{ i < getSelectedClasses().length - 1 ? ', ' : '' }}
+            <span *ngFor="let classDetail of characterDTO.getCharacterClassDetails(); let i = index">
+              {{ classDetail.className }} {{ classDetail.level }}
+              <span *ngIf="classDetail.subclassName">
+                ({{ classDetail.subclassName }})
+              </span>{{ i < characterDTO.getCharacterClassDetails().length - 1 ? ', ' : '' }}
             </span>
-            <span *ngIf="getSelectedClasses().length === 0">None selected</span>
+            <span *ngIf="characterDTO.getCharacterClassDetails().length === 0">None selected</span>
           </span>
         </div>
         <div class="summary-row">

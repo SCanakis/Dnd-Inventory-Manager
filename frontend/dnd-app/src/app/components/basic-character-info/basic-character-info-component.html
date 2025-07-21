@@ -4,7 +4,7 @@
     <div class="character-classes" *ngIf="character.classes && character.classes.length > 0">
       <div class="character-class" *ngFor="let cls of character.classes">
         {{cls.className}} - {{cls.level}}
-        <span *ngIf="cls.subClassName">({{cls.subClassName}})</span>
+        <span *ngIf="cls.subclassName">({{cls.subclassName}})</span>
       </div>
     </div>
   </div>

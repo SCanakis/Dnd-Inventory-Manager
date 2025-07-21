@@ -32,8 +32,9 @@ export class CharacterCreation implements OnInit {
   // Form state
   selectedBackground: Background | null = null;
   selectedRace: Race | null = null;
-  availableClasses: DndClass[] = [];
-  currentClassIndex = 0;
+  
+  // Temporary selection state for class cards
+  selectedSubClassForClass: { [classUuid: string]: string } = {};
   
   // Ability scores enum for template
   AbilityScore = AbilityScore;
@@ -57,7 +58,8 @@ export class CharacterCreation implements OnInit {
     Promise.all([
       this.loadBackgrounds(),
       this.loadRaces(),
-      this.loadClasses()
+      this.loadClasses(),
+      this.loadSubClasses()
     ]).then(() => {
       this.isLoading = false;
     }).catch((error) => {
@@ -102,7 +104,6 @@ export class CharacterCreation implements OnInit {
       this.creationService.getAllClasses().subscribe({
         next: (response: DndClass[]) => {
           this.classes = response;
-          this.availableClasses = response;
           resolve(response);
         },
         error: (error: HttpErrorResponse) => {
@@ -113,7 +114,25 @@ export class CharacterCreation implements OnInit {
     });
   }
 
-  // Selection methods
+  private loadSubClasses(): Promise<SubClass[]> {
+    return new Promise((resolve, reject) => {
+      this.creationService.getAllSubClasses().subscribe({
+        next: (response: SubClass[]) => {
+          this.subClasses = response;
+          resolve(response);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Failed to load subclasses:', error);
+          reject(error);
+        }
+      });
+    });
+  }
+
+  // ========================================
+  // SELECTION METHODS
+  // ========================================
+
   selectBackground(background: Background): void {
     this.selectedBackground = background;
     this.characterDTO.setBackgroundUuid(background.backgroundUuid);
@@ -124,60 +143,134 @@ export class CharacterCreation implements OnInit {
     this.characterDTO.setRaceUuid(race.raceUuid);
   }
 
-  selectClass(dndClass: DndClass): void {
+  /**
+   * Add a class (called when clicking the "Add Class" button on a class card)
+   */
+  addClass(dndClass: DndClass): void {
     const classDetails = this.characterDTO.getCharacterClassDetails();
-    const existingClassIndex = classDetails.findIndex(cd => cd.classUuid === dndClass.classUuid);
     
-    if (existingClassIndex >= 0) {
-      this.currentClassIndex = existingClassIndex;
-    } else {
-      const newClassDetail: CharacterClassDetail = {
-        classUuid: dndClass.classUuid,
-        className: dndClass.name,
-        hitDiceValue: dndClass.hitDiceValue,
-        subClassUuid: null,
-        subClassName: '',
-        level: 1,
-        hitDiceRemaining: 1
-      };
-      
-      classDetails.push(newClassDetail);
-      this.characterDTO.setCharacterClassDetails(classDetails);
-      this.currentClassIndex = classDetails.length - 1;
+    // Check if class already exists
+    if (classDetails.find(cd => cd.classUuid === dndClass.classUuid)) {
+      console.log('Class already exists');
+      return;
     }
+
+    // Get selected subclass (if any) - ensure proper null handling
+    const selectedSubClassUuid = this.selectedSubClassForClass[dndClass.classUuid];
+    const cleanSubClassUuid = selectedSubClassUuid && selectedSubClassUuid !== 'undefined' && selectedSubClassUuid !== '' ? selectedSubClassUuid : null;
+    let subClassName = '';
     
-    this.updateAvailableClasses();
+    if (cleanSubClassUuid) {
+      const subClass = this.subClasses.find(sc => sc.subclassUuid === cleanSubClassUuid);
+      subClassName = subClass?.name || '';
+    }
+
+    const newClassDetail: CharacterClassDetail = {
+      classUuid: dndClass.classUuid,
+      className: dndClass.name,
+      hitDiceValue: dndClass.hitDiceValue,
+      subclassUuid: cleanSubClassUuid,
+      subclassName: subClassName,
+      level: 1,
+      hitDiceRemaining: 1
+    };
+    
+    classDetails.push(newClassDetail);
+    this.characterDTO.setCharacterClassDetails(classDetails);
+    
+    // Clear the selection for this class
+    delete this.selectedSubClassForClass[dndClass.classUuid];
   }
 
+  /**
+   * Remove a class
+   */
   removeClass(index: number): void {
     const classDetails = this.characterDTO.getCharacterClassDetails();
     if (index >= 0 && index < classDetails.length) {
       classDetails.splice(index, 1);
       this.characterDTO.setCharacterClassDetails(classDetails);
-      
-      if (this.currentClassIndex >= classDetails.length) {
-        this.currentClassIndex = Math.max(0, classDetails.length - 1);
-      }
-      
-      this.updateAvailableClasses();
     }
   }
 
+  /**
+   * Update class level
+   */
   updateClassLevel(classIndex: number, level: number): void {
     const classDetails = this.characterDTO.getCharacterClassDetails();
     if (classIndex >= 0 && classIndex < classDetails.length && level >= 1 && level <= 20) {
-      classDetails[classIndex].level = level;
-      classDetails[classIndex].hitDiceRemaining = level;
+      const totalOtherLevels = classDetails.reduce((sum, cd, i) => 
+        i !== classIndex ? sum + cd.level : sum, 0
+      );
+      
+      if (totalOtherLevels + level <= 20) {
+        classDetails[classIndex].level = level;
+        classDetails[classIndex].hitDiceRemaining = level;
+        this.characterDTO.setCharacterClassDetails(classDetails);
+      }
+    }
+  }
+
+  /**
+   * NEW: Handle subclass change for already added classes
+   */
+  onSelectedClassSubclassChange(classIndex: number, event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const subclassUuid = target.value;
+    
+    // Clean the subclass UUID - convert empty string or 'undefined' to null
+    const cleanSubClassUuid = subclassUuid && subclassUuid !== 'undefined' && subclassUuid !== '' ? subclassUuid : null;
+    
+    const classDetails = this.characterDTO.getCharacterClassDetails();
+    if (classIndex >= 0 && classIndex < classDetails.length) {
+      const subClass = cleanSubClassUuid ? 
+        this.subClasses.find(sc => sc.subclassUuid === cleanSubClassUuid) : 
+        null;
+      
+      classDetails[classIndex].subclassUuid = cleanSubClassUuid;
+      classDetails[classIndex].subclassName = subClass?.name || '';
+      
       this.characterDTO.setCharacterClassDetails(classDetails);
     }
   }
 
-  private updateAvailableClasses(): void {
-    const selectedClassUuids = this.characterDTO.getCharacterClassDetails().map(cd => cd.classUuid);
-    this.availableClasses = this.classes.filter(c => !selectedClassUuids.includes(c.classUuid));
+  // ========================================
+  // HELPER METHODS
+  // ========================================
+
+  getSubClassesForClass(classUuid: string): SubClass[] {
+    return this.subClasses.filter(sc => sc.classSource === classUuid);
   }
 
-  // Ability score methods
+  hasSubClasses(classUuid: string): boolean {
+    return this.getSubClassesForClass(classUuid).length > 0;
+  }
+
+  isClassSelected(classUuid: string): boolean {
+    return this.characterDTO.getCharacterClassDetails()
+      .some(cd => cd.classUuid === classUuid);
+  }
+
+  canAddClass(dndClass: DndClass): boolean {
+    // Can't add if already selected
+    if (this.isClassSelected(dndClass.classUuid)) {
+      return false;
+    }
+    
+    // Can't add if at level 20
+    if (this.getTotalCharacterLevel() >= 20) {
+      return false;
+    }
+    
+    // If class has subclasses, must select one (but allow empty selection)
+    // Remove the subclass requirement for adding classes
+    return true;
+  }
+
+  // ========================================
+  // ABILITY SCORE METHODS
+  // ========================================
+
   updateAbilityScore(ability: AbilityScore, value: number): void {
     try {
       this.characterDTO.setAbilityScore(ability, value);
@@ -195,30 +288,18 @@ export class CharacterCreation implements OnInit {
     return Math.floor((score - 10) / 2);
   }
 
-  // Utility methods
-  getSelectedClasses(): DndClass[] {
-    const classDetails = this.characterDTO.getCharacterClassDetails();
-    return classDetails.map(cd => 
-      this.classes.find(c => c.classUuid === cd.classUuid)
-    ).filter(c => c !== undefined) as DndClass[];
-  }
-
-  getClassLevel(classUuid: string): number {
-    const classDetail = this.characterDTO.getCharacterClassDetails()
-      .find(cd => cd.classUuid === classUuid);
-    return classDetail?.level || 1;
-  }
+  // ========================================
+  // UTILITY METHODS
+  // ========================================
 
   getTotalCharacterLevel(): number {
     return this.characterDTO.getTotalLevel();
   }
 
-  canAddMoreClasses(): boolean {
-    return this.getTotalCharacterLevel() < 20 && 
-           this.characterDTO.getCharacterClassDetails().length < this.classes.length;
-  }
+  // ========================================
+  // EVENT HANDLERS
+  // ========================================
 
-  // Event handlers for inputs
   onClassLevelChange(classIndex: number, event: Event): void {
     const target = event.target as HTMLInputElement;
     const level = parseInt(target.value, 10);
@@ -235,7 +316,15 @@ export class CharacterCreation implements OnInit {
     }
   }
 
-  // Character creation
+  onSubClassSelectionChange(classUuid: string, event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.selectedSubClassForClass[classUuid] = target.value;
+  }
+
+  // ========================================
+  // CHARACTER CREATION
+  // ========================================
+
   createCharacter(): void {
     if (!this.isFormValid()) {
       return;
@@ -243,6 +332,8 @@ export class CharacterCreation implements OnInit {
     
     this.isSaving = true;
     this.errorMessage = '';
+    
+    console.log('Creating character with classes:', this.characterDTO.getCharacterClassDetails());
     
     this.creationService.createCharacter(this.characterDTO).subscribe({
       next: (response) => {
@@ -272,7 +363,6 @@ export class CharacterCreation implements OnInit {
     this.characterDTO = new BasicCharInfoCreationDTO();
     this.selectedBackground = null;
     this.selectedRace = null;
-    this.currentClassIndex = 0;
-    this.updateAvailableClasses();
+    this.selectedSubClassForClass = {};
   }
 }

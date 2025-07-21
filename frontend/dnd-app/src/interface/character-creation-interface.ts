@@ -23,7 +23,7 @@ export interface DndClass {
 }
 
 export interface SubClass {
-    subClassUuid : string;
+    subclassUuid : string;
     name : string;
     classSource : string;
 }
@@ -101,25 +101,37 @@ export class BasicCharInfoCreationDTO {
         return sum
     }
 
+    // UPDATED: Properly handle null values for UUIDs
     toJSON(): any {
+        // Clean the character class details to ensure proper null handling
+        const cleanedClassDetails = this.characterClassDetails.map(detail => ({
+            ...detail,
+            subclassUuid: detail.subclassUuid === 'undefined' || detail.subclassUuid === '' ? null : detail.subclassUuid
+        }));
+
         return {
             name: this.name,
             backgroundUuid: this.backgroundUuid,
             raceUuid: this.raceUuid,
             abilityScores: Object.fromEntries(this.abilityScores), // Convert Map to Object
-            characterClassDetails: this.characterClassDetails
+            characterClassDetails: cleanedClassDetails
         };
     }
 
-    // Alternative: Create a method that returns a serializable object
+    // UPDATED: Alternative serialization method with proper null handling
     toSerializableObject(): any {
+        // Clean the character class details to ensure proper null handling
+        const cleanedClassDetails = this.characterClassDetails.map(detail => ({
+            ...detail,
+            subclassUuid: detail.subclassUuid === 'undefined' || detail.subclassUuid === '' ? null : detail.subclassUuid
+        }));
+
         return {
             name: this.name,
             backgroundUuid: this.backgroundUuid,
             raceUuid: this.raceUuid,
             abilityScores: Object.fromEntries(this.abilityScores),
-            characterClassDetails: this.characterClassDetails
+            characterClassDetails: cleanedClassDetails
         };
     }
-
 }

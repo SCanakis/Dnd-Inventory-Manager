@@ -3,7 +3,7 @@ import { BasicCharacterInfoComponent } from '../basic-character-info/basic-chara
 import { NavComponent } from '../nav/nav-component';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { AbilityScore, CharacterBasicInfoView, CharacterInfoUpdateDTO } from '../../../interface/character-info-interface';
+import { AbilityScore, CharacterBasicInfoView, CharacterInfoUpdateDTO} from '../../../interface/character-info-interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { WebSocketResponse } from '../../../interface/websocket-interface';
