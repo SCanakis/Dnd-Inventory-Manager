@@ -44,6 +44,11 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/api/auth/create-user`, userDTO);
   }
 
+  deleteUser() : Observable<any> {
+    return this.http.delete(`${this.apiUrl}/user-deletion`, {
+      withCredentials : true
+    });
+  }
 
   getCharacters() : Observable<any> {
     return this.http.get(`${this.apiUrl}/characters/`, {

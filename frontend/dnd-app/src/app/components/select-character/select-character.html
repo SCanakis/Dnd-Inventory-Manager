@@ -2,9 +2,14 @@
   <!-- Header Section -->
   <div class="header">
     <h1>Your Characters</h1>
-    <button class="btn btn-secondary" (click)="logout()">
-      Logout
-    </button>
+    <div class="header-actions">
+      <button class="btn btn-danger-outline" (click)="openDeleteUserConfirmation()">
+        Delete Account
+      </button>
+      <button class="btn btn-secondary" (click)="logout()">
+        Logout
+      </button>
+    </div>
   </div>
 
   <!-- Loading State -->
@@ -124,20 +129,11 @@
           <span class="option-text">Delete Character</span>
           <span class="option-description">Permanently remove this character</span>
         </button>
-        
-        <!-- Add more options here in the future -->
-        <!--
-        <button class="option-button">
-          <span class="option-icon">✏️</span>
-          <span class="option-text">Edit Character</span>
-          <span class="option-description">Modify character details</span>
-        </button>
-        -->
       </div>
     </div>
   </div>
 
-  <!-- Delete Confirmation Modal -->
+  <!-- Delete Character Confirmation Modal -->
   <div *ngIf="showDeleteConfirmation" class="modal-overlay" (click)="closeDeleteConfirmation()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
@@ -166,6 +162,41 @@
         >
           <span *ngIf="isDeleting" class="spinner"></span>
           {{ isDeleting ? 'Deleting...' : 'Delete Character' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete User Account Confirmation Modal -->
+  <div *ngIf="showDeleteUserConfirmation" class="modal-overlay" (click)="closeDeleteUserConfirmation()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Delete Account</h3>
+        <button class="modal-close" (click)="closeDeleteUserConfirmation()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="warning-icon">🚨</div>
+        <p><strong>This will permanently delete your entire account!</strong></p>
+        <p class="warning-text">All of your characters and data will be permanently lost. This action cannot be undone.</p>
+        <p class="warning-text">Are you absolutely sure you want to continue?</p>
+      </div>
+      
+      <div class="modal-footer">
+        <button 
+          class="btn btn-secondary" 
+          (click)="closeDeleteUserConfirmation()"
+          [disabled]="isDeletingUser"
+        >
+          Cancel
+        </button>
+        <button 
+          class="btn btn-danger" 
+          (click)="confirmDeleteUser()"
+          [disabled]="isDeletingUser"
+        >
+          <span *ngIf="isDeletingUser" class="spinner"></span>
+          {{ isDeletingUser ? 'Deleting Account...' : 'Delete My Account' }}
         </button>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { AuthService } from '../../../service/auth/auth-service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CharacterInfoService } from '../../../service/character-info/character-info-service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-select-character',
@@ -22,6 +23,8 @@ export class SelectCharacter implements OnInit {
   showDeleteConfirmation = false;
   characterToDelete: CharacterBasicInfoView | null = null;
   isDeleting = false;
+  showDeleteUserConfirmation = false;
+  isDeletingUser = false;
   
   constructor(
     private authService: AuthService,
@@ -126,6 +129,40 @@ export class SelectCharacter implements OnInit {
         this.errorMessage = 'Failed to delete character. Please try again.';
         this.isDeleting = false;
         // Don't close the confirmation dialog so user can retry
+      }
+    });
+  }
+
+  openDeleteUserConfirmation(): void {
+    this.showDeleteUserConfirmation = true;
+  }
+
+  closeDeleteUserConfirmation(): void {
+    this.showDeleteUserConfirmation = false;
+    this.isDeletingUser = false;
+  }
+
+  confirmDeleteUser(): void {
+    this.isDeletingUser = true;
+    this.deleteUser();
+  }
+
+  // Update your existing deleteUser method to handle the modal:
+  deleteUser(): void {
+    this.authService.deleteUser().subscribe({
+      next: (response: boolean) => {
+        if (response === true) {
+          this.router.navigate(['/login']);
+        } else {
+          console.log("Something went wrong deleting the account");
+          this.errorMessage = "Failed to delete account. Please try again.";
+          this.isDeletingUser = false;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log("Error deleting account: ", error);
+        this.errorMessage = "Failed to delete account. Please try again.";
+        this.isDeletingUser = false;
       }
     });
   }
