@@ -22,9 +22,10 @@ import jakarta.persistence.EntityManager;
 @Service
 public class CoinPurseService {
 
-    // coin-pruse repo
+    /** Repository for coin purse */
     private CoinPurseRepo repo;
 
+    /** Entity Manager used to insantiate inventory and character at the same time. */
     private EntityManager entityManager;
 
 

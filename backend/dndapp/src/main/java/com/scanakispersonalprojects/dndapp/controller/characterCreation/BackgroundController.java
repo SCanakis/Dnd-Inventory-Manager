@@ -12,21 +12,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.scanakispersonalprojects.dndapp.model.basicCharInfo.Background;
 import com.scanakispersonalprojects.dndapp.service.characterCreation.BackgroundService;
 
-
+/**
+ * REST controller for managing dnd backgrounds. Provides endpoints for retrieveing
+ * backgrounds. Mainly used during the character creation proccess.
+ */
 @Controller
 @RequestMapping("background")
 public class BackgroundController {
     
+    /** Logger for this controller */
     private final static Logger LOG = Logger.getLogger(BackgroundController.class.getName());
     
     private final static String GET_PATH = "GET /background/";
     
+    /** Service ffor background operations */
     private BackgroundService backgroundService;
 
+    /**
+     * Constructs a new BackgroundController with the requires service dependencies
+     * 
+     * @param backgroundService
+     */
     public BackgroundController(BackgroundService backgroundService) {
         this.backgroundService = backgroundService;
     }
 
+    /**
+     * Retrieves all Background
+     * 
+     * @return - 200 Response eneity containing a list of {@link Background}
+     *         - 404 NOT_FOUND if null
+     *         - 500 INTERNAL_SERVER_ERROR if exception occurs
+     */
     @GetMapping
     public ResponseEntity<List<Background>> getAll() {
         LOG.info(GET_PATH);

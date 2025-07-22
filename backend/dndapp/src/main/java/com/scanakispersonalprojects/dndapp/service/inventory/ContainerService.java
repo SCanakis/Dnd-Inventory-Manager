@@ -188,9 +188,16 @@ public class ContainerService {
     }    
 
 
+    /**
+     * Creates an inventory for a character based on the characters strength score
+     * 
+     * @param charUuid - the unique identifier of the character who the inventory is for
+     * @param maxCapacity - the maxCapacity of the inventory
+     * @return - returns true if character was created or false if params are invalid
+     */
     @Transactional
     public boolean createInventory(UUID charUuid, int maxCapacity) {
-        if(charUuid == null) {
+        if(charUuid == null || maxCapacity <= 0) {
             return false;
         }
     

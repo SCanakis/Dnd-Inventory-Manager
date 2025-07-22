@@ -45,9 +45,10 @@ public class CharacterInfoService {
 
     private final static UUID inventoryContainerUuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
+    /** Repository for cointainer information operation */
     private final ContainerService containerService;
     
-    /** Repository for character information ops */
+    /** Repository for character information operation */
     private CharacterInfoRepo characterInfoRepo;
 
     /** Repository for character class relationship operation */
@@ -64,10 +65,11 @@ public class CharacterInfoService {
 
     /** Repository for dnd background definitions */
     private BackgroundRepo backgroundRepo;
-
-
+    
+    /** Service manage character-user relationships */
     private CharacterLinkService characterLinkService;
 
+    /** Service to manage Coin Purse business logic  */
     private CoinPurseService coinPurseService;
 
     /**

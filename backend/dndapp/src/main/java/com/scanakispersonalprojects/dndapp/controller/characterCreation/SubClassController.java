@@ -14,21 +14,38 @@ import com.scanakispersonalprojects.dndapp.service.characterCreation.SubClassSer
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
+/**
+ * REST controller for managing dnd SubClasses. Provides endpoints for retrieveing
+ * Dnd SubClasses. Mainly used during the character creation proccess.
+ */
 @Controller
 @RequestMapping("subclasses")
 public class SubClassController {
- 
+
+    /** Logger for this controller */
     private final static Logger LOG = Logger.getLogger(SubClassController.class.getName());
     
     private final static String GET_PATH = "GET /subclasses/";
 
+    /** Service for subclass operations */
     private SubClassService subClassService;
 
+    /**
+     * Constructs a new SubClassController with the requires service dependencies
+     * 
+     * @param subClassService
+     */
     public SubClassController(SubClassService subClassService) {
         this.subClassService = subClassService;
     }
     
+    /**
+     * Retrieves all SubClass
+     * 
+     * @return - 200 Response eneity containing a list of {@link Subclass}
+     *         - 404 NOT_FOUND if null
+     *         - 500 INTERNAL_SERVER_ERROR if exception occurs
+     */
     @GetMapping
     public ResponseEntity<List<Subclass>> getAll() {
         LOG.info(GET_PATH);
@@ -44,6 +61,14 @@ public class SubClassController {
         }
     }
 
+    /**
+     * Retrives all subclass for a specific class.
+     * 
+     * @param classUuid - source class uuid
+     * @return - 200 Response eneity containing a list of {@link Subclass}
+     *         - 404 NOT_FOUND if null
+     *         - 500 INTERNAL_SERVER_ERROR if exception occurs
+     */
     @GetMapping("/id={uuid}")
     public ResponseEntity<List<Subclass>> getSubClassesForClass(@PathVariable("uuid") UUID classUuid) { 
         LOG.info(GET_PATH + classUuid);

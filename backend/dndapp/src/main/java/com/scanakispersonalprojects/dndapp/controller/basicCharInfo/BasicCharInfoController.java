@@ -152,6 +152,16 @@ public class BasicCharInfoController {
             
     }
 
+    /**
+     * Creates a character
+     * 
+     * @param authentication    the endpoint requires user authenticatino
+     * @param dto               the information needed to create the character {@link BasicCharInofCreationDTO}
+     * @return                  200 if character was created
+     *                          404 if data is invalid
+     *                          500 any unexpcted server error
+     */
+
     @PostMapping()
     public ResponseEntity<Boolean> createCharacter(Authentication authentication, @RequestBody BasicCharInfoCreationDTO dto) {
 

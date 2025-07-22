@@ -4,6 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Data Transfer Object (DTO) for creating basic character information. This
+ * DTO encapsulates the data needed to create a new character.
+ * 
+ * Used primarly for API request when creating new characters.
+ * 
+ */
 public class BasicCharInfoCreationDTO {
     
     private String name;

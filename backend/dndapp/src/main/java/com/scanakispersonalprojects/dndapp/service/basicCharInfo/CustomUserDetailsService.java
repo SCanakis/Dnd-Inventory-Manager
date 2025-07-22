@@ -37,14 +37,21 @@ import jakarta.transaction.Transactional;
 @Service
 public class CustomUserDetailsService implements UserDetailsService{
 
+    /** Repository for user operations */
     private UserRepo userRepo;
 
+    /** Service for character business logic operations */
     private CharacterInfoService characterService;
 
+    /** Springboot Security password Ecnoder */
     private PasswordEncoder passwordEncoder;
 
     /**
-     * Builds the {@link UserDetails} boject Srping Security needs.
+     * Constructs a new CustomUserDetailsService with the requires dependencies
+     * 
+     * @param userRepo 
+     * @param characterService
+     * @param passwordEncoder
      */
 
     public CustomUserDetailsService(UserRepo userRepo, CharacterInfoService characterService, PasswordEncoder passwordEncoder) {
@@ -98,6 +105,12 @@ public class CustomUserDetailsService implements UserDetailsService{
 
     }
 
+    /**
+     * Create user and makes sure credentials are valid. 
+     * 
+     * @param createUserDTO - infromation needed to create user {@link CreateUserDTO}
+     * @return
+     */
     @Transactional
     public boolean createUser(CreateUserDTO createUserDTO) {
         if(createUserDTO == null ||  
@@ -116,6 +129,12 @@ public class CustomUserDetailsService implements UserDetailsService{
         }
     }
 
+    /**
+     * Delete user and associated characters.
+     * 
+     * @param authentication - SpringBoot Authentication of account being deleted
+     * @return
+     */
     @Transactional
     public boolean deleteUser(Authentication authentication) {
         if(authentication == null || authentication.getName() == null) {
@@ -144,8 +163,6 @@ public class CustomUserDetailsService implements UserDetailsService{
         } catch (Exception e) {
             return false;
         }
-
-        
     }
 
 

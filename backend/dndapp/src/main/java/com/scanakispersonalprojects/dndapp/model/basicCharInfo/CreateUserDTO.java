@@ -1,5 +1,11 @@
 package com.scanakispersonalprojects.dndapp.model.basicCharInfo;
 
+/**
+ * Data Transfer Object (DTO) for creating a user. This DTO encapsualtes
+ * the esssential data needed to create a new user. 
+ * 
+ * Used primarly for API request when creating new user. 
+ */
 public class CreateUserDTO {
     private String username;
     private String password;

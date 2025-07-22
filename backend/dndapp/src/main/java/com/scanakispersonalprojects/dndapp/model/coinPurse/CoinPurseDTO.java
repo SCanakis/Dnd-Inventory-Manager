@@ -2,7 +2,7 @@ package com.scanakispersonalprojects.dndapp.model.coinPurse;
 
 
 /**
- * Data Transfer Object (DTO) dfor updating ocin purse information.
+ * Data Transfer Object (DTO) dfor updating coin purse information.
  *  
  * This class reprseents the five standard currenty type. 
  * 
