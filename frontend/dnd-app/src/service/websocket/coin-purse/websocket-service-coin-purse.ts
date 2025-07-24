@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Client, StompConfig } from '@stomp/stompjs';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { WebSocketResponse } from '../../../interface/websocket-interface';
-import { environment } from '../../../environments/environment.development';
 import { CoinPurse, CoinPurseDTO } from '../../../interface/coin-purse-interface';
+import { environment } from '../../../environments/environment.dev';
 
 @Injectable({
   providedIn: 'root'

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Client, StompConfig } from '@stomp/stompjs';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
 import { CharacterHasItemUpdate, WebSocketResponse } from '../../../interface/websocket-interface';
 import { CharacterHasItemProjection } from '../../../interface/inventory.types';
+import { environment } from '../../../environments/environment.dev';
 
 
 

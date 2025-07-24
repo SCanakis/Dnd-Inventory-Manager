@@ -3,7 +3,7 @@ import { Client, StompConfig } from '@stomp/stompjs';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { WebSocketResponse } from '../../../interface/websocket-interface';
 import { ItemProjection } from '../../../interface/item-projection-interface';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment.dev';
 
 
 @Injectable({

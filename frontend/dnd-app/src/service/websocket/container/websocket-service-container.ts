@@ -3,8 +3,8 @@ import { Client, StompConfig } from '@stomp/stompjs';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { WebSocketResponse } from '../../../interface/websocket-interface';
-import { environment } from '../../../environments/environment.development';
 import { ContainerView } from '../../../interface/container-interface';
+import { environment } from '../../../environments/environment.dev';
 
 @Injectable({
   providedIn: 'root'

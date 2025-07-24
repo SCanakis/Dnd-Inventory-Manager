@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, tap } from 'rxjs';
-import { environment } from '../../environments/environment.development';
 import { CreateUserDTO } from '../../interface/authentication-interface';
+import { environment } from '../../environments/environment.dev';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +46,7 @@ export class AuthService {
 
   deleteUser() : Observable<any> {
     return this.http.delete(`${this.apiUrl}/user-deletion`, {
-      withCredentials : true
+      withCredentials: true
     });
   }
 
