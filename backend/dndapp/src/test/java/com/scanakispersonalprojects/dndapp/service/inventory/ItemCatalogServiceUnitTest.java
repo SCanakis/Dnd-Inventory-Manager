@@ -41,7 +41,7 @@ public class ItemCatalogServiceUnitTest {
         swordUuid,
         "Longsword",
         "A versatile martial weapon with a straight double-edged blade.",
-        3,
+        3.0,
         15,
         Rarity.common,
         true,

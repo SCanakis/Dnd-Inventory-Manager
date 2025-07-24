@@ -35,15 +35,15 @@ public class Container {
     private UUID itemUuid;
 
     @Column(name = "max_capacity", nullable = false) 
-    private int maxCapacity;
+    private Integer maxCapacity;
     
     @Column(name = "current_consumed", nullable =  false) 
-    private int currentCapacity = 0;
+    private Double currentCapacity = 0.0;
 
     public Container() {
     }
 
-    public Container(UUID containerUuid, UUID charUuid, UUID itemUuid, int maxCapacity, int currentCapacity) {
+    public Container(UUID containerUuid, UUID charUuid, UUID itemUuid, int maxCapacity, double currentCapacity) {
         this.id = new ContainerId(containerUuid, charUuid);
         this.itemUuid = itemUuid;
         this.maxCapacity = maxCapacity;
@@ -103,11 +103,11 @@ public class Container {
         this.maxCapacity = maxCapacity;
     }
 
-    public int getCurrentCapacity() {
+    public double getCurrentCapacity() {
         return currentCapacity;
     }
 
-    public void setCurrentCapacity(int currentCapacity) {
+    public void setCurrentCapacity(double currentCapacity) {
         this.currentCapacity = currentCapacity;
     }
 

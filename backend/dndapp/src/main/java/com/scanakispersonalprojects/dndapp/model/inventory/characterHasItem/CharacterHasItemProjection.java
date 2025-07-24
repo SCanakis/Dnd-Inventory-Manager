@@ -17,7 +17,7 @@ public interface CharacterHasItemProjection {
 
     String getItemName();
 
-    Integer getItemWeight();
+    Double getItemWeight();
 
     Integer getItemValue();
 

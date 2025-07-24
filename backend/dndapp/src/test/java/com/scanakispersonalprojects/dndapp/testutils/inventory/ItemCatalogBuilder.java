@@ -17,7 +17,7 @@ public class ItemCatalogBuilder {
         private UUID itemUuid;
         private String name;
         private String description;
-        private Integer weight;
+        private Double weight;
         private Integer cost;
         private Rarity rarity;
         private Boolean isWeapon;
@@ -45,7 +45,7 @@ public class ItemCatalogBuilder {
             return this;
         }
         
-        public ItemCatalogBuilder weight(Integer weight) {
+        public ItemCatalogBuilder weight(Double weight) {
             this.weight = weight;
             return this;
         }

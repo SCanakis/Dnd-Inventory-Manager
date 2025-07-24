@@ -64,7 +64,7 @@ public class CatalogControllerTest {
             null,
             "LongSword",
             "it's a long sword",
-            5,
+            5.0,
             10,
             Rarity.common,
             true,

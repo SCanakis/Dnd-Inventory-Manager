@@ -49,5 +49,5 @@ public interface ContainerRepo extends JpaRepository<Container, ContainerId>{
                     "WHERE char_uuid = :charUuid AND " +
                     "container_uuid = :containerUuid" ,
                     nativeQuery= true)
-    void updateCurrentCapacity(@Param("charUuid") UUID charUuid, @Param("containerUuid") UUID containerUuid, @Param("quantity") int quantity);
+    void updateCurrentCapacity(@Param("charUuid") UUID charUuid, @Param("containerUuid") UUID containerUuid, @Param("quantity") double quantity);
 }
