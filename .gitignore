@@ -1,2 +1,28 @@
 sonar-project.properties
 .env
+.scannerwork/
+
+# ───────── Java / Spring ──────────
+/target/
+/out/
+/.idea/
+/*.iml
+*.class
+*.log
+
+# Gradle
+.gradle/
+/build/
+
+# ───────── Node / Angular ─────────
+frontend/**/node_modules/
+/frontend/**/.angular/cache/
+/frontend/**/dist/
+/frontend/**/.env.local
+
+# ───────── OS / Editor misc ───────
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
+

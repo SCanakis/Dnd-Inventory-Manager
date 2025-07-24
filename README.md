@@ -3,7 +3,7 @@
 <!-- ────────────────────────────────────────────────────────────────────── -->
 
 <h1 align="center">
-  🐲 DndApp
+  🐲 Dnd Inventory Manager
 </h1>
 
 <p align="center">
@@ -28,12 +28,12 @@
 
 ## ✨ Key Features
 
-| Module        | What works today                                             | In the pipeline |
-|---------------|--------------------------------------------------------------|-----------------|
-| **Characters**| Full CRUD: race, class, subclass, background                 | Feats & spells  |
-| **Inventory** | Automatic weight + attunement calculations                   | Equipment sets  |
-| **Coin Purse**| Manage GP / PP / EP / SP / CP (currencies)                    | Party vault     |
-| **Auth**      | Spring Security form login + HTTP Basic (session cookies)    | OAuth logins    |
+| Module        | What works today                                             |
+|---------------|--------------------------------------------------------------|
+| **Characters**| Full CRUD: race, class, subclass, background                 | 
+| **Inventory** | Automatic weight + attunement calculations                   | 
+| **Coin Purse**| Manage GP / PP / EP / SP / CP (currencies)                    |
+| **Auth**      | Spring Security form login + HTTP Basic (session cookies)    | 
 
 > GitHub’s language mix: **≈59 % Java, 16 % SCSS, 16 % TypeScript, 9 % HTML**.
 
