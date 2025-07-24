@@ -190,7 +190,7 @@ public class InventoryService {
                 
         if(optionalContainer.isPresent() && item != null) {
             Container container = optionalContainer.get();
-            int sum = quantity * item.getItemWeight() + container.getCurrentCapacity();
+            double sum = quantity * item.getItemWeight() + container.getCurrentCapacity();
             if(sum <= container.getMaxCapacity()) {
                 containerRepo.updateCurrentCapacity(charUuid, emptyContainerUuid, sum);
                 return true;
@@ -246,7 +246,7 @@ public class InventoryService {
 
                 if(optionalContainer.isPresent() && item != null) {
                     Container container = optionalContainer.get();
-                    int sum = container.getCurrentCapacity() - slot.getQuantity() * item.getItemWeight();
+                    double sum = container.getCurrentCapacity() - slot.getQuantity() * item.getItemWeight();
                     if(sum >= 0) {
                         containerRepo.updateCurrentCapacity(charUuid, containerUuid, sum);
                     }
@@ -395,8 +395,8 @@ public class InventoryService {
             Container container = optionalContainer.get();
             
             int quantityDiff = update.getQuantity() - slot.getQuantity();
-            int weightDiff = quantityDiff * item.getItemWeight();
-            int newCapacity = container.getCurrentCapacity() + weightDiff;
+            double weightDiff = quantityDiff * item.getItemWeight();
+            double newCapacity = container.getCurrentCapacity() + weightDiff;
 
             if(newCapacity >= 0 && newCapacity <= container.getMaxCapacity()) {
                 containerRepo.updateCurrentCapacity(charUuid, containerUuid, newCapacity);
@@ -511,7 +511,7 @@ public class InventoryService {
 
         if(optionalContainer.isPresent() && item != null) {
             Container container = optionalContainer.get();
-            int sum = update.getQuantity() * item.getItemWeight() + container.getCurrentCapacity();
+            double sum = update.getQuantity() * item.getItemWeight() + container.getCurrentCapacity();
             if(sum <= container.getMaxCapacity()) {
                 containerRepo.updateCurrentCapacity(charUuid, conatinerUuid, sum);
                 return true;
@@ -538,7 +538,7 @@ public class InventoryService {
         if(optionalContainer.isPresent() && item != null) {
 
             Container container = optionalContainer.get();
-            int remainder = container.getCurrentCapacity() - update.getQuantity() * item.getItemWeight();
+            double remainder = container.getCurrentCapacity() - update.getQuantity() * item.getItemWeight();
 
             if(remainder >= 0) {
                 containerRepo.updateCurrentCapacity(charUuid, conatinerUuid, remainder);

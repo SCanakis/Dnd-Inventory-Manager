@@ -73,7 +73,7 @@ public class ItemCatalog {
     
 
     @Column(name = "item_weight", nullable = false)
-    private Integer itemWeight = 0;
+    private Double itemWeight = 0.0;
 
     @Column(name = "item_value", nullable = false)
     private Integer itemValue = 0;
@@ -131,7 +131,7 @@ public class ItemCatalog {
 
     public ItemCatalog() {}
 
-    public ItemCatalog(UUID itemUuid, String itemName, String itemDescription, Integer itemWeight, Integer itemValue,
+    public ItemCatalog(UUID itemUuid, String itemName, String itemDescription, Double itemWeight, Integer itemValue,
             Rarity itemRarity, boolean attackable, Short acBonus, Map<AbilityScore, Boolean> addToAc,
             boolean equippable, boolean attunable, List<EquippableType> itemEquippableTypes,
             Map<AbilityScore, Integer> abilityRequirement, Map<Skill, RollType> skillAlteredRollType,
@@ -155,7 +155,7 @@ public class ItemCatalog {
         this.capacity = capacity;
     }
 
-    public ItemCatalog(UUID itemUuid, String itemName, String itemDescription, Integer itemWeight, Integer itemValue,
+    public ItemCatalog(UUID itemUuid, String itemName, String itemDescription, Double itemWeight, Integer itemValue,
             Rarity itemRarity, boolean attackable, Short acBonus, Map<AbilityScore, Boolean> addToAc,
             boolean equippable, boolean attunable, List<EquippableType> itemEquippableTypes,
             Map<AbilityScore, Integer> abilityRequirement, Map<Skill, RollType> skillAlteredRollType,
@@ -219,11 +219,11 @@ public class ItemCatalog {
         this.itemDescription = itemDescription;
     }
 
-    public Integer getItemWeight() {
+    public Double getItemWeight() {
         return itemWeight;
     }
 
-    public void setItemWeight(Integer itemWeight) {
+    public void setItemWeight(Double itemWeight) {
         this.itemWeight = itemWeight;
     }
 

@@ -14,7 +14,7 @@ public interface ItemProjection {
 
     String getItemName();
 
-    Integer getItemWeight();
+    Double getItemWeight();
 
     Integer getItemValue();
 

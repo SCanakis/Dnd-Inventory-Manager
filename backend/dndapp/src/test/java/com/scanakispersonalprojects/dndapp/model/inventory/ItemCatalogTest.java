@@ -41,7 +41,7 @@ class ItemCatalogTest {
     void testFullConstructorWithoutClassPairs() {
         String itemName = "Magic Sword";
         String itemDescription = "A legendary blade";
-        Integer itemWeight = 5;
+        Double itemWeight = 5.0;
         Integer itemValue = 1000;
         Rarity rarity = Rarity.legendary;
         boolean attackable = true;
@@ -83,7 +83,7 @@ class ItemCatalogTest {
         }};
                 
 
-        ItemCatalog item = new ItemCatalog(testUuid, "Test Item", "Description", 1, 100,
+        ItemCatalog item = new ItemCatalog(testUuid, "Test Item", "Description", 1.0, 100,
                 Rarity.common, false, null, null, true, false, null, null, null, null, false, null,classPairs);
 
         assertEquals(classPairs, item.getClassNameIdPair());
@@ -96,7 +96,7 @@ class ItemCatalogTest {
     void testSettersAndGetters() {
         String newName = "Updated Item";
         String newDescription = "Updated description";
-        Integer newWeight = 10;
+        Double newWeight = 10.0;
         Integer newValue = 500;
         Rarity newRarity = Rarity.rare;
         Short newAcBonus = (short) 3;
@@ -206,7 +206,7 @@ class ItemCatalogTest {
         assertNull(itemCatalog.getSkillAlteredBonus());
         assertNull(itemCatalog.getClassNameIdPair());
 
-        itemCatalog.setItemWeight(Integer.MAX_VALUE);
+        itemCatalog.setItemWeight(Double.MAX_VALUE);
         itemCatalog.setItemValue(Integer.MIN_VALUE);
         itemCatalog.setAcBonus(Short.MAX_VALUE);
 
