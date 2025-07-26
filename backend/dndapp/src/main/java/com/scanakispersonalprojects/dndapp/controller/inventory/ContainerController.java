@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.PutMapping;
  * Base path: /containers/{charUuid}
  */
 @Controller
-@RequestMapping("containers/{charUuid}")
+@RequestMapping("api/containers/{charUuid}")
 public class ContainerController {
     
     /** Logger for this controller */

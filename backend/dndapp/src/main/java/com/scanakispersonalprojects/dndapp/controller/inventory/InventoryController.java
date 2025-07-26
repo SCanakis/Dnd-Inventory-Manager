@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * Base path: /inventory/{uuid} where uuid is the character UUID
  */
 @Controller
-@RequestMapping("inventory/{uuid}")
+@RequestMapping("api/inventory/{uuid}")
 public class InventoryController {
     
     /** Logger for this controller */

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * Dnd Races. Mainly used during the character creation proccess.
  */
 @Controller
-@RequestMapping("race")
+@RequestMapping("api/race")
 public class RaceController {
     
     /** Logger for this controller */

@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 
 @Controller
-@RequestMapping("itemCatalog")
+@RequestMapping("api/itemCatalog")
 public class CatalogController {
     
     /** Logger for this controller */

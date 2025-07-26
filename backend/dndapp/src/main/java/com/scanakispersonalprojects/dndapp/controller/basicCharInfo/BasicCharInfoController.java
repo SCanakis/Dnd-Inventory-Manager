@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 @Controller
-@RequestMapping("character")
+@RequestMapping("api/character")
 public class BasicCharInfoController {
     
     private static final Logger LOG = Logger.getLogger(BasicCharInfoController.class.getName());

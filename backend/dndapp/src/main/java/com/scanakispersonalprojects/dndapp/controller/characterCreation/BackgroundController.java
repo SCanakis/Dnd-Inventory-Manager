@@ -17,7 +17,7 @@ import com.scanakispersonalprojects.dndapp.service.characterCreation.BackgroundS
  * backgrounds. Mainly used during the character creation proccess.
  */
 @Controller
-@RequestMapping("background")
+@RequestMapping("api/background")
 public class BackgroundController {
     
     /** Logger for this controller */

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * Dnd Classes. Mainly used during the character creation proccess.
  */
 @Controller
-@RequestMapping("classes")
+@RequestMapping("api/classes")
 public class DndClassController {
     
     /** Logger for this controller */

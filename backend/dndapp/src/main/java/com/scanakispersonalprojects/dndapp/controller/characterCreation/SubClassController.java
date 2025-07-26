@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * Dnd SubClasses. Mainly used during the character creation proccess.
  */
 @Controller
-@RequestMapping("subclasses")
+@RequestMapping("api/subclasses")
 public class SubClassController {
 
     /** Logger for this controller */

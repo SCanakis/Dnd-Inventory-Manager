@@ -18,11 +18,13 @@ import com.scanakispersonalprojects.dndapp.model.basicCharInfo.CustomUserPrincip
 import com.scanakispersonalprojects.dndapp.service.basicCharInfo.CustomUserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 
 
 @Controller
+@RequestMapping("api")
 public class UserController {
     private static final Logger LOG = Logger.getLogger(BasicCharInfoController.class.getName());
     private CustomUserDetailsService detailsService;
@@ -67,7 +69,7 @@ public class UserController {
         
     }   
 
-    @PostMapping("/api/auth/create-user")
+    @PostMapping("/auth/create-user")
     public ResponseEntity<Boolean> createUser(@RequestBody CreateUserDTO createUserDTO) {
         LOG.info("POST /user");
 
