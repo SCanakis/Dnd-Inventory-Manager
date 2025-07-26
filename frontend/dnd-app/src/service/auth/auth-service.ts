@@ -19,13 +19,13 @@ export class AuthService {
     formData.append('username', username);
     formData.append('password', password);
 
-    return this.http.post(`${this.apiUrl}/api/auth/login`, formData, {
+    return this.http.post(`${this.apiUrl}/auth/login`, formData, {
       withCredentials: true
     });
   }
 
   logout() : Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/auth/logout`, {}, {
+    return this.http.post(`${this.apiUrl}/auth/logout`, {}, {
       withCredentials : true
     }).pipe(
       tap(response => {
@@ -41,7 +41,7 @@ export class AuthService {
   createUser(username : string, password : string) : Observable<any>{
     let userDTO = new CreateUserDTO(username, password);
 
-    return this.http.post(`${this.apiUrl}/api/auth/create-user`, userDTO);
+    return this.http.post(`${this.apiUrl}/auth/create-user`, userDTO);
   }
 
   deleteUser() : Observable<any> {

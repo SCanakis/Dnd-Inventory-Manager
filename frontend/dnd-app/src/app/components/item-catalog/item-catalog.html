@@ -38,7 +38,8 @@
         <div class="info-section">
           <h4>Basic Information</h4>
           <p><strong>Name:</strong> {{selectedItem.itemName}}</p>
-          <p *ngIf="selectedItem.itemDescription"><strong>Description:</strong> {{selectedItem.itemDescription}}</p>
+          <p *ngIf="selectedItem.itemDescription"><strong>Description:</strong></p>
+          <p>{{selectedItem.itemDescription}}</p>
           <p *ngIf="selectedItem.itemWeight"><strong>Weight:</strong> {{selectedItem.itemWeight}}</p>
           <p *ngIf="selectedItem.itemValue"><strong>Value:</strong> {{selectedItem.itemValue}}</p>
           <p *ngIf="selectedItem.itemRarity"><strong>Rarity:</strong> {{selectedItem.itemRarity}}</p>
