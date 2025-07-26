@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Background, BasicCharInfoCreationDTO, DndClass, Race, SubClass } from '../../interface/character-creation-interface';
 import { CharacterBasicInfoView } from '../../interface/character-info-interface';
-import { environment } from '../../environments/environment.dev';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({

@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { WebSocketResponse } from '../../../interface/websocket-interface';
 import { ContainerView } from '../../../interface/container-interface';
-import { environment } from '../../../environments/environment.dev';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
