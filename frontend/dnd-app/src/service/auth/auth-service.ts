@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, tap } from 'rxjs';
 import { CreateUserDTO } from '../../interface/authentication-interface';
-import { environment } from '../../environments/environment.dev';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'

@@ -34,7 +34,7 @@ public class DndClass {
     @Column(name = "hit_dice_value", nullable = false)
     private HitDiceValue hitDiceValue;
 
-    @Column(name = "description", length = 255)
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     public DndClass() {}

@@ -1,0 +1,1 @@
+SELECT 'Database initialized without character data' as status;
