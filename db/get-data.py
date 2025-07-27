@@ -194,12 +194,12 @@ def write_query(item_data):
     skill_altered_bonus = f"'{json.dumps(skill_bonus)}'" if skill_bonus is not None else 'NULL'
     
     return f"""INSERT INTO item_catalog (
-    item_name, item_description, item_weight, item_value, attackable, 
+    item_uuid, item_name, item_description, item_weight, item_value, attackable, 
     ac_bonus, add_as_to_ac, equippable, attunable, item_equippable_type,
     ability_requirment, skill_altered_roll_type, skill_altered_bonus,
     item_rarity, is_container, capacity
 ) VALUES (
-    '{name}', '{desc}', {weight}, {value}, 
+    gen_random_uuid(), '{name}', '{desc}', {weight}, {value}, 
     {attackable}, {ac_bonus}, {add_as_to_ac}, {equippable}, 
     {attunable}, {item_equippable_type}, {ability_requirment},
     {skill_altered_roll_type}, {skill_altered_bonus}, '{rarity}',

@@ -10,9 +10,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./db/init-extensions.sql:/docker-entrypoint-initdb.d/10-extensions.sql
-      # Conditionally load sample data based on environment variables
-      - ${CHARACTER_DATA_FILE:-./db/empty-character-data.sql}:/docker-entrypoint-initdb.d/30-character-data.sql
-      - ${ITEM_DATA_FILE:-./db/empty-item-data.sql}:/docker-entrypoint-initdb.d/40-item-data.sql
+      # No data loading here - let Hibernate create tables first
 
   backend:
     build: ./backend/dndapp
@@ -20,6 +18,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/dnddb
       SPRING_DATASOURCE_USERNAME: dnd
       SPRING_DATASOURCE_PASSWORD: dndpass
+      # Let Hibernate create the tables
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
     expose:
       - "8080"
     depends_on:
