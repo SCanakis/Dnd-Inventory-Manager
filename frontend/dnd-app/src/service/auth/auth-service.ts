@@ -46,7 +46,7 @@ export class AuthService {
   }
 
   deleteUser() : Observable<any> {
-    return this.http.delete(`${this.apiUrl}/user-deletion`, {
+    return this.http.delete(`${this.apiUrl}/auth/user-deletion`, {
       withCredentials: true
     });
   }
