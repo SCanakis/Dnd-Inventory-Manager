@@ -110,8 +110,6 @@ public class ItemCatalog {
     @Column(name = "ability_requirment", columnDefinition = "json")
     private Map<AbilityScore, Integer> abilityRequirement;
     
-    
-
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "skill_altered_roll_type")
     private Map<Skill, RollType> skillAlteredRollType;
@@ -176,6 +174,7 @@ public class ItemCatalog {
         this.skillAlteredRollType = skillAlteredRollType;
         this.skillAlteredBonus = skillAlteredBonus;
         this.isContainer = isContainer;
+        this.capacity = capacity;
         this.classNameIdPair = classNameIdPairs;
     }
 

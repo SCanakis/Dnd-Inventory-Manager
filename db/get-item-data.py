@@ -147,7 +147,7 @@ CONVERSION RULES:
 
 ✨ MAGIC PROPERTIES:
 - attunable: true if item mentions "attunement", "requires attunement", or is clearly magical
-- item_rarity: Extract from "rarity.name" or infer: "common", "uncommon", "rare", "very_rare", "legendary"
+- item_rarity: Extract from "rarity.name" or infer: "common", "uncommon", "rare", "very_rare", "legendary", "varies"
 - ability_requirment: Extract strength/dex requirements as JSON like {{"strength": 13}}
 - skill_altered_bonus: If item gives skill bonuses, format as {{"skill_name": bonus_number}}
 

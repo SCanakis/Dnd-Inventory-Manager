@@ -195,9 +195,9 @@ def write_class_query(class_data):
     hit_dice = class_data.get('hit_dice_value', 'D8')
     
     return f"""INSERT INTO class (
-    name, description, hit_dice_value
+    class_uuid name, description, hit_dice_value
 ) VALUES (
-    '{name}', '{desc}', '{hit_dice}'
+    gen_random_uuid() ,'{name}', '{desc}', '{hit_dice}'
 );"""
 
 def write_race_query(race_data):
@@ -209,9 +209,9 @@ def write_race_query(race_data):
     stat_json = json.dumps(stat_increases).replace("'", "''")
     
     return f"""INSERT INTO race (
-    name, stat_increases
+    race_uuid, name, stat_increases
 ) VALUES (
-    '{name}', '{stat_json}'
+    gen_random_uuid(), '{name}', '{stat_json}'
 );"""
 
 def write_background_query(background_data):
@@ -221,9 +221,9 @@ def write_background_query(background_data):
     starting_gold = background_data.get('starting_gold', 50)
     
     return f"""INSERT INTO background (
-    name, description, starting_gold
+    background_uuid, name, description, starting_gold
 ) VALUES (
-    '{name}', '{desc}', {starting_gold}
+    gen_random_uuid() ,'{name}', '{desc}', {starting_gold}
 );"""
 
 def write_subclass_query(subclass_data, parent_class_name):
@@ -231,8 +231,8 @@ def write_subclass_query(subclass_data, parent_class_name):
     name = escape_sql_string(subclass_data.get('name', ''))
     parent_class = escape_sql_string(parent_class_name)
     
-    return f"""INSERT INTO subclass (name, class_source) 
-SELECT '{name}', class_uuid FROM class WHERE name = '{parent_class}';"""
+    return f"""INSERT INTO subclass (subclass_uuid, name, class_source) 
+SELECT gen_random_uuid(), '{name}', class_uuid FROM class WHERE name = '{parent_class}';"""
 
 def main():
     print("🚀 Starting D&D data import for fresh database...")

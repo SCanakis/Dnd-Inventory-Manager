@@ -28,12 +28,12 @@ INSERT INTO item_catalog (
 );
 
 INSERT INTO item_catalog (
-    item_name, item_description, item_weight, item_value, attackable, 
+    item_uuid, item_name, item_description, item_weight, item_value, attackable, 
     ac_bonus, add_as_to_ac, equippable, attunable, item_equippable_type,
     ability_requirment, skill_altered_roll_type, skill_altered_bonus,
     item_rarity, is_container, capacity
 ) VALUES (
-    'Ioun Stone', 'Wondrous item, varies (requires attunement) An Ioun stone is named after Ioun, a god of knowledge and prophecy revered on some worlds. Many types of Ioun stone exist, each type a distinct combination of shape and color. When you use an action to toss one of these stones into the air, the stone orbits your head at a distance of 1d3 feet and confers a benefit to you. Thereafter, another creature must use an action to grasp or net the stone to separate it from you, either by making a successful attack roll against AC 24 or a successful DC 24 Dexterity (Acrobatics) check. You can use an action to seize and stow the stone, ending its effect. A stone has AC 24, 10 hit points, and resistance to all damage. It is considered to be an object that is being worn while it orbits your head. ***Absorption (Very Rare).*** While this pale lavender ellipsoid orbits your head, you can use your reaction to cancel a spell of 4th level or lower cast by a creature you can see and targeting only you. Once the stone has canceled 20 levels of spells, it burns out and turns dull gray, losing its magic. If you are targeted by a spell whose level is higher than the number of spell levels the stone has left, the stone can''t cancel it. ***Agility (Very Rare).*** Your Dexterity score increases by 2, to a maximum of 20, while this deep red sphere orbits your head. ***Awareness (Rare).*** You can''t be surprised while this dark blue rhomboid orbits your head. ***Fortitude (Very Rare).*** Your Constitution score increases by 2, to a maximum of 20, while this pink rhomboid orbits your head. ***Greater Absorption (Legendary).*** While this marbled lavender and green ellipsoid orbits your head, you can use your reaction to cancel a spell of 8th level or lower cast by a creature you can see and targeting only you. Once the stone has canceled 50 levels of spells, it burns out and turns dull gray, losing its magic. If you are targeted by a spell whose level is higher than the number of spell levels the stone has left, the stone can''t cancel it. ***Insight (Very Rare).*** Your Wisdom score increases by 2, to a maximum of 20, while this incandescent blue sphere orbits your head. ***Intellect (Very Rare).*** Your Intelligence score increases by 2, to a maximum of 20, while this marbled scarlet and blue sphere orbits your head. ***Leadership (Very Rare).*** Your Charisma score increases by 2, to a maximum of 20, while this marbled pink and green sphere orbits your head. ***Mastery (Legendary).*** Your proficiency bonus increases by 1 while this pale green prism orbits your head. ***Protection (Rare).*** You gain a +1 bonus to AC while this dusty rose prism orbits your head. ***Regeneration (Legendary).*** You regain 15 hit points at the end of each hour this pearly white spindle orbits your head, provided that you have at least 1 hit point. ***Reserve (Rare).*** This vibrant purple prism stores spells cast into it, holding them until you use them. The stone can store up to 3 levels worth of spells at a time. When found, it contains 1d4 - 1 levels of stored spells chosen by the GM. Any creature can cast a spell of 1st through 3rd level into the stone by touching it as the spell is cast. The spell has no effect, other than to be stored in the stone. If the stone can''t hold the spell, the spell is expended without effect. The level of the slot used to cast the spell determines how much space it uses. While this stone orbits your head, you can cast any spell stored in it. The spell uses the slot level, spell save DC, spell attack bonus, and spellcasting ability of the original caster, but is otherwise treated as if you cast the spell. The spell cast from the stone is no longer stored in it, freeing up space. ***Strength (Very Rare).*** Your Strength score increases by 2, to a maximum of 20, while this pale blue rhomboid orbits your head. ***Sustenance (Rare).*** You don''t need to eat or drink while this clear spindle orbits your head.', 0.0, 0, 
+    gen_random_uuid(), 'Ioun Stone', 'Wondrous item, varies (requires attunement) An Ioun stone is named after Ioun, a god of knowledge and prophecy revered on some worlds. Many types of Ioun stone exist, each type a distinct combination of shape and color. When you use an action to toss one of these stones into the air, the stone orbits your head at a distance of 1d3 feet and confers a benefit to you. Thereafter, another creature must use an action to grasp or net the stone to separate it from you, either by making a successful attack roll against AC 24 or a successful DC 24 Dexterity (Acrobatics) check. You can use an action to seize and stow the stone, ending its effect. A stone has AC 24, 10 hit points, and resistance to all damage. It is considered to be an object that is being worn while it orbits your head. ***Absorption (Very Rare).*** While this pale lavender ellipsoid orbits your head, you can use your reaction to cancel a spell of 4th level or lower cast by a creature you can see and targeting only you. Once the stone has canceled 20 levels of spells, it burns out and turns dull gray, losing its magic. If you are targeted by a spell whose level is higher than the number of spell levels the stone has left, the stone can''t cancel it. ***Agility (Very Rare).*** Your Dexterity score increases by 2, to a maximum of 20, while this deep red sphere orbits your head. ***Awareness (Rare).*** You can''t be surprised while this dark blue rhomboid orbits your head. ***Fortitude (Very Rare).*** Your Constitution score increases by 2, to a maximum of 20, while this pink rhomboid orbits your head. ***Greater Absorption (Legendary).*** While this marbled lavender and green ellipsoid orbits your head, you can use your reaction to cancel a spell of 8th level or lower cast by a creature you can see and targeting only you. Once the stone has canceled 50 levels of spells, it burns out and turns dull gray, losing its magic. If you are targeted by a spell whose level is higher than the number of spell levels the stone has left, the stone can''t cancel it. ***Insight (Very Rare).*** Your Wisdom score increases by 2, to a maximum of 20, while this incandescent blue sphere orbits your head. ***Intellect (Very Rare).*** Your Intelligence score increases by 2, to a maximum of 20, while this marbled scarlet and blue sphere orbits your head. ***Leadership (Very Rare).*** Your Charisma score increases by 2, to a maximum of 20, while this marbled pink and green sphere orbits your head. ***Mastery (Legendary).*** Your proficiency bonus increases by 1 while this pale green prism orbits your head. ***Protection (Rare).*** You gain a +1 bonus to AC while this dusty rose prism orbits your head. ***Regeneration (Legendary).*** You regain 15 hit points at the end of each hour this pearly white spindle orbits your head, provided that you have at least 1 hit point. ***Reserve (Rare).*** This vibrant purple prism stores spells cast into it, holding them until you use them. The stone can store up to 3 levels worth of spells at a time. When found, it contains 1d4 - 1 levels of stored spells chosen by the GM. Any creature can cast a spell of 1st through 3rd level into the stone by touching it as the spell is cast. The spell has no effect, other than to be stored in the stone. If the stone can''t hold the spell, the spell is expended without effect. The level of the slot used to cast the spell determines how much space it uses. While this stone orbits your head, you can cast any spell stored in it. The spell uses the slot level, spell save DC, spell attack bonus, and spellcasting ability of the original caster, but is otherwise treated as if you cast the spell. The spell cast from the stone is no longer stored in it, freeing up space. ***Strength (Very Rare).*** Your Strength score increases by 2, to a maximum of 20, while this pale blue rhomboid orbits your head. ***Sustenance (Rare).*** You don''t need to eat or drink while this clear spindle orbits your head.', 0.0, 0, 
     false, NULL, NULL, true, 
     true, '{custom}', NULL,
     NULL, NULL, 'rare',
@@ -181,7 +181,7 @@ INSERT INTO item_catalog (
     False, NULL, NULL, False, 
     False, NULL, NULL,
     NULL, NULL, 'common',
-    True, 30-40 lbs
+    True, 40
 );
 
 INSERT INTO item_catalog (
@@ -3508,7 +3508,7 @@ INSERT INTO item_catalog (
     gen_random_uuid(), 'Belt of Giant Strength', 'Wondrous item, rarity varies (requires attunement) While wearing this belt, your Strength score changes to a score granted by the belt. If your Strength is already equal to or greater than the belt''s score, the item has no Effect on you. Six varieties of this belt exist, corresponding with and having rarity according to The Six kinds of true Giants. The belt of Stone Giant Strength and the belt of Frost Giant Strength look different, but they have the same Effect. | Type | Strength | Rarity | |---|---|---| | Hill Giant | 21 | Rare | | Stone Giant / Frost Giant | 23 | Very Rare | | Fire Giant | 25 | Very Rare | | Cloud Giant | 27 | Legendary | | Storm Giant | 29 | Legendary |', 0.0, 0, 
     False, NULL, NULL, True, 
     True, '{belt}', NULL,
-    NULL, NULL, 'Varies',
+    NULL, NULL, 'varies',
     False, NULL
 );
 
@@ -4874,7 +4874,7 @@ INSERT INTO item_catalog (
     False, NULL, NULL, False, 
     False, NULL, NULL,
     NULL, NULL, 'rare',
-    True, 30-40 lbs
+    True, 40
 );
 
 INSERT INTO item_catalog (
@@ -6452,19 +6452,6 @@ INSERT INTO item_catalog (
 
 
 -- Continuing from Ring of Regeneration
-
-INSERT INTO item_catalog (
-    item_uuid, item_name, item_description, item_weight, item_value, attackable, 
-    ac_bonus, add_as_to_ac, equippable, attunable, item_equippable_type,
-    ability_requirment, skill_altered_roll_type, skill_altered_bonus,
-    item_rarity, is_container, capacity
-) VALUES (
-    gen_random_uuid(), 'Ring of Regeneration', 'Ring, very rare (requires attunement) While wearing this ring, you regain 1d6 hit points every 10 minutes, provided that you have at least 1 hit point. If you lose a body part, the ring causes the missing part to regrow and return to full functionality after 1d6 + 1 days if you have at least 1 hit point the whole time.', 0.0, 0, 
-    false, NULL, NULL, true, 
-    true, NULL, NULL,
-    NULL, NULL, 'very_rare',
-    false, NULL
-);
 
 INSERT INTO item_catalog (
     item_uuid, item_name, item_description, item_weight, item_value, attackable, 

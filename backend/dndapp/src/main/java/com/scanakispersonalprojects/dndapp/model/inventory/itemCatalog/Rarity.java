@@ -5,5 +5,6 @@ public enum Rarity {
     uncommon,
     rare,
     very_rare,
-    legendary
+    legendary,
+    varies
 }
