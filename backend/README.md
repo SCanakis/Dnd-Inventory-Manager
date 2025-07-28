@@ -72,10 +72,3 @@ stompClient.subscribe('/character-stats/subscribe', function(message) {
     const data = JSON.parse(message.body);
     console.log('Character stats updated:', data);
 });
-
-// Send character stats update
-stompClient.send('/character-stats/update', {}, JSON.stringify({
-    characterId: 'uuid-here',
-    hitPoints: 45,
-    level: 5
-}));
