@@ -104,7 +104,7 @@ CHARACTER_DATA_FILE=./db/character-data.sql ITEM_DATA_FILE=./db/item-data.sql do
 docker-compose down
 
 # Remove all data (fresh start)
-docker-compose down -v
+docker-compose down --volumes
 ```
 
 ---
@@ -126,7 +126,7 @@ DndApp/
 
 ---
 
-## 🎯 API Endpoints
+## 🎯 API Endpoints (Key Examples)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -136,6 +136,7 @@ DndApp/
 | GET    | `/api/classes` | List available D&D classes |
 | GET    | `/api/races` | List available D&D races |
 
+**[View complete API documentation ->] (backend/README.md)**
 ---
 
 ## 🤝 Contributing

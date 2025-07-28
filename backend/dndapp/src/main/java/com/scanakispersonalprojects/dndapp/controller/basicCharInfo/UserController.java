@@ -85,8 +85,8 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/user-deletion")
-    public ResponseEntity<Boolean> postMethodName(Authentication authentication) {
+    @DeleteMapping("/auth/user-deletion")
+    public ResponseEntity<Boolean> deleteUser(Authentication authentication) {
         LOG.info("DELETE /user-deletion");
 
         try {
