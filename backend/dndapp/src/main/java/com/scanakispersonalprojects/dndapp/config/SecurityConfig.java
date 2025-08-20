@@ -50,8 +50,8 @@ public class SecurityConfig {
             .csrf(customizer -> customizer.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Add this line!
                 .anyRequest().authenticated()
             )
             .formLogin(login -> login
