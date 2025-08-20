@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
-@RequestMapping("api")
+@RequestMapping("/api")
 public class UserController {
     private static final Logger LOG = Logger.getLogger(BasicCharInfoController.class.getName());
     private CustomUserDetailsService detailsService;
