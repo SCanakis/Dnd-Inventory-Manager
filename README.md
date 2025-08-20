@@ -157,4 +157,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🎲 About
 
-Built for D&D enthusiasts who want a digital companion for character management and inventory tracking. Perfect for both players and DMs!
+Built for D&D enthusiasts who want a digital companion for character management and inventory tracking. Perfect for both players and DMs!!!
