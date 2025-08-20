@@ -8,14 +8,11 @@
 </p>
 
 <p align="center">
-  <!-- Deployment status badge -->
-  <a href="https://github.com/SCanakis/DndApp/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/SCanakis/DndApp/deploy.yml?label=build">
-  </a>
+  <img src="https://img.shields.io/github/actions/workflow/status/SCanakis/DndApp/deploy.yml?label=build">
   <img src="https://img.shields.io/badge/Java-17+-brightgreen">
   <img src="https://img.shields.io/badge/Angular-17-red">
   <img src="https://img.shields.io/badge/PostgreSQL-15-blue">
-  <img src="https://img.shields.io/github/license/SCanakis/DndApp">
+  <img src="https://img.shields.io/badge/license-MIT-blue">
 </p>
 
 ---
