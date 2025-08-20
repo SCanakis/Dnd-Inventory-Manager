@@ -49,8 +49,8 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(customizer -> customizer.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  
+                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated()
             )
@@ -86,12 +86,7 @@ public class SecurityConfig {
 public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     // Add both development and Docker origins
-    configuration.setAllowedOrigins(Arrays.asList(
-        "http://localhost:4200",  // Angular dev server
-        "http://localhost",        // Docker frontend (port 80),
-        "http://54.80.122.64"        // EC2 public IP
-        
-    ));
+    configuration.setAllowedOriginPatterns(Arrays.asList("*"));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("*"));
     configuration.setAllowCredentials(true);
